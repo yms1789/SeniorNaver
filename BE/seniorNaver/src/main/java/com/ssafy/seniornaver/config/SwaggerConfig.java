@@ -1,4 +1,4 @@
-package common.config;
+package com.ssafy.seniornaver.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
