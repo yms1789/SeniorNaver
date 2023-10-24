@@ -12,11 +12,13 @@ export const LoginWrapper = styled.div`
 export const Logo = styled.div`
   font-family: "NanumSquare Neo Heavy";
   font-style: normal;
-  font-size: 40px;
+  font-size: 90px;
   font-weight: 1000;
   line-height: 99px;
   letter-spacing: 0.05em;
   color: #000000;
+  margin-top: 200px;
+  margin-bottom: 50px;
 `;
 
 export const LoginCopylight = styled.div`
@@ -32,13 +34,9 @@ export const LoginCopylight = styled.div`
 function Login() {
   return (
     <LoginWrapper>
-      <Logo>
-        <h1>SENIOR NAVER</h1>
-      </Logo>
+      <Logo>SENIOR NAVER</Logo>
       <LocalLogin />
-      <LoginCopylight>
-        <h3>Copyright © NAVER Corp. All Rights Reserved.</h3>
-      </LoginCopylight>
+      <LoginCopylight>Copyright © NAVER Corp. All Rights Reserved.</LoginCopylight>
     </LoginWrapper>
   );
 }
