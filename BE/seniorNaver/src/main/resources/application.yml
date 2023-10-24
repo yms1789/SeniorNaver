@@ -30,7 +30,7 @@ spring:
     database: mysql
     hibernate:
       # ?? ?? ? create ? DB??? ???.
-      ddl-auto: create
+      ddl-auto: update
     # SQL? ?? ??
     properties:
       hibernate:
