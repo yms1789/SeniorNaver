@@ -1,5 +1,4 @@
 import { createGlobalStyle } from "styled-components";
-
 import NanumSquareNeoLight from "..assets/fonts/NanumSquareNeo-aLt.ttf";
 import NanumSquareNeoRegular from "..assets/fonts/NanumSquareNeo-bRg.ttf";
 import NanumSquareNeoBold from "..assets/fonts/NanumSquareNeo-cBd.ttf";
