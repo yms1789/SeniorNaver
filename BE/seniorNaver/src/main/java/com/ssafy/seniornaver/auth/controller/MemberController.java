@@ -61,4 +61,5 @@ public class MemberController {
     public ResponseEntity<Boolean> validNickname(@RequestParam String nickname) {
         return ResponseEntity.ok(memberService.validNickname(nickname));
     }
+    
 }
