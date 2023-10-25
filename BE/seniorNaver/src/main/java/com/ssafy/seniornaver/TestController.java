@@ -24,10 +24,4 @@ public class TestController {
         return "Hello this is test";
     }
 
-    @GetMapping("/test3")
-    public String test3() {
-        log.info("Hello World");
-        System.out.println("Hello World");
-        return "Hello this is test";
-    }
 }
