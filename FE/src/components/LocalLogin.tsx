@@ -52,14 +52,20 @@ export const LoginSubmit = styled.input`
   color: white;
 `;
 
+export const LoginSubmitWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+`;
 function LocalLogin() {
   return (
     <LoginFormWrapper>
       <LoginForm>
         <IDInput type="text" placeholder="아이디" />
         <PasswordInput type="text" placeholder="비밀번호" />
-        <LoginSubmit className="login" type="submit" value={"로그인"}></LoginSubmit>
-        <NaverLogin />
+        <LoginSubmitWrapper>
+          <LoginSubmit className="login" type="submit" value={"로그인"}></LoginSubmit>
+          <NaverLogin />
+        </LoginSubmitWrapper>
       </LoginForm>
     </LoginFormWrapper>
   );
