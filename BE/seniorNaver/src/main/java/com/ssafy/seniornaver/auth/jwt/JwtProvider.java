@@ -21,16 +21,16 @@ public class JwtProvider {
     private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60L; // 1 hours
     private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 30L; // 30 days
 
-    public TokenDto createAccessToken(String userId, AuthProvider provider) {
+    public TokenDto createAccessToken(String memberId, AuthProvider provider) {
         HashMap<String, Object> claim = new HashMap<>();
-        claim.put("userId", userId);
+        claim.put("memberId", memberId);
         claim.put("provider", provider);
         return createJwt("ACCESS_TOKEN", ACCESS_TOKEN_EXPIRATION_TIME, claim);
     }
 
-    public TokenDto createRefreshToken(String userId, AuthProvider provider) {
+    public TokenDto createRefreshToken(String memberId, AuthProvider provider) {
         HashMap<String, Object> claim = new HashMap<>();
-        claim.put("userId", userId);
+        claim.put("memberId", memberId);
         claim.put("provider", provider);
         return createJwt("REFRESH_TOKEN", REFRESH_TOKEN_EXPIRATION_TIME, claim);
     }
@@ -92,23 +92,23 @@ public class JwtProvider {
     }
 
     /**
-    * userId 추출하기
+    * memberId 추출하기
      */
-    public String extractUserId(HttpServletRequest request) {
+    public String extractMemberId(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         String token = null;
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             token = authorizationHeader.substring(7);
         }
-        return (String)get(token).get("userId");
+        return (String)get(token).get("memberId");
     }
 
     public Member extractUser(HttpServletRequest httpServletRequest) {
         String header = httpServletRequest.getHeader("Authorization");
         String token = header.substring(7);
-        String userId = (String) get(token).get("userId");
+        String memberId = (String) get(token).get("memberId");
 
-        Member member = memberRepository.findByMemberId(userId)
+        Member member = memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("유저 ID를 찾을수 없습니다."));
         return member;
     }
