@@ -1,6 +1,6 @@
-import React from "react";
 import styled from "styled-components";
 import naverlogo from "./../assets/images/naversmalllogo.png";
+
 export const NaverLoginWrapper = styled.div`
   display: flex;
   margin-top: 40px;

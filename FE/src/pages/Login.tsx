@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import LocalLogin from "../components/LocalLogin";
+
 export const LoginWrapper = styled.div`
   width: 100vw;
   height: 100vh;
@@ -17,8 +18,10 @@ export const Logo = styled.div`
   line-height: 99px;
   letter-spacing: 0.05em;
   color: #000000;
-  margin-top: 200px;
+  margin-top: 150px;
   margin-bottom: 50px;
+  cursor: pointer;
+  user-select: none;
 `;
 
 export const LoginCopylight = styled.div`
