@@ -6,8 +6,14 @@ pipeline {
     stages {
         stage('Git Clone') {
             steps {
-                git branch : 'master', url: 'https://lab.ssafy.com/s09-final/S09P31D105.git', credentialsId: 'jenkins'
-            }
+                dir('/var/jenkins_home/workspace/Gokk2_Senior'){
+                    sh '''
+                        echo delete existing project file 
+                    '''
+                    deleteDir()
+                }
+                checkout scmGit(branches: [[name: '*/master']], extensions: [submodule(parentCredentials: true, reference: '', trackingSubmodules: true)], userRemoteConfigs: [[credentialsId: 'jenkins', url: 'https://lab.ssafy.com/s09-final/S09P31D105.git']])
+                }
         }
         stage('BE-Build') {
             steps {
