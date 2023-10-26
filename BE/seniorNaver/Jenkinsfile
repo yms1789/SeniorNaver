@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        gradle 'gredle'
+        gradle 'gradle'
     }
     stages {
         stage('Git Clone') {
