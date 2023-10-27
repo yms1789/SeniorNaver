@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import LocalLogin from "../components/LocalLogin";
 
-export const LoginWrapper = styled.div`
+const LoginWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -10,7 +10,7 @@ export const LoginWrapper = styled.div`
   background: linear-gradient(180deg, #46d780 0%, #5cbad8 100%);
 `;
 
-export const Logo = styled.div`
+const Logo = styled.div`
   font-family: "NanumSquare Neo Heavy";
   font-style: normal;
   font-size: 90px;
@@ -24,7 +24,7 @@ export const Logo = styled.div`
   user-select: none;
 `;
 
-export const LoginCopylight = styled.div`
+const LoginCopylight = styled.div`
   display: flex;
   margin-top: 30px;
   flex-direction: column;
