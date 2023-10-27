@@ -5,14 +5,9 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./queryClient";
 import App from "./App";
 import "./index.css";
-import initMockAPI from "./mocks/index";
 import { BrowserRouter } from "react-router-dom";
 import { GlobalStyle } from "./styles/SGlobal";
 import { NavermapsProvider } from "react-naver-maps";
-
-if (process.env.NODE_ENV === "development") {
-  initMockAPI();
-}
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
