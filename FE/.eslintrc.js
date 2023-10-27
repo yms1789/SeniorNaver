@@ -50,9 +50,17 @@ module.exports = {
         additionalHooks: "(useRecoilCallback|useRecoilTransaction_UNSTABLE)",
       },
     ],
-    "@tanstack/query/exhaustive-deps": "error",
     "@tanstack/query/prefer-query-object-syntax": "error",
     "@tanstack/query/stable-query-client": "error",
+<<<<<<< HEAD
+=======
+    "@tanstack/query/exhaustive-deps": "off",
+    "jest-dom/prefer-checked": "error",
+    "jest-dom/prefer-enabled-disabled": "error",
+    "jest-dom/prefer-required": "error",
+    "jest-dom/prefer-to-have-attribute": "error",
+    "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
+>>>>>>> FE
   },
   settings: {
     react: {
