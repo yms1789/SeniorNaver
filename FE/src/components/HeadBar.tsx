@@ -1,21 +1,23 @@
+
 import { styled } from "styled-components";
 import snlogo from "./../assets/images/snlogo.png";
 import { NavLink } from "react-router-dom";
 
-export const NavBarWrapper = styled.div`
+const NavBarWrapper = styled.div`
+  position: fixed;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   padding: 0px 120px;
   gap: 10px;
-  position: fixed;
   width: 1440px;
   height: 110px;
   left: calc(50% - 1440px / 2 - 19px);
   top: 0px;
+  z-index: 990;
 `;
 
-export const NavBar = styled.div`
+const NavBar = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -26,14 +28,16 @@ export const NavBar = styled.div`
   height: 110px;
 `;
 
-export const NavLogo = styled.img`
+const NavLogo = styled.img`
+  display: flex;
+
   width: 50px;
   height: 50px;
   cursor: pointer;
   user-select: none;
 `;
 
-export const NavLogoText = styled.div`
+const NavLogoText = styled.div`
   font-family: "NanumSquare Neo";
   font-style: normal;
   font-weight: 900;
@@ -49,7 +53,7 @@ export const NavLogoText = styled.div`
   user-select: none;
 `;
 
-export const NavLoginButton = styled.div`
+const NavLoginButton = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
@@ -77,7 +81,7 @@ export const NavLoginButton = styled.div`
     border: 3px solid rgba(0, 0, 0, 0.3);
   }
 `;
-export const NavLoginButtonInnerText = styled.div`
+const NavLoginButtonInnerText = styled.div`
   width: 57px;
   height: 22px;
   font-family: "NanumSquare Neo";
@@ -96,7 +100,7 @@ export const NavLoginButtonInnerText = styled.div`
   }
 `;
 
-export const NavSigninButton = styled.div`
+const NavSigninButton = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
@@ -124,7 +128,7 @@ export const NavSigninButton = styled.div`
     border: 3px solid rgba(0, 0, 0, 0.3);
   }
 `;
-export const NavSigninButtonInnerText = styled.div`
+const NavSigninButtonInnerText = styled.div`
   width: 76px;
   height: 22px;
   font-family: "NanumSquare Neo";
@@ -143,15 +147,17 @@ export const NavSigninButtonInnerText = styled.div`
   }
 `;
 
-export const NavEmpty = styled.div`
+const NavEmpty = styled.div`
   width: 700px;
 `;
 
-function NavigationBar() {
+function HeadBar() {
   return (
     <NavBarWrapper>
       <NavBar>
-        <NavLogo src={snlogo} />
+        <NavLink to="/">
+          <NavLogo src={snlogo} />
+        </NavLink>
         <NavLogoText>SENIOR NAVER</NavLogoText>
         <NavEmpty />
         <NavLink to="/login">
@@ -159,11 +165,13 @@ function NavigationBar() {
             <NavLoginButtonInnerText>로그인</NavLoginButtonInnerText>
           </NavLoginButton>
         </NavLink>
-        <NavSigninButton>
-          <NavSigninButtonInnerText>회원가입</NavSigninButtonInnerText>
-        </NavSigninButton>
+        <NavLink to="/signin">
+          <NavSigninButton>
+            <NavSigninButtonInnerText>회원가입</NavSigninButtonInnerText>
+          </NavSigninButton>
+        </NavLink>
       </NavBar>
     </NavBarWrapper>
   );
 }
-export default NavigationBar;
+export default HeadBar;
