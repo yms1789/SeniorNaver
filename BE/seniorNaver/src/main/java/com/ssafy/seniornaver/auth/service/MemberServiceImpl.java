@@ -6,6 +6,7 @@ import com.ssafy.seniornaver.auth.dto.Request.LogOutRequestDto;
 import com.ssafy.seniornaver.auth.dto.Request.SignUpRequestDto;
 import com.ssafy.seniornaver.auth.dto.Request.keywordRequestDto;
 import com.ssafy.seniornaver.auth.dto.Response.LogInResponseDto;
+import com.ssafy.seniornaver.auth.entity.Keyword;
 import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.auth.entity.enumType.AuthProvider;
 import com.ssafy.seniornaver.auth.entity.enumType.Role;
@@ -31,6 +32,7 @@ import java.util.Optional;
 @Transactional
 public class MemberServiceImpl implements MemberService{
 	private final MemberRepository memberRepository;
+	private final KeywordRepository keywordRepository;
 	private final JwtProvider jwtProvider;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -48,6 +50,7 @@ public class MemberServiceImpl implements MemberService{
 			.name(signUpRequestDto.getName())
 			.email(signUpRequestDto.getEmail())
 			.password(signUpRequestDto.getPassword())
+			.profileUrl("https://d33nz7652hemr5.cloudfront.net/profile/user-basic-profile.png")
 			.role(Role.USER)
 			.authProvider(AuthProvider.EMPTY)
 			.build();
@@ -112,10 +115,10 @@ public class MemberServiceImpl implements MemberService{
 		// Member 엔티티의 region과 nickname 업데이트
 		member.updateRegionAndNickname(keywordRequestDto.getRegion(), keywordRequestDto.getNickname());
 
-
-		// Member 엔티티의 keywords에 keyword 추가
+		// Keyword 엔티티의 keywords 저장
 		for (String keyword : keywordRequestDto.getKeywords()) {
-			member.getKeywords().add(keyword);
+			Keyword keywordEntity = new Keyword(keyword, member);
+			keywordRepository.save(keywordEntity);
 		}
 
 		// Member 엔티티 저장

@@ -20,7 +20,7 @@ public class Member{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String memberId;
 
     @Column
@@ -41,8 +41,8 @@ public class Member{
     @Column
     private String region;
 
-    @Column
-    private List<String> keywords = new ArrayList<>();
+    @Column(nullable = false)
+    private String profileUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -61,7 +61,7 @@ public class Member{
 
     @Builder
     public Member(Long id, String memberId, String mobile, String name, String password, String nickname, String email,
-                  String region, List<String> keywords, Role role, AuthProvider authProvider, String refreshToken, Date tokenExpirationTime
+                  String region, String profileUrl, Role role, AuthProvider authProvider, String refreshToken, Date tokenExpirationTime
                   ) {
         this.id = id;
         this.memberId = memberId;
@@ -71,7 +71,7 @@ public class Member{
         this.nickname = nickname;
         this.email = email;
         this.region = region;
-        this.keywords = keywords;
+        this.profileUrl =profileUrl;
         this.role = role;
         this.authProvider = authProvider;
         this.refreshToken = refreshToken;

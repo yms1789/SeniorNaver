@@ -84,23 +84,4 @@ public class MemberController {
     public ResponseEntity<Boolean> validNickname(@RequestParam String nickname) {
         return ResponseEntity.ok(memberService.validNickname(nickname));
     }
-
-
-
-    private Member getMember(HttpServletRequest httpServletRequest) {
-        String header = httpServletRequest.getHeader("Authorization");
-        String bearer = header.substring(7);
-
-        String memberId;
-        try {
-            memberId = (String) jwtProvider.get(bearer).get("memberId");
-        } catch (ExpiredJwtException e) {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID);
-        }
-
-        Member member = memberRepository.findByMemberId(memberId).orElseThrow(() -> {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID);
-        });
-        return member;
-    }
 }
