@@ -1,6 +1,7 @@
 // import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import Intro from "./pages/Intro";
+import Home from "./pages/Home";
 import Places from "./pages/Places";
 import Login from "./pages/Login";
 function App() {
@@ -11,7 +12,7 @@ function App() {
       <Route path="/" element={<Intro />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Intro />} />
-      <Route path="/home" element={<Intro />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/places" element={<Places />} />
     </Routes>
   );
