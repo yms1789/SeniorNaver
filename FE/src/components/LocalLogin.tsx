@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import NaverLogin from "./NaverLogin";
 
-export const LoginFormWrapper = styled.div`
+const LoginFormWrapper = styled.div`
   border-radius: 30px;
   border: 1px solid rgba(0, 0, 0, 0.5);
   width: 700px;
@@ -14,13 +14,13 @@ export const LoginFormWrapper = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
-export const LoginForm = styled.form`
+const LoginForm = styled.form`
   position: relative;
   top: 20%;
   left: 15%;
 `;
 
-export const IDInput = styled.input`
+const IDInput = styled.input`
   width: 460px;
   height: 80px;
   border-radius: 10px;
@@ -31,7 +31,7 @@ export const IDInput = styled.input`
   padding: 0 15px 0 15px;
 `;
 
-export const PasswordInput = styled.input`
+const PasswordInput = styled.input`
   width: 460px;
   height: 80px;
   border-radius: 10px;
@@ -42,7 +42,7 @@ export const PasswordInput = styled.input`
   padding: 0 15px 0 15px;
 `;
 
-export const LoginSubmit = styled.input`
+const LoginSubmit = styled.input`
   margin-top: 40px;
   width: 240px;
   height: 80px;
@@ -52,7 +52,7 @@ export const LoginSubmit = styled.input`
   color: white;
 `;
 
-export const LoginSubmitWrapper = styled.div`
+const LoginSubmitWrapper = styled.div`
   display: flex;
   gap: 10px;
 `;
