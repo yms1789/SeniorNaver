@@ -27,9 +27,13 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 1rem;
   }
   button {
+    padding: 0;
     &:focus{
       outline: none;
     }
+  }
+  ul {
+    margin: 0;
   }
 
   @font-face {
@@ -65,4 +69,36 @@ export const GlobalStyle = createGlobalStyle`
         src: url(${NanumSquareNeoHeavy}) format('truetype');
   }
 
+  :root {
+
+
+/* font sizes */
+--font-size-sm: 0.75rem;
+--font-size-base: 1rem;
+--font-size-md: 1.25rem;
+--font-size-lg: 1.5rem;
+--font-size-xl: 1.75rem;
+--font-size-2xl: 2rem;
+--font-size-2xl-5: 2.5rem;
+--font-size-3xl: 3rem;
+--font-size-4xl: 4rem;
+--font-size-5xl: 5rem;
+
+/* Colors */
+--dark01: #010101;
+--dark02: #202020;
+--dark30: rgba(1, 1, 1, 0.3);
+--dark50: rgba(1, 1, 1, 0.5);
+--dark70: rgba(1, 1, 1, 0.7);
+--white: #ffffff;
+--white50: rgba(255, 255, 255, 0.5);
+--white90: rgba(255, 255, 255, 0.9);
+--gray01: #4a4a4a;
+--gray02: #6c6c6c;
+--gray03: #d9d9d9;
+--aqua: #3FD5DE;
+--emerald: #2deea8;
+--maingradient: linear-gradient(100deg, #3fd5de, #2deea8);
+  }
+  
 `;
