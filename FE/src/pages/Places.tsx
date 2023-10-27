@@ -1,85 +1,17 @@
-import { Container as MapDiv, NaverMap, Marker, useNavermaps } from "react-naver-maps";
-import { styled } from "styled-components";
+import { Container as MapDiv, Marker, NaverMap, useNavermaps } from "react-naver-maps";
+import DrawerComponent from "../components/DrawerComponent";
+import NavigationBar from "../components/NavigationBar";
 import useGeolocation from "../hooks/useGeolocation";
-import { useState } from "react";
-import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
-
-const screenWidth = window.screen.width;
-const screenHeight = window.screen.height;
-
-const SearchWrapper = styled.div`
-  width: 100%;
-`;
-const SearchButton = styled.button``;
-
-const SearchBar = styled.input``;
-
-const ContentsWrapper = styled.div`
-  width: 100%;
-  background-color: pink;
-`;
-const Text = styled.p`
-  color: black;
-`;
-
-const CategoryButtonWrapper = styled.div`
-  width: 100%;
-`;
-const CategoryButton = styled.button``;
-const PlacesWrapper = styled.div`
-  background-color: blue;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const DrawableWrapper = styled.div<{ screenHeight: number; screenWidth: number; isShow: boolean }>`
-  top: 0px;
-  height: 100vh;
-  width: 100%;
-  transform: ${props => (props.isShow ? "translateX(0%)" : "translateX(-100%)")};
-  transition: 0.5s;
-  box-shadow:
-    rgba(0, 0, 0, 0.2) 0px 0px 5px 0px,
-    rgba(0, 0, 0, 0.1) 5px 0px 15px 0px;
-`;
-const Drawable = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  background-color: #ffffff;
-  color: white;
-`;
-const DrawableButton = styled.button`
-  position: absolute;
-  top: 50%;
-  left: 100%;
-  transform: translateY(-50%);
-  z-index: 10;
-  overflow: hidden;
-  display: inline-block;
-  color: black;
-  line-height: 1px;
-  vertical-align: top;
-  background-image: IoIosArrowBack;
-  height: 80px;
-  width: fit-content;
-  padding: 10px;
-  -webkit-mask-image: none;
-  border: 1px solid lightgray;
-  border-radius: 0px 5px 5px 0px;
-`;
+import { useRecoilState } from "recoil";
+import coordinateState from "../states/coordinates";
+export interface ICoordinate {
+  mapx: string;
+  mapy: string;
+}
 function Places() {
   const navermaps = useNavermaps();
   const location = useGeolocation();
-
-  const [showDrawable, setShowDrawable] = useState(true);
-  const handleDrawable = () => {
-    setShowDrawable(!showDrawable);
-  };
-
+  const [coordinates, setCoordinates] = useRecoilState<ICoordinate[]>(coordinateState);
   return (
     <>
       <MapDiv
@@ -98,39 +30,36 @@ function Places() {
               new navermaps.LatLng(location.coordinates!.lat, location.coordinates!.lng)
             }
             defaultZoom={18}
+            disableKineticPan={false}
+            zoomControl
+            zoomControlOptions={{
+              position: navermaps.Position.TOP_RIGHT,
+            }}
+            minZoom={8}
+            maxZoom={21}
           >
+            {coordinates.length &&
+              coordinates.map((coordinate, idx) => {
+                const lat = parseFloat(
+                  coordinate.mapy.slice(0, 2) +
+                    "." +
+                    coordinate.mapy.slice(2, coordinate.mapy.length),
+                );
+                const lng = parseFloat(
+                  coordinate.mapx.slice(0, 3) +
+                    "." +
+                    coordinate.mapx.slice(3, coordinate.mapx.length),
+                );
+                return <Marker key={`좌표${idx}`} position={new navermaps.LatLng(lat, lng)} />;
+              })}
             <Marker
               position={new navermaps.LatLng(location.coordinates!.lat, location.coordinates!.lng)}
             />
           </NaverMap>
         )}
       </MapDiv>
-      <DrawableWrapper
-        screenWidth={screenWidth / 3}
-        screenHeight={screenHeight}
-        isShow={showDrawable}
-      >
-        <Drawable>
-          <SearchWrapper>
-            <SearchBar />
-            <SearchButton>검색</SearchButton>
-          </SearchWrapper>
-          <ContentsWrapper>
-            <Text>이순자 님을 위한 추천 스팟이에요</Text>
-            <CategoryButtonWrapper>
-              <CategoryButton>맛집</CategoryButton>
-              <CategoryButton>공연</CategoryButton>
-              <CategoryButton>휴양지</CategoryButton>
-            </CategoryButtonWrapper>
-            <PlacesWrapper>
-              검색한 결과 또는 카테고리 선택한 추천 장소가 렌더링될 공간
-            </PlacesWrapper>
-          </ContentsWrapper>
-        </Drawable>
-        <DrawableButton onClick={handleDrawable}>
-          {showDrawable ? <MdArrowBackIosNew /> : <MdArrowForwardIos />}
-        </DrawableButton>
-      </DrawableWrapper>
+      <DrawerComponent setCoordinates={setCoordinates} />
+      <NavigationBar />
     </>
   );
 }
