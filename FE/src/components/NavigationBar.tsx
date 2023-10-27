@@ -1,4 +1,62 @@
+import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { styled } from "styled-components";
+
+const NavigationButtonWrapper = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  @media screen and (max-width: 500px) {
+    display: none;
+  }
+`;
+const NavigationButton = styled.button`
+  background-color: white;
+  color: #6c6c6c;
+  border: solid 1px lightgray;
+  padding: 20px 10px;
+  border-radius: 0;
+  font-family: "NanumSquareNeoExtraBold";
+  &:last-child {
+    border-radius: 100%;
+    height: 70px;
+    background-color: black;
+    margin-top: 10px;
+  }
+  &:hover {
+    border: 1px solid orange;
+  }
+`;
+
+const BUTTON_TEXT = ["홈", "장소", "MZ사전", "내정보", "챗봇"];
+
 function NavigationBar() {
-  return <div>NavigationBar</div>;
+  const navigate = useNavigate();
+
+  const handleNavigate = useCallback((text: string) => {
+    switch (text) {
+      case "홈":
+        navigate("/");
+        break;
+      case "장소":
+        navigate("/places");
+        break;
+      default:
+        break;
+    }
+  }, []);
+  return (
+    <NavigationButtonWrapper>
+      {BUTTON_TEXT.map(text => {
+        return (
+          <NavigationButton key={text} onClick={() => handleNavigate(text)}>
+            {text}
+          </NavigationButton>
+        );
+      })}
+    </NavigationButtonWrapper>
+  );
 }
 export default NavigationBar;
