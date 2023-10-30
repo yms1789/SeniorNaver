@@ -20,6 +20,7 @@ public class OAuthSignInResponse {
     private String accessToken;
     private String refreshToken;
     private Date refreshTokenExpirationTime;
+    private boolean isChecked;
 
     @Builder
     public OAuthSignInResponse(
@@ -31,6 +32,7 @@ public class OAuthSignInResponse {
             ,String accessToken
             ,String refreshToken
             ,Date refreshTokenExpirationTime
+            ,boolean isChecked
     ){
         this.authProvider = authProvider;
         this.memberId = memberId;
@@ -40,6 +42,7 @@ public class OAuthSignInResponse {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.refreshTokenExpirationTime = refreshTokenExpirationTime;
+        this.isChecked = isChecked;
     }
 
     public Member toEntity() {

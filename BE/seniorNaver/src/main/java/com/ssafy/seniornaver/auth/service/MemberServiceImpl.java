@@ -1,6 +1,12 @@
 package com.ssafy.seniornaver.auth.service;
 
 import com.ssafy.seniornaver.auth.dto.*;
+import com.ssafy.seniornaver.auth.dto.Request.LogInRequestDto;
+import com.ssafy.seniornaver.auth.dto.Request.LogOutRequestDto;
+import com.ssafy.seniornaver.auth.dto.Request.SignUpRequestDto;
+import com.ssafy.seniornaver.auth.dto.Request.keywordRequestDto;
+import com.ssafy.seniornaver.auth.dto.Response.LogInResponseDto;
+import com.ssafy.seniornaver.auth.entity.Keyword;
 import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.auth.entity.enumType.AuthProvider;
 import com.ssafy.seniornaver.auth.entity.enumType.Role;
@@ -26,6 +32,7 @@ import java.util.Optional;
 @Transactional
 public class MemberServiceImpl implements MemberService{
 	private final MemberRepository memberRepository;
+	private final KeywordRepository keywordRepository;
 	private final JwtProvider jwtProvider;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -34,20 +41,16 @@ public class MemberServiceImpl implements MemberService{
 			throw new BadRequestException(ErrorCode.ALREADY_REGISTERED_USER_ID);
 		}
 
-		if (signUpRequestDto.getNickname().toLowerCase().contains("admin") ||
-			signUpRequestDto.getMemberId().toLowerCase().contains("admin")) {
+		if (signUpRequestDto.getMemberId().toLowerCase().contains("admin")) {
 			throw new BadRequestException(ErrorCode.INVALID_ADMIN);
 		}
-
 
 		Member member = Member.builder()
 			.memberId(signUpRequestDto.getMemberId())
 			.name(signUpRequestDto.getName())
-			.mobile(signUpRequestDto.getMobile())
 			.email(signUpRequestDto.getEmail())
 			.password(signUpRequestDto.getPassword())
-			.nickname(signUpRequestDto.getNickname())
-			.region(signUpRequestDto.getRegion())
+			.profileUrl("https://d33nz7652hemr5.cloudfront.net/profile/user-basic-profile.png")
 			.role(Role.USER)
 			.authProvider(AuthProvider.EMPTY)
 			.build();
@@ -103,24 +106,45 @@ public class MemberServiceImpl implements MemberService{
 		member.expireRefreshToken(new Date());
 	}
 
+	@Override
+	public String addDetails(keywordRequestDto keywordRequestDto) {
+		// memberId로 Member 엔티티 조회
+		Member member = memberRepository.findByMemberId(keywordRequestDto.getMemberId())
+				.orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
+
+		// Member 엔티티의 region과 nickname 업데이트
+		member.updateRegionAndNickname(keywordRequestDto.getRegion(), keywordRequestDto.getNickname());
+
+		// Keyword 엔티티의 keywords 저장
+		for (String keyword : keywordRequestDto.getKeywords()) {
+			Keyword keywordEntity = new Keyword(keyword, member);
+			keywordRepository.save(keywordEntity);
+		}
+
+		// Member 엔티티 저장
+		memberRepository.save(member);
+
+		return keywordRequestDto.getMemberId();
+	}
+
 	@Transactional(readOnly = true)
 	public TokenDto getAccessToken(String refreshToken) {
-		String userId = (String)jwtProvider.get(refreshToken).get("userId");
+		String memberId = (String)jwtProvider.get(refreshToken).get("memberId");
 		String provider = (String)jwtProvider.get(refreshToken).get("provider");
-		System.out.println("in getAccessToken " + userId + "  " + provider);
+		System.out.println("in getAccessToken " + memberId + "  " + provider);
 
-		if (!memberRepository.existsByMemberIdAndAuthProvider(userId, AuthProvider.findByCode(provider.toLowerCase()))) {
+		if (!memberRepository.existsByMemberIdAndAuthProvider(memberId, AuthProvider.findByCode(provider.toLowerCase()))) {
 			throw new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID);
 		} else if (jwtProvider.isExpiration(refreshToken)) {
 			throw new BadRequestException(ErrorCode.TOKEN_EXPIRED);
 		}
 
-		return jwtProvider.createAccessToken(userId, AuthProvider.findByCode(provider));
+		return jwtProvider.createAccessToken(memberId, AuthProvider.findByCode(provider));
 	}
 
-	public Boolean validUserId(String userId) {
-		Optional<Member> user = memberRepository.findByMemberId(userId);
-		return getValid(user, userId);
+	public Boolean validMemberId(String memberId) {
+		Optional<Member> user = memberRepository.findByMemberId(memberId);
+		return getValid(user, memberId);
 	}
 
 	public Boolean validNickname(String nickname) {

@@ -1,4 +1,4 @@
-package com.ssafy.seniornaver.auth.dto;
+package com.ssafy.seniornaver.auth.dto.Request;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -9,6 +9,9 @@ import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.auth.entity.enumType.AuthProvider;
 import com.ssafy.seniornaver.auth.jwt.JwtProvider;
 import com.ssafy.seniornaver.auth.repository.MemberRepository;
+import com.ssafy.seniornaver.error.code.ErrorCode;
+import com.ssafy.seniornaver.error.exception.BadRequestException;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -17,6 +20,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +55,8 @@ public class NaverRequestServiceImpl implements RequestService {
         TokenDto refreshTokenDto = jwtProvider.createRefreshToken(
                 naverMemberInfo.getResponse().getId(), AuthProvider.NAVER);
 
+        boolean isChecked = !memberRepository.existsById(naverMemberInfo.getResponse().getId());
+
         OAuthSignInResponse oAuthSignInResponse = OAuthSignInResponse.builder()
                 .authProvider(AuthProvider.NAVER)
                 .memberId(naverMemberInfo.getResponse().getId())
@@ -58,11 +65,13 @@ public class NaverRequestServiceImpl implements RequestService {
                 .mobile(naverMemberInfo.getResponse().getMobile())
                 .accessToken(accessTokenDto.getToken())
                 .refreshToken(refreshTokenDto.getToken())
+                .isChecked(isChecked)
                 .refreshTokenExpirationTime(refreshTokenDto.getTokenExpirationTime())
                 .build();
 
         Member memberEntity;
-        if(!memberRepository.existsById(naverMemberInfo.getResponse().getId())){
+
+        if(isChecked){
             memberEntity = oAuthSignInResponse.toEntity();
         } else {
             memberEntity = memberRepository.findByMemberId(String.valueOf(naverMemberInfo.getResponse().getId()))
@@ -125,4 +134,7 @@ public class NaverRequestServiceImpl implements RequestService {
                 .bodyToMono(TokenResponse.class)
                 .block();
     }
+
+
+
 }

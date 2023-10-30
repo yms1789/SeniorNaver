@@ -31,7 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             String authorizationHeader = request.getHeader("Authorization");
             String token = null;
-            String userId = null;
+            String memberId = null;
             String provider = null;
 
             if (request.getServletPath().startsWith("/auth") || request.getServletPath().startsWith("/oauth/login/oauth2")) {
@@ -46,15 +46,15 @@ public class JwtFilter extends OncePerRequestFilter {
                     throw new BadRequestException(ErrorCode.TOKEN_EXPIRED);
                 }
 
-                userId = (String) jwtProvider.get(token).get("userId");
+                memberId = (String) jwtProvider.get(token).get("memberId");
                 provider = (String) jwtProvider.get(token).get("provider");
-                if(!memberRepository.existsByMemberId(userId)){
+                if(!memberRepository.existsByMemberId(memberId)){
                     throw new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID);
                 }
                 // 인증 정보 등록 및 다음 체인으로 이동
                 log.info("Security filter에 access Token 저장  " + token);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        userId, null, List.of(new SimpleGrantedAuthority("USER")));
+                        memberId, null, List.of(new SimpleGrantedAuthority("USER")));
                 authenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);

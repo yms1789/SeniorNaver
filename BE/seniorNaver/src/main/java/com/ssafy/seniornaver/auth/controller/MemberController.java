@@ -1,10 +1,18 @@
 package com.ssafy.seniornaver.auth.controller;
 
-import com.ssafy.seniornaver.auth.dto.LogInRequestDto;
-import com.ssafy.seniornaver.auth.dto.LogInResponseDto;
-import com.ssafy.seniornaver.auth.dto.LogOutRequestDto;
-import com.ssafy.seniornaver.auth.dto.SignUpRequestDto;
+import com.ssafy.seniornaver.auth.dto.Request.LogInRequestDto;
+import com.ssafy.seniornaver.auth.dto.Request.keywordRequestDto;
+import com.ssafy.seniornaver.auth.dto.Response.LogInResponseDto;
+import com.ssafy.seniornaver.auth.dto.Request.LogOutRequestDto;
+import com.ssafy.seniornaver.auth.dto.Request.SignUpRequestDto;
+import com.ssafy.seniornaver.auth.entity.Member;
+import com.ssafy.seniornaver.auth.jwt.JwtProvider;
+import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import com.ssafy.seniornaver.auth.service.MemberService;
+import com.ssafy.seniornaver.error.code.ErrorCode;
+import com.ssafy.seniornaver.error.exception.BadRequestException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -23,8 +32,11 @@ import java.util.List;
 @RequestMapping("/auth")
 public class MemberController {
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
+    private final JwtProvider jwtProvider;
 
     @PostMapping("/signup")
+    @Operation(summary = "회원가입")
     public ResponseEntity<String> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
@@ -35,8 +47,23 @@ public class MemberController {
         return ResponseEntity.ok(memberService.signUp(signUpRequestDto));
     }
 
+    @PostMapping("/details")
+    @Operation(summary = "지역, 닉네임, 키워드 추가")
+    private ResponseEntity<String> addDetails(@Valid @RequestBody keywordRequestDto keywordRequestDto,
+                                              BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            List<ObjectError> allErrors = bindingResult.getAllErrors();
+            String errorMessage = allErrors.get(0).getDefaultMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+        }
+
+        return ResponseEntity.ok(memberService.addDetails(keywordRequestDto));
+    }
+
     // 일반 유저 로그인
     @PostMapping("/login")
+    @Operation(summary = "일반 로그인")
     public ResponseEntity<LogInResponseDto> logIn(@RequestBody LogInRequestDto logInRequestDto){
         return ResponseEntity.ok(memberService.logIn(logInRequestDto));
     }
@@ -47,17 +74,20 @@ public class MemberController {
      ** 프론트에서도 store에 저장된 token 정보를 삭제
      */
     @PostMapping("/logout")
+    @Operation(summary = "로그아웃")
     public String logOut(@RequestBody LogOutRequestDto logOutRequestDto) {
         memberService.logOut(logOutRequestDto);
         return "success logout";
     }
     // 유저 아이디 중복체크
-    @PostMapping("/valid/userId")
-    public ResponseEntity<Boolean> validUserId(@RequestParam String userId) {
-        return ResponseEntity.ok(memberService.validUserId(userId));
+    @PostMapping("/valid/memberId")
+    @Operation(summary = "아이디 중복체크")
+    public ResponseEntity<Boolean> validUserId(@RequestParam String memberId) {
+        return ResponseEntity.ok(memberService.validMemberId(memberId));
     }
     // 유저 닉네임 중복체크
     @PostMapping("/valid/nickname")
+    @Operation(summary = "닉네임 중복체크")
     public ResponseEntity<Boolean> validNickname(@RequestParam String nickname) {
         return ResponseEntity.ok(memberService.validNickname(nickname));
     }
