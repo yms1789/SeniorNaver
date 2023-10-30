@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+    tools {
+        gradle 'gradle'
+    }
+    stages {
+        stage('Git Clone') {
+            steps {
+                dir('/var/jenkins_home/workspace/Gokk2_Senior'){
+                    sh '''
+                        echo delete existing project file 
+                    '''
+                    deleteDir()
+                }
+                checkout scmGit(branches: [[name: '*/BE']], 
+                extensions: [submodule(recursiveSubmodules: true, reference: '', trackingSubmodules: true)],
+                userRemoteConfigs: [
+                    [credentialsId: 'submodule', url: 'https://lab.ssafy.com/kwmw0427/yml.git'],
+                    [credentialsId: 'jenkins', url: 'https://lab.ssafy.com/s09-final/S09P31D105.git']])
+                }
+        }
+        stage('BE-Build') {
+            steps {
+                dir("./BE/seniorNaver") {
+                    sh "chmod +x ./gradlew"
+                    sh "./gradlew clean build"
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                dir("./BE/seniorNaver") {
+                    sh "docker-compose up -d --build"
+                }
+            }
+        }
+        stage('Clean Up') {
+            steps {
+                sh "docker image prune -f"
+            }
+        }
+    }
+}
