@@ -7,5 +7,5 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - /var/log/nginx:/var/log/nginx
-      - /etc/letsencrypt:/etc/letsencrypt
+      - /etc/letsencrypt/live/k9d105.p.ssafy.io/fullchain.pem:/etc/ssl/cert.pem
+      - /etc/letsencrypt/live/k9d105.p.ssafy.io/privkey.pem:/etc/ssl/key.pem
