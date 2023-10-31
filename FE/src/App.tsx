@@ -6,6 +6,7 @@ import Places from "./pages/Places";
 import Login from "./pages/Login";
 import SignIn from "./pages/SignIn";
 import Join from "./pages/Join";
+import Jobs from "./pages/Jobs";
 
 function App() {
   // let navigate = useNavigate();
@@ -19,6 +20,7 @@ function App() {
       <Route path="/signin" element={<SignIn />} />
       <Route path="/join" element={<Join />} />
       <Route path="/places" element={<Places />} />
+      <Route path="/jobs" element={<Jobs />} />
     </Routes>
   );
 }
