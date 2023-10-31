@@ -38,7 +38,7 @@ function Places() {
             minZoom={8}
             maxZoom={21}
           >
-            {/* {coordinates.length &&
+            {coordinates.length &&
               coordinates.map((coordinate, idx) => {
                 const lat = parseFloat(
                   coordinate.mapy.slice(0, 2) +
@@ -51,7 +51,7 @@ function Places() {
                     coordinate.mapx.slice(3, coordinate.mapx.length),
                 );
                 return <Marker key={`좌표${idx}`} position={new navermaps.LatLng(lat, lng)} />;
-              })} */}
+              })}
             <Marker
               position={new navermaps.LatLng(location.coordinates!.lat, location.coordinates!.lng)}
             />
