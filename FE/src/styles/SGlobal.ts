@@ -27,8 +27,10 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 1rem;
   }
   button {
+    background-color: transparent;
     padding: 0;
     &:focus{
+      border-color: none;
       outline: none;
     }
   }
