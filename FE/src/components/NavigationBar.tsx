@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -34,7 +35,12 @@ const BUTTON_TEXT = ["홈", "장소", "MZ사전", "내정보", "챗봇"];
 
 function NavigationBar() {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  if (location.pathname.includes("places")) {
+    BUTTON_TEXT.splice(3, 1, "일자리");
+  } else {
+    BUTTON_TEXT.splice(3, 1, "내 정보");
+  }
   const handleNavigate = useCallback((text: string) => {
     switch (text) {
       case "홈":
@@ -42,6 +48,9 @@ function NavigationBar() {
         break;
       case "장소":
         navigate("/places");
+        break;
+      case "일자리":
+        navigate("/jobs");
         break;
       default:
         break;
