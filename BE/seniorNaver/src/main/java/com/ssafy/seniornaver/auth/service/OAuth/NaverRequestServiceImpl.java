@@ -58,6 +58,7 @@ public class NaverRequestServiceImpl implements RequestService {
         OAuthSignInResponse oAuthSignInResponse = OAuthSignInResponse.builder()
                 .authProvider(AuthProvider.NAVER)
                 .memberId(naverMemberInfo.getResponse().getId())
+                .name(naverMemberInfo.getResponse().getName())
                 .email(naverMemberInfo.getResponse().getEmail())
                 .mobile(naverMemberInfo.getResponse().getMobile())
                 .accessToken(accessTokenDto.getToken())

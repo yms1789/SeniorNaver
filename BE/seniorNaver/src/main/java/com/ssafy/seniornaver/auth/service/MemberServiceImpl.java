@@ -115,7 +115,7 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public String addDetails(keywordRequestDto keywordRequestDto) {
+	public String addDetails(keywordRequestDto keywordRequestDto, MultipartFile file) {
 		// memberId로 Member 엔티티 조회
 		Member member = memberRepository.findByMemberId(keywordRequestDto.getMemberId())
 				.orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
@@ -127,6 +127,12 @@ public class MemberServiceImpl implements MemberService{
 		for (String keyword : keywordRequestDto.getKeywords()) {
 			Keyword keywordEntity = new Keyword(keyword, member);
 			keywordRepository.save(keywordEntity);
+		}
+
+		// 사진 업로드 로직 추가
+		if (file != null && !file.isEmpty()) {
+			String uploadFiles = s3Uploader.uploadFiles(file, "Profile");
+			member.updateProfileUrl(uploadFiles);
 		}
 
 		// Member 엔티티 저장

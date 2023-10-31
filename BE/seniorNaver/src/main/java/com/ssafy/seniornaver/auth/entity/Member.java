@@ -41,7 +41,7 @@ public class Member{
     @Column
     private String region;
 
-    @Column(nullable = false)
+    @Column
     private String profileUrl;
 
     @Enumerated(EnumType.STRING)
