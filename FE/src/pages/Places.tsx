@@ -4,16 +4,23 @@ import NavigationBar from "../components/NavigationBar";
 import useGeolocation from "../hooks/useGeolocation";
 import { useRecoilState } from "recoil";
 import coordinateState from "../states/coordinates";
+import { styled } from "styled-components";
+import { Suspense } from "react";
 export interface ICoordinate {
   mapx: string;
   mapy: string;
 }
+
+const PlacesWrapper = styled.div`
+  display: flex;
+`;
+
 function Places() {
   const navermaps = useNavermaps();
   const location = useGeolocation();
   const [coordinates, setCoordinates] = useRecoilState<ICoordinate[]>(coordinateState);
   return (
-    <>
+    <PlacesWrapper>
       <MapDiv
         style={{
           position: "absolute",
@@ -24,7 +31,7 @@ function Places() {
           overflow: "hidden",
         }}
       >
-        {location.loaded && (
+        {location.loaded ? (
           <NaverMap
             defaultCenter={
               new navermaps.LatLng(location.coordinates!.lat, location.coordinates!.lng)
@@ -56,11 +63,13 @@ function Places() {
               position={new navermaps.LatLng(location.coordinates!.lat, location.coordinates!.lng)}
             />
           </NaverMap>
+        ) : (
+          <div>로딩 중...</div>
         )}
       </MapDiv>
       <DrawerComponent setCoordinates={setCoordinates} />
       <NavigationBar />
-    </>
+    </PlacesWrapper>
   );
 }
 

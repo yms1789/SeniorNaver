@@ -4,7 +4,10 @@ import { recoilPersist } from "recoil-persist";
 const { persistAtom } = recoilPersist();
 const coordinateState = atom({
   key: "coordinate",
-  default: null,
+  default: {
+    mapx: "",
+    mapy: "",
+  },
   effects_UNSTABLE: [persistAtom],
 });
 
