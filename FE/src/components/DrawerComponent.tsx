@@ -76,6 +76,7 @@ const Drawer = styled.div`
   }
 `;
 const DrawerButton = styled.button`
+  background-color: white;
   position: absolute;
   top: 50%;
   left: 100%;
