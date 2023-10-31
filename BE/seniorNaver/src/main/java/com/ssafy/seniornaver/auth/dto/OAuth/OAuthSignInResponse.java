@@ -28,7 +28,6 @@ public class OAuthSignInResponse {
             ,String name
             ,String email
             ,String mobile
-            ,String profileUrl
             ,String accessToken
             ,String refreshToken
             ,Date refreshTokenExpirationTime

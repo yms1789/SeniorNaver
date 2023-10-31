@@ -19,9 +19,10 @@ public interface MemberService {
 
     void logOut(LogOutRequestDto logOutRequestDto);
 
-    String addDetails(keywordRequestDto keywordRequestDto);
 
     UpdateProfilePictureDto updateProfilePicture(MultipartFile file, String id) throws IOException;
 
     MemberResponseDto getMemberInfo(String memberId);
+
+    String addDetails(keywordRequestDto keywordRequestDto, MultipartFile file);
 }

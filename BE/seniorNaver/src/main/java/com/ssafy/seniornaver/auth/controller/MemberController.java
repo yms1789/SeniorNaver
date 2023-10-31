@@ -48,10 +48,11 @@ public class MemberController {
         return ResponseEntity.ok(memberService.signUp(signUpRequestDto));
     }
 
-    @PostMapping("/details")
+    @PostMapping(value = "/details", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "지역, 닉네임, 키워드 추가")
-    private ResponseEntity<String> addDetails(@Valid @RequestBody keywordRequestDto keywordRequestDto,
-                                              BindingResult bindingResult) {
+    private ResponseEntity<String> addDetails(@Valid @RequestPart(value="keywordRequestDto") keywordRequestDto keywordRequestDto,
+                                                @RequestPart(value = "file", required = false) MultipartFile file,
+                                                BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
@@ -59,7 +60,7 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
         }
 
-        return ResponseEntity.ok(memberService.addDetails(keywordRequestDto));
+        return ResponseEntity.ok(memberService.addDetails(keywordRequestDto,file));
     }
 
     // 일반 유저 로그인
