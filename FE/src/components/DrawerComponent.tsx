@@ -111,7 +111,6 @@ function DrawerComponent({ setCoordinates }: IDrawerComponent) {
         params: {
           query: query,
           display: 20,
-          sort: "comment",
         },
         headers: {
           "X-Naver-Client-Id": process.env.VITE_NAVER_SEARCH_CLIENT_ID,
