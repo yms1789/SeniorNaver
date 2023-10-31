@@ -1,10 +1,8 @@
 package com.ssafy.seniornaver.auth.controller;
 
-import com.ssafy.seniornaver.auth.dto.Request.LogInRequestDto;
-import com.ssafy.seniornaver.auth.dto.Request.keywordRequestDto;
+import com.ssafy.seniornaver.auth.dto.Request.*;
 import com.ssafy.seniornaver.auth.dto.Response.LogInResponseDto;
-import com.ssafy.seniornaver.auth.dto.Request.LogOutRequestDto;
-import com.ssafy.seniornaver.auth.dto.Request.SignUpRequestDto;
+import com.ssafy.seniornaver.auth.dto.Response.MemberResponseDto;
 import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.auth.jwt.JwtProvider;
 import com.ssafy.seniornaver.auth.repository.MemberRepository;
@@ -13,13 +11,16 @@ import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -85,10 +86,42 @@ public class MemberController {
     public ResponseEntity<Boolean> validUserId(@RequestParam String memberId) {
         return ResponseEntity.ok(memberService.validMemberId(memberId));
     }
+
     // 유저 닉네임 중복체크
     @PostMapping("/valid/nickname")
     @Operation(summary = "닉네임 중복체크")
     public ResponseEntity<Boolean> validNickname(@RequestParam String nickname) {
         return ResponseEntity.ok(memberService.validNickname(nickname));
+    }
+
+    // 유저 프로필 변경
+    @PutMapping(value = "/image",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "프로필사진 등록", security = @SecurityRequirement(name = "Bearer"))
+    public ResponseEntity<UpdateProfilePictureDto> updateProfile(@RequestPart(value="file", required = false) MultipartFile file, HttpServletRequest httpServletRequest) throws Exception {
+        Member user = getMember(httpServletRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.updateProfilePicture(file, user.getMemberId()));
+    }
+
+    @GetMapping("/myProfile")
+    @Operation(summary = "유저정보 가져오기", security = @SecurityRequirement(name = "Bearer"))
+    public ResponseEntity<MemberResponseDto> getMemberInfo(HttpServletRequest httpServletRequest){
+        Member user = getMember(httpServletRequest);
+        return ResponseEntity.ok(memberService.getMemberInfo(user.getMemberId()));
+    }
+    private Member getMember(HttpServletRequest httpServletRequest) {
+        String header = httpServletRequest.getHeader("Authorization");
+        String bearer = header.substring(7);
+
+        String memberId;
+        try {
+            memberId = (String) jwtProvider.get(bearer).get("memberId");
+        } catch (ExpiredJwtException e) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID);
+        }
+
+        Member member = memberRepository.findByMemberId(memberId).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID);
+        });
+        return member;
     }
 }

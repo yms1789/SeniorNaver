@@ -98,4 +98,8 @@ public class Member{
         this.region = region;
         this.nickname = nickname;
     }
+
+    public void updateProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
 }

@@ -55,23 +55,19 @@ public class NaverRequestServiceImpl implements RequestService {
         TokenDto refreshTokenDto = jwtProvider.createRefreshToken(
                 naverMemberInfo.getResponse().getId(), AuthProvider.NAVER);
 
-        boolean isChecked = !memberRepository.existsById(naverMemberInfo.getResponse().getId());
-
         OAuthSignInResponse oAuthSignInResponse = OAuthSignInResponse.builder()
                 .authProvider(AuthProvider.NAVER)
                 .memberId(naverMemberInfo.getResponse().getId())
-                .nickname(naverMemberInfo.getResponse().getName())
                 .email(naverMemberInfo.getResponse().getEmail())
                 .mobile(naverMemberInfo.getResponse().getMobile())
                 .accessToken(accessTokenDto.getToken())
                 .refreshToken(refreshTokenDto.getToken())
-                .isChecked(isChecked)
                 .refreshTokenExpirationTime(refreshTokenDto.getTokenExpirationTime())
                 .build();
 
         Member memberEntity;
 
-        if(isChecked){
+        if(!memberRepository.existsByMemberId(naverMemberInfo.getResponse().getId())){
             memberEntity = oAuthSignInResponse.toEntity();
         } else {
             memberEntity = memberRepository.findByMemberId(String.valueOf(naverMemberInfo.getResponse().getId()))

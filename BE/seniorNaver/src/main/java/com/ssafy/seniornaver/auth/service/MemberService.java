@@ -1,10 +1,12 @@
 package com.ssafy.seniornaver.auth.service;
 
-import com.ssafy.seniornaver.auth.dto.Request.LogInRequestDto;
-import com.ssafy.seniornaver.auth.dto.Request.keywordRequestDto;
+import com.ssafy.seniornaver.auth.dto.Request.*;
 import com.ssafy.seniornaver.auth.dto.Response.LogInResponseDto;
-import com.ssafy.seniornaver.auth.dto.Request.LogOutRequestDto;
-import com.ssafy.seniornaver.auth.dto.Request.SignUpRequestDto;
+import com.ssafy.seniornaver.auth.dto.Response.MemberResponseDto;
+import com.ssafy.seniornaver.auth.entity.Member;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface MemberService {
     String signUp(SignUpRequestDto signUpRequestDto);
@@ -18,4 +20,8 @@ public interface MemberService {
     void logOut(LogOutRequestDto logOutRequestDto);
 
     String addDetails(keywordRequestDto keywordRequestDto);
+
+    UpdateProfilePictureDto updateProfilePicture(MultipartFile file, String id) throws IOException;
+
+    MemberResponseDto getMemberInfo(String memberId);
 }
