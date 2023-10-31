@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
         <BrowserRouter>
-          <NavermapsProvider ncpClientId={import.meta.env.VITE_NAVERMAP_CLIENT_ID}>
+          <NavermapsProvider ncpClientId={process.env.VITE_NAVERMAP_CLIENT_ID!}>
             <App />
           </NavermapsProvider>
         </BrowserRouter>
