@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Member{
+public class Member implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -102,4 +103,11 @@ public class Member{
     public void updateProfileUrl(String profileUrl) {
         this.profileUrl = profileUrl;
     }
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+    public void updateRegion(String region){
+        this.region = region;
+    }
+
 }

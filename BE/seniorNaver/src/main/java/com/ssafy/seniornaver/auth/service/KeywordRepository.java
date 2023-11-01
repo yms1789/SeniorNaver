@@ -1,8 +1,11 @@
 package com.ssafy.seniornaver.auth.service;
 
 import com.ssafy.seniornaver.auth.entity.Keyword;
+import com.ssafy.seniornaver.auth.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface KeywordRepository extends JpaRepository<Keyword,String> {
+import java.util.List;
 
+public interface KeywordRepository extends JpaRepository<Keyword,String> {
+    List<Keyword> findByMember(Member member);
 }
