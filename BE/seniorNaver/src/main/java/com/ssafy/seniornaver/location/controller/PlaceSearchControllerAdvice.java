@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @Order(1)
-@RestControllerAdvice(basePackages = "com.ssafy.seniornaver.location.controller")
+@RestControllerAdvice
 public class PlaceSearchControllerAdvice {
 
     @ExceptionHandler(DontSuchException.class)

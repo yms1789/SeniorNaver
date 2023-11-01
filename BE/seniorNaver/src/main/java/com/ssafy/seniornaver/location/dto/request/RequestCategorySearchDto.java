@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class RequestSearchDto {
+public class RequestCategorySearchDto {
     private String location;
-    private String keyword;
+    private String category;
 }

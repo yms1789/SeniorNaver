@@ -4,7 +4,8 @@ import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.DontSuchException;
 import com.ssafy.seniornaver.location.dto.LoadImageData;
 import com.ssafy.seniornaver.location.dto.LoadSearchData;
-import com.ssafy.seniornaver.location.dto.request.RequestSearchDto;
+import com.ssafy.seniornaver.location.dto.request.RequestCategorySearchDto;
+import com.ssafy.seniornaver.location.dto.request.RequestKeywordSearchDto;
 import com.ssafy.seniornaver.location.dto.response.ResponseSearchDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,37 +32,18 @@ public class SearchServiceImpl implements SearchService{
     static String imageUri = "https://openapi.naver.com/v1/search/image";
 
     @Override
-    public ResponseSearchDto keywordSearch(RequestSearchDto requestSearchDto) {
+    public ResponseSearchDto keywordSearch(RequestKeywordSearchDto requestSearchDto) {
         StringBuilder searchForm = new StringBuilder();
 
-        try {
-            if (!requestSearchDto.getLocation().equals("")) {
-                StringTokenizer stringTokenizer = new StringTokenizer(requestSearchDto.getLocation());
-                searchForm.append(stringTokenizer.nextToken()).append(" ")
-                        .append(stringTokenizer.nextToken()).append(" ")
-                        .append(stringTokenizer.nextToken()).append(" ");
-            }
-        } catch (NoSuchElementException e) {
-            throw new DontSuchException(ErrorCode.DONT_SUCH_PLACE);
-        }
-
-        String region = searchForm.toString();
-
-        searchForm.append(requestSearchDto.getKeyword());
-
-        log.info("검색어 : {}", searchForm.toString());
-
-
-        LoadSearchData searchData = getData(keywordUri, searchForm.toString());
+        LoadSearchData searchData = getData(keywordUri, requestSearchDto.getKeyword());
         updateSearchData(searchData);
         List<ResponseSearchDto.Item> responseData = new ArrayList<>();
 
         for (int i = 0; i < searchData.getItems().size(); i++) {
-            searchForm.setLength(0);
-
             LoadSearchData.Item place = searchData.getItems().get(i);
-            searchForm.append(region).append(place.getTitle())
-                    .append(" ").append(place.getCategory()).append(" ");
+            searchForm.append(requestSearchDto.getKeyword()).append(" ")
+                    .append(place.getTitle()).append(" ")
+                    .append(place.getCategory()).append(" ");
 
             log.info("이미지 검색어 : {}", searchForm);
 
@@ -81,7 +63,62 @@ public class SearchServiceImpl implements SearchService{
                             .thumbnail(imageData)
                     .build());
 
+            searchForm.setLength(0);
+        }
+        return ResponseSearchDto.builder()
+                .items(responseData)
+                .build();
+    }
 
+    @Override
+    public ResponseSearchDto categorySearch(RequestCategorySearchDto requestSearchDto) {
+        StringBuilder searchForm = new StringBuilder();
+
+        try {
+            if (!requestSearchDto.getLocation().equals("")) {
+                StringTokenizer stringTokenizer = new StringTokenizer(requestSearchDto.getLocation());
+                searchForm.append(stringTokenizer.nextToken()).append(" ")
+                        .append(stringTokenizer.nextToken()).append(" ")
+                        .append(stringTokenizer.nextToken()).append(" ");
+            }
+        } catch (NoSuchElementException e) {
+            throw new DontSuchException(ErrorCode.DONT_SUCH_PLACE);
+        }
+
+        String region = searchForm.toString();
+
+        searchForm.append(requestSearchDto.getCategory());
+
+        log.info("검색어 : {}", searchForm.toString());
+
+        LoadSearchData searchData = getData(keywordUri, searchForm.toString());
+        updateSearchData(searchData);
+        List<ResponseSearchDto.Item> responseData = new ArrayList<>();
+
+        for (int i = 0; i < searchData.getItems().size(); i++) {
+            searchForm.setLength(0);
+
+            LoadSearchData.Item place = searchData.getItems().get(i);
+            searchForm.append(region).append(place.getTitle()).append(" ")
+                    .append(place.getCategory()).append(" ");
+
+            log.info("이미지 검색어 : {}", searchForm);
+
+            String imageData;
+            try {
+                imageData = imageSearch(imageUri, searchForm.toString()).getItems().get(0).getThumbnail();
+            } catch (IndexOutOfBoundsException e) {
+                imageData = "";
+            }
+
+            responseData.add(ResponseSearchDto.Item.builder()
+                    .shopName(place.getTitle())
+                    .category(place.getCategory())
+                    .shopLocation(place.getRoadAddress())
+                    .mapX(place.getMapx().insert(3,"."))
+                    .mapY(place.getMapy().insert(2,"."))
+                    .thumbnail(imageData)
+                    .build());
         }
 
         return ResponseSearchDto.builder()
@@ -135,7 +172,11 @@ public class SearchServiceImpl implements SearchService{
     private void updateSearchData(LoadSearchData loadSearchData) {
         for (int i = 0; i < loadSearchData.getItems().size(); i++) {
             String categoryValue = loadSearchData.getItems().get(i).getCategory();
-            loadSearchData.getItems().get(i).updateCategory(categoryValue.substring(categoryValue.indexOf('>') + 1));
+            while (categoryValue.contains(">")) {
+                categoryValue = categoryValue.substring(categoryValue.indexOf('>') + 1);
+            }
+
+            loadSearchData.getItems().get(i).updateCategory(categoryValue);
 
             String titleValue = loadSearchData.getItems().get(i).getTitle();
             if (titleValue.contains("<b>") || titleValue.contains("</b>")) {
