@@ -17,7 +17,7 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class JwtProvider {
     private final MemberRepository memberRepository;
-    @Value("${app.auth.token-secret}") private String secret;
+    @Value("${jwt.secret.key}") private String secret;
     private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60L; // 1 hours
     private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 30L; // 30 days
 
