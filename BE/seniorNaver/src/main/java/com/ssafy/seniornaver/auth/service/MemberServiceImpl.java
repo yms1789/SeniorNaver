@@ -1,11 +1,10 @@
 package com.ssafy.seniornaver.auth.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.ssafy.seniornaver.auth.dto.*;
-import com.ssafy.seniornaver.auth.dto.Request.LogInRequestDto;
-import com.ssafy.seniornaver.auth.dto.Request.LogOutRequestDto;
-import com.ssafy.seniornaver.auth.dto.Request.SignUpRequestDto;
-import com.ssafy.seniornaver.auth.dto.Request.keywordRequestDto;
+import com.ssafy.seniornaver.auth.dto.Request.*;
 import com.ssafy.seniornaver.auth.dto.Response.LogInResponseDto;
+import com.ssafy.seniornaver.auth.dto.Response.MemberResponseDto;
 import com.ssafy.seniornaver.auth.entity.Keyword;
 import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.auth.entity.enumType.AuthProvider;
@@ -14,14 +13,18 @@ import com.ssafy.seniornaver.auth.jwt.JwtProvider;
 import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
+import com.ssafy.seniornaver.s3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +38,11 @@ public class MemberServiceImpl implements MemberService{
 	private final KeywordRepository keywordRepository;
 	private final JwtProvider jwtProvider;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	private final S3Uploader s3Uploader;
+
+	private final AmazonS3Client amazonS3Client;
+	@Value("${cloud.aws.s3.bucket}")
+	private String bucket;
 
 	public String signUp(SignUpRequestDto signUpRequestDto) {
 		if (memberRepository.findByMemberId(signUpRequestDto.getMemberId()).isPresent()) {
@@ -50,7 +58,7 @@ public class MemberServiceImpl implements MemberService{
 			.name(signUpRequestDto.getName())
 			.email(signUpRequestDto.getEmail())
 			.password(signUpRequestDto.getPassword())
-			.profileUrl("https://d33nz7652hemr5.cloudfront.net/profile/user-basic-profile.png")
+			.profileUrl("https://d33nz7652hemr5.cloudfront.net/Profile/user-basic-profile.png")
 			.role(Role.USER)
 			.authProvider(AuthProvider.EMPTY)
 			.build();
@@ -107,7 +115,7 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public String addDetails(keywordRequestDto keywordRequestDto) {
+	public String addDetails(keywordRequestDto keywordRequestDto, MultipartFile file) {
 		// memberId로 Member 엔티티 조회
 		Member member = memberRepository.findByMemberId(keywordRequestDto.getMemberId())
 				.orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
@@ -121,10 +129,49 @@ public class MemberServiceImpl implements MemberService{
 			keywordRepository.save(keywordEntity);
 		}
 
+		// 사진 업로드 로직 추가
+		if (file != null && !file.isEmpty()) {
+			String uploadFiles = s3Uploader.uploadFiles(file, "Profile");
+			member.updateProfileUrl(uploadFiles);
+		}
+
 		// Member 엔티티 저장
 		memberRepository.save(member);
 
 		return keywordRequestDto.getMemberId();
+	}
+
+	@Override
+	@Transactional
+	public UpdateProfilePictureDto updateProfilePicture(MultipartFile multipartFile, String userId) throws IOException {
+		Member member = memberRepository.findByMemberId(userId).orElseThrow(
+				() -> new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID)
+		);
+
+		String uploadFiles = s3Uploader.uploadFiles(multipartFile, "Profile");
+
+		member.updateProfileUrl(uploadFiles);
+
+		memberRepository.save(member);
+		/*파일 저장*/
+
+		return new UpdateProfilePictureDto(uploadFiles);
+	}
+
+	@Override
+	public MemberResponseDto getMemberInfo(String memberId) {
+		Member member = memberRepository.findByMemberId(memberId).orElseThrow(
+				() -> new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID)
+		);
+
+		return MemberResponseDto.builder()
+				.memberId(member.getMemberId())
+				.mobile(member.getMobile())
+				.name(member.getName())
+				.nickname(member.getNickname())
+				.email(member.getEmail())
+				.profileUrl(member.getProfileUrl())
+				.build();
 	}
 
 	@Transactional(readOnly = true)
@@ -157,6 +204,5 @@ public class MemberServiceImpl implements MemberService{
 			return false;
 		return !user.isPresent();
 	}
-
 
 }
