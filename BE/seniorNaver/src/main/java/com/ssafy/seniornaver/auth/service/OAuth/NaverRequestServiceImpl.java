@@ -9,9 +9,6 @@ import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.auth.entity.enumType.AuthProvider;
 import com.ssafy.seniornaver.auth.jwt.JwtProvider;
 import com.ssafy.seniornaver.auth.repository.MemberRepository;
-import com.ssafy.seniornaver.error.code.ErrorCode;
-import com.ssafy.seniornaver.error.exception.BadRequestException;
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -20,8 +17,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Service
 @RequiredArgsConstructor

@@ -2,7 +2,6 @@ package com.ssafy.seniornaver.auth.dto.Request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -10,7 +9,7 @@ import java.util.List;
 
 @NoArgsConstructor
 @Getter
-public class keywordRequestDto {
+public class DetailRequestDto {
 
     @NotBlank(message = "회원ID가 누락됬습니다.")
     private String memberId;

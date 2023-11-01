@@ -1,23 +1,23 @@
 package com.ssafy.seniornaver.auth.jwt;
 
 import com.ssafy.seniornaver.auth.dto.TokenDto;
-import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.auth.entity.enumType.AuthProvider;
 import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class JwtProvider {
     private final MemberRepository memberRepository;
-    @Value("${jwt.secret.key}") private String secret;
+    @Value("${app.auth.token-secret}") private String secret;
     private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60L; // 1 hours
     private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 30L; // 30 days
 
@@ -59,11 +59,13 @@ public class JwtProvider {
      * 복호화
      */
     public Claims get(String jwt) throws JwtException {
-        return Jwts
-                .parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(jwt)
-                .getBody();
+        try {
+            return Jwts.parser().setSigningKey(secret).parseClaimsJws(jwt).getBody();
+        } catch (JwtException e) {
+            // 로그 추가
+            log.error("Error parsing jwt: ", e);
+            throw e;
+        }
     }
 
     /**
@@ -75,41 +77,9 @@ public class JwtProvider {
         try {
             return get(jwt).getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
+            log.error("Token expired: ", e);
             return true;
         }
     }
 
-    /**
-     * Refresh token refresh 여부 확인
-     * 만료일 7일 이내 일 경우 refresh token 재발급
-     */
-    public boolean canRefresh(String refreshToken) throws JwtException {
-        Claims claims = get(refreshToken);
-        long expirationTime = claims.getExpiration().getTime();
-        long weekTime = 1000 * 60 * 60 * 24 * 7L;
-
-        return new Date().getTime() > (expirationTime - weekTime);
-    }
-
-    /**
-    * memberId 추출하기
-     */
-    public String extractMemberId(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
-        String token = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-        }
-        return (String)get(token).get("memberId");
-    }
-
-    public Member extractUser(HttpServletRequest httpServletRequest) {
-        String header = httpServletRequest.getHeader("Authorization");
-        String token = header.substring(7);
-        String memberId = (String) get(token).get("memberId");
-
-        Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("유저 ID를 찾을수 없습니다."));
-        return member;
-    }
 }

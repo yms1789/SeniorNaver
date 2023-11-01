@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,22 +26,29 @@ public class S3Uploader {
     @Value("d33nz7652hemr5.cloudfront.net")
     private String cloudFrontUrl;
 
-    public String uploadFiles(MultipartFile multipartFile, String dirName) {
+    public String uploadFiles(MultipartFile multipartFile, String dirName) throws IOException {
         String originalName = multipartFile.getOriginalFilename();
         String fileName = dirName + "/" + UUID.randomUUID() + "_" + originalName; // S3에 저장된 파일 이름
         log.info("upload");
 
+        // 임시 파일 생성
+        Path tempFile = Files.createTempFile("temp", originalName.substring(originalName.lastIndexOf(".")));
+        multipartFile.transferTo(tempFile.toFile());
+        String contentType = Files.probeContentType(tempFile);
+
         ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(multipartFile.getContentType());
+        metadata.setContentType(contentType);
         metadata.setContentLength(multipartFile.getSize());
 
-        try {
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
+        try (InputStream inputStream = new FileInputStream(tempFile.toFile())) {
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, fileName, inputStream, metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead);
             amazonS3Client.putObject(putObjectRequest);
         } catch (IOException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("error: MultipartFile -> InputStream convert fail");
+        } finally {
+            Files.delete(tempFile); // 임시 파일 삭제
         }
 
         log.info("upload URL : {}", fileName);

@@ -29,25 +29,35 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException, BadRequestException {
 
         try {
+            log.info("filter 도착");
             String authorizationHeader = request.getHeader("Authorization");
             String token = null;
             String memberId = null;
             String provider = null;
+            log.info("authorizationHeader" + authorizationHeader);
 
             if (request.getServletPath().startsWith("/auth") || request.getServletPath().startsWith("/oauth/login/oauth2")) {
+                log.info(request.getServletPath());
                 filterChain.doFilter(request, response);
                 return;
             }
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            log.info("auth 지나침");
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer")) {
                 log.info("Bearer check");
                 token = authorizationHeader.substring(7);
 
+                log.info("Checking token expiration");
                 if (jwtProvider.isExpiration(token)) { // 만료되었는지 체크
                     throw new BadRequestException(ErrorCode.TOKEN_EXPIRED);
                 }
+                log.info("Token is valid");
 
                 memberId = (String) jwtProvider.get(token).get("memberId");
+                log.info("Extracted memberId from token: " + memberId);
+
                 provider = (String) jwtProvider.get(token).get("provider");
+
+                log.info("Checking if member exists");
                 if(!memberRepository.existsByMemberId(memberId)){
                     throw new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID);
                 }
@@ -59,6 +69,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
+            log.info("Bearer 지나침");
         } catch (BadRequestException e) {
             log.info("BadRequest");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
