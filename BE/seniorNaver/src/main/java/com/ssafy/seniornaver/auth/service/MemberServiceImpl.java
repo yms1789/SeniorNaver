@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -115,16 +116,16 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public String addDetails(keywordRequestDto keywordRequestDto, MultipartFile file) {
+	public String addDetails(DetailRequestDto DetailRequestDto, MultipartFile file) throws IOException {
 		// memberId로 Member 엔티티 조회
-		Member member = memberRepository.findByMemberId(keywordRequestDto.getMemberId())
+		Member member = memberRepository.findByMemberId(DetailRequestDto.getMemberId())
 				.orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
 
 		// Member 엔티티의 region과 nickname 업데이트
-		member.updateRegionAndNickname(keywordRequestDto.getRegion(), keywordRequestDto.getNickname());
+		member.updateRegionAndNickname(DetailRequestDto.getRegion(), DetailRequestDto.getNickname());
 
 		// Keyword 엔티티의 keywords 저장
-		for (String keyword : keywordRequestDto.getKeywords()) {
+		for (String keyword : DetailRequestDto.getKeywords()) {
 			Keyword keywordEntity = new Keyword(keyword, member);
 			keywordRepository.save(keywordEntity);
 		}
@@ -138,31 +139,20 @@ public class MemberServiceImpl implements MemberService{
 		// Member 엔티티 저장
 		memberRepository.save(member);
 
-		return keywordRequestDto.getMemberId();
+		return DetailRequestDto.getMemberId();
 	}
 
-	@Override
-	@Transactional
-	public UpdateProfilePictureDto updateProfilePicture(MultipartFile multipartFile, String userId) throws IOException {
-		Member member = memberRepository.findByMemberId(userId).orElseThrow(
-				() -> new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID)
-		);
 
-		String uploadFiles = s3Uploader.uploadFiles(multipartFile, "Profile");
-
-		member.updateProfileUrl(uploadFiles);
-
-		memberRepository.save(member);
-		/*파일 저장*/
-
-		return new UpdateProfilePictureDto(uploadFiles);
-	}
 
 	@Override
 	public MemberResponseDto getMemberInfo(String memberId) {
 		Member member = memberRepository.findByMemberId(memberId).orElseThrow(
 				() -> new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID)
 		);
+
+		List<Keyword> keywords = keywordRepository.findByMember(member);
+		List<String> keywordStrings = keywords.stream().map(Keyword::getKeyword).collect(Collectors.toList());
+
 
 		return MemberResponseDto.builder()
 				.memberId(member.getMemberId())
@@ -171,6 +161,8 @@ public class MemberServiceImpl implements MemberService{
 				.nickname(member.getNickname())
 				.email(member.getEmail())
 				.profileUrl(member.getProfileUrl())
+				.region(member.getRegion())
+				.keywords(keywordStrings)
 				.build();
 	}
 

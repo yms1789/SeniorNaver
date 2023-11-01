@@ -2,16 +2,10 @@ package com.ssafy.seniornaver.auth.controller;
 
 import com.ssafy.seniornaver.auth.dto.Request.*;
 import com.ssafy.seniornaver.auth.dto.Response.LogInResponseDto;
-import com.ssafy.seniornaver.auth.dto.Response.MemberResponseDto;
-import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.auth.jwt.JwtProvider;
 import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import com.ssafy.seniornaver.auth.service.MemberService;
-import com.ssafy.seniornaver.error.code.ErrorCode;
-import com.ssafy.seniornaver.error.exception.BadRequestException;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,8 +16,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -49,10 +43,10 @@ public class MemberController {
     }
 
     @PostMapping(value = "/details", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "지역, 닉네임, 키워드 추가")
-    private ResponseEntity<String> addDetails(@Valid @RequestPart(value="keywordRequestDto") keywordRequestDto keywordRequestDto,
+    @Operation(summary = "지역, 닉네임, 키워드, 프로필 사진 추가")
+    private ResponseEntity<String> addDetails(@Valid @RequestPart(value="keywordRequestDto") DetailRequestDto DetailRequestDto,
                                                 @RequestPart(value = "file", required = false) MultipartFile file,
-                                                BindingResult bindingResult) {
+                                                BindingResult bindingResult) throws IOException {
 
         if (bindingResult.hasErrors()) {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
@@ -60,7 +54,7 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
         }
 
-        return ResponseEntity.ok(memberService.addDetails(keywordRequestDto,file));
+        return ResponseEntity.ok(memberService.addDetails(DetailRequestDto,file));
     }
 
     // 일반 유저 로그인
@@ -96,33 +90,7 @@ public class MemberController {
     }
 
     // 유저 프로필 변경
-    @PutMapping(value = "/image",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "프로필사진 등록", security = @SecurityRequirement(name = "Bearer"))
-    public ResponseEntity<UpdateProfilePictureDto> updateProfile(@RequestPart(value="file", required = false) MultipartFile file, HttpServletRequest httpServletRequest) throws Exception {
-        Member user = getMember(httpServletRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.updateProfilePicture(file, user.getMemberId()));
-    }
 
-    @GetMapping("/myProfile")
-    @Operation(summary = "유저정보 가져오기", security = @SecurityRequirement(name = "Bearer"))
-    public ResponseEntity<MemberResponseDto> getMemberInfo(HttpServletRequest httpServletRequest){
-        Member user = getMember(httpServletRequest);
-        return ResponseEntity.ok(memberService.getMemberInfo(user.getMemberId()));
-    }
-    private Member getMember(HttpServletRequest httpServletRequest) {
-        String header = httpServletRequest.getHeader("Authorization");
-        String bearer = header.substring(7);
 
-        String memberId;
-        try {
-            memberId = (String) jwtProvider.get(bearer).get("memberId");
-        } catch (ExpiredJwtException e) {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID);
-        }
 
-        Member member = memberRepository.findByMemberId(memberId).orElseThrow(() -> {
-            throw new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID);
-        });
-        return member;
-    }
 }
