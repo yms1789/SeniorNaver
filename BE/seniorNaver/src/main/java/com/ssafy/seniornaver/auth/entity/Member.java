@@ -41,7 +41,7 @@ public class Member{
     @Column
     private String region;
 
-    @Column(nullable = false)
+    @Column
     private String profileUrl;
 
     @Enumerated(EnumType.STRING)
@@ -97,5 +97,9 @@ public class Member{
     public void updateRegionAndNickname(String region,String nickname){
         this.region = region;
         this.nickname = nickname;
+    }
+
+    public void updateProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
     }
 }

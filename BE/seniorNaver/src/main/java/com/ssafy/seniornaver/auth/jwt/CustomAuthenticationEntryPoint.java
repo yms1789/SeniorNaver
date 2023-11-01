@@ -1,6 +1,7 @@
 package com.ssafy.seniornaver.auth.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -14,12 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
 
+        log.info(request.getHeader("Authorization"));
         String exception = (String) request.getAttribute("Authorization");
+        log.info(exception);
         String errorCode;
 
         if (exception.equals("토큰이 만료되었습니다.")) {
