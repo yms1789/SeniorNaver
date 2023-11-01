@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
 const NavigationButtonWrapper = styled.div`
-  position: absolute;
+  position: fixed;
   top: 50%;
-  right: 0;
+  right: 0px;
   display: flex;
   flex-direction: column;
   @media screen and (max-width: 500px) {

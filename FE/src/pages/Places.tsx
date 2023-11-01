@@ -4,13 +4,37 @@ import NavigationBar from "../components/NavigationBar";
 import useGeolocation from "../hooks/useGeolocation";
 import { useRecoilState } from "recoil";
 import coordinateState from "../states/coordinates";
+import { styled } from "styled-components";
+import { useEffect, useState } from "react";
 export interface ICoordinate {
-  mapx: string;
-  mapy: string;
+  mapX: string;
+  mapY: string;
+}
+export interface IAddress {
+  jibunAddress: string;
+  roadAddress: string;
 }
 function Places() {
   const navermaps = useNavermaps();
   const location = useGeolocation();
+  const [currentAddr, setCurrentAddr] = useState<IAddress>();
+  useEffect(() => {
+    if (location.loaded) {
+      console.log(location.coordinates);
+      naver.maps.Service.reverseGeocode(
+        {
+          coords: new naver.maps.LatLng(location.coordinates!.lat, location.coordinates!.lng),
+        },
+        (status, response) => {
+          if (status !== naver.maps.Service.Status.OK) {
+            return alert("Something wrong!");
+          }
+
+          setCurrentAddr(response.v2.address); // 검색 결과의 컨테이너
+        },
+      );
+    }
+  }, [location.loaded]);
   const [coordinates, setCoordinates] = useRecoilState<ICoordinate[]>(coordinateState);
   return (
     <>
@@ -40,17 +64,14 @@ function Places() {
           >
             {coordinates.length &&
               coordinates.map((coordinate, idx) => {
-                const lat = parseFloat(
-                  coordinate.mapy.slice(0, 2) +
-                    "." +
-                    coordinate.mapy.slice(2, coordinate.mapy.length),
+                const lat = coordinate.mapY;
+                const lng = coordinate.mapX;
+                return (
+                  <Marker
+                    key={`좌표${idx}`}
+                    position={new navermaps.LatLng(parseFloat(lat), parseFloat(lng))}
+                  />
                 );
-                const lng = parseFloat(
-                  coordinate.mapx.slice(0, 3) +
-                    "." +
-                    coordinate.mapx.slice(3, coordinate.mapx.length),
-                );
-                return <Marker key={`좌표${idx}`} position={new navermaps.LatLng(lat, lng)} />;
               })}
             <Marker
               position={new navermaps.LatLng(location.coordinates!.lat, location.coordinates!.lng)}
@@ -58,7 +79,7 @@ function Places() {
           </NaverMap>
         )}
       </MapDiv>
-      <DrawerComponent setCoordinates={setCoordinates} />
+      <DrawerComponent setCoordinates={setCoordinates} currentAddr={currentAddr} />
       <NavigationBar />
     </>
   );
