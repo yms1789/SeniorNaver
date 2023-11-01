@@ -84,7 +84,10 @@ public enum ErrorCode {
     FAIL_DELETE_FILE(HttpStatus.BAD_REQUEST, "S3-002", "S3에 업로드 된 파일을 지울 때 오류가 발생하였습니다."),
 
     //포인트 관련
-    INSUFFICIENT_POINT(HttpStatus.BAD_REQUEST, "P-001", "포인트가 부족합니다.")
+    INSUFFICIENT_POINT(HttpStatus.BAD_REQUEST, "P-001", "포인트가 부족합니다."),
+
+    // 검색
+    DONT_SUCH_PLACE(HttpStatus.BAD_REQUEST, "L-001", "데이터가 부족합니다. 요청 값을 확인해주세요")
     ;
 
     private HttpStatus httpStatus;

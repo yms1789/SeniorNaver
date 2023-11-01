@@ -1,5 +1,7 @@
 package com.ssafy.seniornaver.location.service;
 
+import com.ssafy.seniornaver.error.code.ErrorCode;
+import com.ssafy.seniornaver.error.exception.DontSuchException;
 import com.ssafy.seniornaver.location.dto.LoadImageData;
 import com.ssafy.seniornaver.location.dto.LoadSearchData;
 import com.ssafy.seniornaver.location.dto.request.RequestSearchDto;
@@ -13,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 @Slf4j
@@ -31,16 +34,23 @@ public class SearchServiceImpl implements SearchService{
     public ResponseSearchDto keywordSearch(RequestSearchDto requestSearchDto) {
         StringBuilder searchForm = new StringBuilder();
 
-        if (!requestSearchDto.getLocation().equals("")) {
-            StringTokenizer stringTokenizer = new StringTokenizer(requestSearchDto.getLocation());
-            searchForm.append(stringTokenizer.nextToken()).append(" ")
-                    .append(stringTokenizer.nextToken()).append(" ")
-                    .append(stringTokenizer.nextToken());
+        try {
+            if (!requestSearchDto.getLocation().equals("")) {
+                StringTokenizer stringTokenizer = new StringTokenizer(requestSearchDto.getLocation());
+                searchForm.append(stringTokenizer.nextToken()).append(" ")
+                        .append(stringTokenizer.nextToken()).append(" ")
+                        .append(stringTokenizer.nextToken()).append(" ");
+            }
+        } catch (NoSuchElementException e) {
+            throw new DontSuchException(ErrorCode.DONT_SUCH_PLACE);
         }
+
+        String region = searchForm.toString();
 
         searchForm.append(requestSearchDto.getKeyword());
 
         log.info("검색어 : {}", searchForm.toString());
+
 
         LoadSearchData searchData = getData(keywordUri, searchForm.toString());
         updateSearchData(searchData);
@@ -50,7 +60,10 @@ public class SearchServiceImpl implements SearchService{
             searchForm.setLength(0);
 
             LoadSearchData.Item place = searchData.getItems().get(i);
-            searchForm.append(place.getTitle()).append(" ").append(place.getCategory());
+            searchForm.append(region).append(place.getTitle())
+                    .append(" ").append(place.getCategory()).append(" ");
+
+            log.info("이미지 검색어 : {}", searchForm);
 
             String imageData;
             try {
@@ -67,6 +80,8 @@ public class SearchServiceImpl implements SearchService{
                             .mapY(place.getMapy().insert(2,"."))
                             .thumbnail(imageData)
                     .build());
+
+
         }
 
         return ResponseSearchDto.builder()
