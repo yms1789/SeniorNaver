@@ -1,4 +1,4 @@
-package com.ssafy.seniornaver.location.controller;
+package com.ssafy.seniornaver.jobposting.controller;
 
 import com.ssafy.seniornaver.error.exception.DontSuchException;
 import com.ssafy.seniornaver.error.response.ErrorResponse;
@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class PlaceSearchControllerAdvice {
-
+public class JobSearchControllerAdvice {
     @ExceptionHandler(DontSuchException.class)
     public ResponseEntity<ErrorResponse> dontSuchException(DontSuchException e) {
         log.error("dontSuchException : {}", e.getErrorCode().getErrorCode(), e.getErrorCode().getMessage());

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +23,7 @@ public class PlaceSearchController {
 
     @GetMapping("/keyword")
     public ResponseEntity<ResponseSearchDto> keywordSearch(// HttpServletRequest httpServletRequest,
-                                                        RequestKeywordSearchDto requestSearchDto) {
+                                                        @RequestBody RequestKeywordSearchDto requestSearchDto) {
 
         ResponseSearchDto responseSearchDto = searchService.keywordSearch(requestSearchDto);
 
@@ -31,7 +32,7 @@ public class PlaceSearchController {
 
     @GetMapping("/category")
     public ResponseEntity<ResponseSearchDto> categorySearch(// HttpServletRequest httpServletRequest,
-                                                        RequestCategorySearchDto requestSearchDto) {
+                                                        @RequestBody RequestCategorySearchDto requestSearchDto) {
 
         ResponseSearchDto responseSearchDto = searchService.categorySearch(requestSearchDto);
 
