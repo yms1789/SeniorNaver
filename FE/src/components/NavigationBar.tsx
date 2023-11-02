@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
 const NavigationButtonWrapper = styled.div`
-  position: absolute;
+  position: fixed;
   top: 50%;
   right: 0;
   display: flex;
