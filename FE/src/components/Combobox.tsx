@@ -40,7 +40,15 @@ const DropdownItem = styled.li`
     border-radius: 0px 0px 10px 10px;
   }
 `;
-function Combobox({ placeholder, items }: { placeholder: string; items: string[] }) {
+function Combobox({
+  placeholder,
+  items,
+  setWorkplace,
+}: {
+  placeholder: string;
+  items: string[];
+  setWorkplace: React.Dispatch<React.SetStateAction<string>>;
+}) {
   const {
     isOpen,
     highlightedIndex,
@@ -50,6 +58,11 @@ function Combobox({ placeholder, items }: { placeholder: string; items: string[]
     getItemProps,
   } = useCombobox({
     items,
+    onInputValueChange({ inputValue }) {
+      if (inputValue) {
+        setWorkplace(inputValue);
+      }
+    },
   });
 
   return (
