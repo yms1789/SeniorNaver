@@ -6,7 +6,7 @@ import com.ssafy.seniornaver.location.dto.request.RequestCategorySearchDto;
 import com.ssafy.seniornaver.location.dto.request.RequestKeywordSearchDto;
 import com.ssafy.seniornaver.location.dto.response.ResponseSearchDto;
 
-public interface SearchService {
+public interface PlaceSearchService {
     ResponseSearchDto keywordSearch(RequestKeywordSearchDto requestSearchDto);
     ResponseSearchDto categorySearch(RequestCategorySearchDto requestSearchDto);
     LoadImageData imageSearch(String baseUrl, String keyword);

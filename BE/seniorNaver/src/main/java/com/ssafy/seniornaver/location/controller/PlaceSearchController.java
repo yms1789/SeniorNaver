@@ -1,10 +1,9 @@
 package com.ssafy.seniornaver.location.controller;
 
-import com.ssafy.seniornaver.error.exception.DontSuchException;
 import com.ssafy.seniornaver.location.dto.request.RequestCategorySearchDto;
 import com.ssafy.seniornaver.location.dto.request.RequestKeywordSearchDto;
 import com.ssafy.seniornaver.location.dto.response.ResponseSearchDto;
-import com.ssafy.seniornaver.location.service.SearchService;
+import com.ssafy.seniornaver.location.service.PlaceSearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/search/v1")
 public class PlaceSearchController {
 
-    private final SearchService searchService;
+    private final PlaceSearchService searchService;
 
     @GetMapping("/keyword")
     public ResponseEntity<ResponseSearchDto> keywordSearch(// HttpServletRequest httpServletRequest,
