@@ -14,13 +14,12 @@ export type UsersPage = {
 
 const fetchCategory = async (category: string = "맛집", location = "경북 구미시 진평동") => {
   try {
-    const response = await axios.get(`/api/search/v1/data`, {
+    const response = await axios.get(`/api/search/v1/category`, {
       params: {
-        keyword: category,
         location: location,
+        category,
       },
     });
-    console.log("지역 카테고리", response.data.items);
 
     const data: IPlace[] = response.data.items;
     return data;
@@ -39,12 +38,11 @@ const fetchSearch = async (query: string) => {
     return;
   }
   try {
-    const response = await axios.get(`/api/search/v1/data`, {
+    const response = await axios.get(`/api/search/v1/keyword`, {
       params: {
         keyword: query,
       },
     });
-    console.log("지역 검색", response.data.items);
 
     const data: IPlace[] = response.data.items;
     return data;
@@ -76,7 +74,6 @@ export const useSearchQuery = (search: string) => {
     suspense: false,
     refetchOnWindowFocus: false,
     enabled: false,
-    retry: 3,
   });
 
   return query;
