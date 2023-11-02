@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { SetterOrUpdater } from "recoil";
 import { styled } from "styled-components";
-import useQueryDebounce from "../hooks/useDebounceQuery";
 import { useCategoryQuery, useSearchQuery } from "../hooks/usePlaceQuery";
 import { IAddress, ICoordinate } from "../pages/Places";
 import { IconContext } from "react-icons";
@@ -19,6 +18,7 @@ export type IPlace = {
 interface IDrawerComponent {
   setCoordinates?: SetterOrUpdater<ICoordinate[]>;
   currentAddr?: IAddress;
+  setIsWork: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SearchWrapper = styled.div`
@@ -166,26 +166,21 @@ const PlaceWrapper = styled.div`
   word-break: break-all;
 `;
 
-function DrawerComponent({ setCoordinates, currentAddr }: IDrawerComponent) {
+function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComponent) {
   const [showDrawer, setShowDrawer] = useState(true);
   const [category, setCategory] = useState("맛집");
   const [inputSearch, setInputSearch] = useState("");
-  const debounceInputSearch = useQueryDebounce(inputSearch);
   const [isSearch, setIsSearch] = useState(false);
   const searchRef = useRef(null);
   const handleDrawer = () => {
     setShowDrawer(!showDrawer);
   };
-  const { data: categoryData, isFetched: isSCategoryFetched } = useCategoryQuery(
+  const { data: categoryData, isFetched: isCategoryFetched } = useCategoryQuery(
     category,
     currentAddr?.jibunAddress,
   );
 
-  const {
-    data: searchData,
-    isFetched: isSearchFetched,
-    refetch,
-  } = useSearchQuery(debounceInputSearch);
+  const { data: searchData, isFetched: isSearchFetched, refetch } = useSearchQuery(inputSearch);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputSearch(e.target.value);
@@ -208,17 +203,19 @@ function DrawerComponent({ setCoordinates, currentAddr }: IDrawerComponent) {
             return { mapX: ele.mapX, mapY: ele.mapY };
           }),
         ]);
+        setIsWork(true);
       }
     } else {
-      if (isSCategoryFetched && categoryData) {
+      if (isCategoryFetched && categoryData) {
         setCoordinates!([
           ...categoryData.map((ele: IPlace) => {
             return { mapX: ele.mapX, mapY: ele.mapY };
           }),
         ]);
+        setIsWork(true);
       }
     }
-  }, []);
+  }, [isSearch, categoryData, searchData]);
 
   return (
     <DrawerWrapper $isShow={showDrawer}>
@@ -286,7 +283,7 @@ function DrawerComponent({ setCoordinates, currentAddr }: IDrawerComponent) {
                     </PlaceWrapper>
                   );
                 })
-              : isSCategoryFetched &&
+              : isCategoryFetched &&
                 categoryData &&
                 categoryData.map((place: IPlace) => {
                   return (
