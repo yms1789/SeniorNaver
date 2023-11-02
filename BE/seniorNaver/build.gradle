@@ -27,7 +27,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	// jjwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
@@ -37,6 +37,11 @@ dependencies {
 
 	//swagger
 	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+
+	//ffmpeg
+	implementation("net.bramp.ffmpeg:ffmpeg:0.7.0")
+	testImplementation 'org.springframework:spring-test:5.3.10'
+	implementation 'commons-fileupload:commons-fileupload:1.4' // 버전은 실제 사용하려는 버전으로 변경하세요
 
 
 	compileOnly 'org.projectlombok:lombok'
@@ -55,10 +60,10 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-task copyPrivate(type: Copy) {
-	copy {
-		from './yml'
-		include "*.yml"
-		into 'src/main/resources'
-	}
-}
+//task copyPrivate(type: Copy) {
+//	copy {
+//		from './yml'
+//		include "*.yml"
+//		into 'src/main/resources'
+//	}
+//}
