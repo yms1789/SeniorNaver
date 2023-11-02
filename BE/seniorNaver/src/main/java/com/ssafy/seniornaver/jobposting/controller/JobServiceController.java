@@ -1,5 +1,6 @@
 package com.ssafy.seniornaver.jobposting.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ssafy.seniornaver.jobposting.dto.request.JobRequestDto;
 import com.ssafy.seniornaver.jobposting.dto.response.JobListResponseDto;
 import com.ssafy.seniornaver.jobposting.service.JobService;
@@ -17,7 +18,7 @@ public class JobServiceController {
     private final JobService jobService;
 
     @GetMapping("/search")
-    public ResponseEntity<JobListResponseDto> jobSearch(JobRequestDto jobRequestDto) {
+    public ResponseEntity<JobListResponseDto> jobSearch(JobRequestDto jobRequestDto) throws JsonProcessingException {
 
         JobListResponseDto jobListResponseDto = jobService.getList(jobRequestDto);
 
