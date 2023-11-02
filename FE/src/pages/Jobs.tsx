@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import HeadBar from "../components/HeadBar";
+import { Suspense, useCallback, useState } from "react";
+import { IconContext } from "react-icons";
+import { BiSearch } from "react-icons/bi";
 import styled from "styled-components";
 import Combobox from "../components/Combobox";
-import { BiSearch } from "react-icons/bi";
-import { IconContext } from "react-icons";
+import HeadBar from "../components/HeadBar";
 import NavigationBar from "../components/NavigationBar";
+import { useJobsQuery } from "../hooks/useJobsQuery";
 import { placeholderImage } from "../utils/utils";
 const JobInput = styled.input`
   border-radius: 10px;
@@ -25,7 +26,7 @@ const SearchButton = styled.button`
   border-radius: 10px;
   background: linear-gradient(180deg, #ff2e2e, #f19c4d);
   width: 48px;
-  padding-top: 1px;
+  padding-top: 2px;
   height: 48px;
 `;
 
@@ -87,6 +88,7 @@ const JobImage = styled.img`
 const JobTitle = styled.div`
   text-align: start;
   font-family: NanumSquareNeoExtraBold;
+  white-space: nowrap;
 `;
 const JobDescription = styled.p`
   display: inline;
@@ -122,9 +124,32 @@ const jobs = Array.from({ length: 16 }, (_, idx) => {
   };
 });
 
+interface IJobTest {
+  title: string;
+  place: string;
+  thumbnail: string;
+  workType: string;
+}
+interface IJob {
+  pageNo: number;
+  totalCount: number;
+  items: IJobItem[];
+}
+interface IJobItem {
+  acptKMthd: string;
+  deadline: string;
+  emplymShpNm: string;
+  jobId: string;
+  jobcls: string;
+  jobclsNm: string;
+  recrtTitle: string;
+  workPlaceNm: string;
+}
+
 function Jobs() {
   // const [width, setWidth] = useState(screen.width);
-  const [place, setPlace] = useState("");
+  const [workplace, setWorkplace] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   // const handleResize = () => {
   //   setWidth(window.innerWidth);
   // };
@@ -135,14 +160,26 @@ function Jobs() {
   //     window.removeEventListener("resize", handleResize);
   //   };
   // }, []);
+  const { data, refetch } = useJobsQuery(workplace, searchInput);
+  const handleSearch = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      refetch();
+    }
+  }, []);
+
   return (
     <>
       <HeadBar />
       <FrameParentRoot>
         <JobCategoryWrapper>
-          <Combobox items={places} placeholder="근무지" />
+          <Combobox items={places} placeholder="근무지" setWorkplace={setWorkplace} />
           <FrameGroup>
-            <JobInput placeholder="검색어를 입력하세요" />
+            <JobInput
+              placeholder="검색어를 입력하세요"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchInput(e.target.value)}
+              onKeyDown={handleSearch}
+              value={searchInput}
+            />
             <RectangleParent>
               <SearchButton>
                 <IconContext.Provider value={{ color: "white" }}>
@@ -153,16 +190,18 @@ function Jobs() {
           </FrameGroup>
         </JobCategoryWrapper>
         <JobsWrapper>
-          {jobs.map(job => {
-            return (
-              <JobWrapper key={job.title}>
-                <JobImage src={job.thumbnail} />
-                <JobTitle>{job.title}</JobTitle>
-                <JobDescription>{job.place}</JobDescription>
-                <JobDescription>{job.workType}</JobDescription>
-              </JobWrapper>
-            );
-          })}
+          <Suspense fallback={<p>로딩중...</p>}>
+            {data?.items.map((item: IJobItem) => {
+              return (
+                <JobWrapper key={item.jobId}>
+                  <JobTitle>{item.recrtTitle}</JobTitle>
+                  <JobDescription>{`위치: ${item.workPlaceNm},`}</JobDescription>
+
+                  <JobDescription>{`채용공고: ${item.emplymShpNm}`}</JobDescription>
+                </JobWrapper>
+              );
+            })}
+          </Suspense>
         </JobsWrapper>
       </FrameParentRoot>
       <NavigationBar />
