@@ -1,9 +1,13 @@
 
 import { styled } from "styled-components";
 import snlogo from "./../assets/images/snlogo.png";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router";
+import { useRecoilState,useSetRecoilState } from "recoil";
+import { userState, isLoggedInState, logout } from "./../states/useLogin";
+import { useEffect } from "react";
 
-const NavBarWrapper = styled.div`
+const NavBarWrapper = styled.div<IbackgroundColor>`
   position: fixed;
   display: flex;
   flex-direction: column;
@@ -15,6 +19,7 @@ const NavBarWrapper = styled.div`
   left: calc(50% - 1440px / 2 - 19px);
   top: 0px;
   z-index: 990;
+  background: ${(props) => props.backgroundColor};
 `;
 
 const NavBar = styled.div`
@@ -30,15 +35,22 @@ const NavBar = styled.div`
 
 const NavLogo = styled.img`
   display: flex;
-
   width: 50px;
   height: 50px;
   cursor: pointer;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
   user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
 `;
 
 const NavLogoText = styled.div`
-  font-family: "NanumSquare Neo";
+  font-family: "NanumSquareNeoHeavy";
   font-style: normal;
   font-weight: 900;
   font-size: 34px;
@@ -84,7 +96,9 @@ const NavLoginButton = styled.div`
 const NavLoginButtonInnerText = styled.div`
   width: 57px;
   height: 22px;
-  font-family: "NanumSquare Neo";
+  text-align: center;
+
+  font-family: "NanumSquareNeoBold";
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
@@ -100,17 +114,16 @@ const NavLoginButtonInnerText = styled.div`
   }
 `;
 
-const NavSigninButton = styled.div`
+const NavButton = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 12px 20px;
-  gap: 10px;
-
+  padding: 12px 20px 12px 20px;
+  margin-left: 10px;
   position: relative;
-  width: 116px;
+  width: auto;
   height: 46px;
 
   border: 2px solid #202020;
@@ -131,7 +144,8 @@ const NavSigninButton = styled.div`
 const NavSigninButtonInnerText = styled.div`
   width: 76px;
   height: 22px;
-  font-family: "NanumSquare Neo";
+  text-align: center;
+  font-family: "NanumSquareNeoBold";
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
@@ -142,8 +156,8 @@ const NavSigninButtonInnerText = styled.div`
   flex-grow: 0;
   transition: color 0.5s ease;
 
-  ${NavSigninButton}:hover & {
-    color: #ffffff;
+  ${NavButton}:hover & {
+    color: var(--white);
   }
 `;
 
@@ -151,27 +165,108 @@ const NavEmpty = styled.div`
   width: 700px;
 `;
 
+interface IbackgroundColor{
+  backgroundColor?: string;
+}
+
+
 function HeadBar() {
-  return (
-    <NavBarWrapper>
-      <NavBar>
-        <NavLink to="/">
-          <NavLogo src={snlogo} />
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+  const user = useRecoilState(userState);
+  const setUser = useSetRecoilState(userState);
+  const navigate = useNavigate();
+  const userLogoutData = {
+    accessToken: user[0].accessToken,
+    refreshToken: user[0].refreshToken,
+  };
+
+  const handleLogout = () => {
+    try {
+      logout(userLogoutData);
+      setUser({ memberId: "",
+      nickname: "",
+      email: "",
+      mobile: "",
+      accessToken: "",
+      refreshToken: "",
+      refreshTokenExpirationTime: "",});
+      setIsLoggedIn(false);
+      alert("성공적으로 로그아웃 되었습니다.");
+      window.location.reload();
+    } catch (error) {
+      alert("로그아웃 실패.");
+      console.error(error);
+    }
+  };
+
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  });
+
+    const location = useLocation();
+    let backgroundColor;
+    if (location.pathname === '/signup') {
+      backgroundColor = ' var(--gray03);'; 
+    } else if (location.pathname === '/join') {
+      backgroundColor = ' var(--gray03);'; 
+    } else if (location.pathname === '/login') {
+      backgroundColor = ' var(--white);'; 
+    } else if (location.pathname === '/') {
+      backgroundColor = ' var(--white);'; 
+
+    }
+
+  switch (isLoggedIn) {
+    case true:
+    return (
+      <NavBarWrapper backgroundColor={backgroundColor}>
+          <NavBar>
+            <NavLink to="/">
+              <NavLogo src={snlogo} />
+            </NavLink>
+            <NavLogoText>SENIOR NAVER</NavLogoText>
+            <NavEmpty />
+          <NavButton onClick={handleLogout}>
+            <NavSigninButtonInnerText>로그아웃</NavSigninButtonInnerText>
+          </NavButton>
+        <NavLink to="/mypage">
+          <NavButton>
+            <NavSigninButtonInnerText>{user[0].nickname}님</NavSigninButtonInnerText>
+          </NavButton>
         </NavLink>
-        <NavLogoText>SENIOR NAVER</NavLogoText>
-        <NavEmpty />
+        </NavBar>
+        </NavBarWrapper>
+        )
+        case false:
+          return (
+            <NavBarWrapper backgroundColor={backgroundColor}>
+          <NavBar>
+            <NavLink to="/">
+              <NavLogo src={snlogo} />
+            </NavLink>
+            <NavLogoText>SENIOR NAVER</NavLogoText>
+            <NavEmpty />
         <NavLink to="/login">
-          <NavLoginButton>
+          <NavButton>
             <NavLoginButtonInnerText>로그인</NavLoginButtonInnerText>
-          </NavLoginButton>
+          </NavButton>
         </NavLink>
-        <NavLink to="/signin">
-          <NavSigninButton>
+        <NavLink to="/signup">
+          <NavButton>
             <NavSigninButtonInnerText>회원가입</NavSigninButtonInnerText>
-          </NavSigninButton>
+          </NavButton>
         </NavLink>
-      </NavBar>
-    </NavBarWrapper>
-  );
+        </NavBar>
+        </NavBarWrapper>
+          )    
+          default:
+          break;
+  }
 }
 export default HeadBar;
