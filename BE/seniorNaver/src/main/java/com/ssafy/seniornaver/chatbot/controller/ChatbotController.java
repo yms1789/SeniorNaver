@@ -6,7 +6,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -26,7 +29,7 @@ public class ChatbotController {
         // 변환된 텍스트를 챗봇에 전달하고 챗봇의 응답을 받음
         String response = chatbotService.talkToChatbot(text);
 
-        return text;
+        return response;
     }
 
 }

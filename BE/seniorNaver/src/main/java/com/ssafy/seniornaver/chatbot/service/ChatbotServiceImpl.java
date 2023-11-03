@@ -1,23 +1,25 @@
 package com.ssafy.seniornaver.chatbot.service;
 
-import com.amazonaws.util.IOUtils;
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.dialogflow.v2.*;
+import com.ssafy.seniornaver.error.code.ErrorCode;
+import com.ssafy.seniornaver.error.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -30,19 +32,22 @@ public class ChatbotServiceImpl implements ChatbotService{
     @Value("${spring.naver.clientSecret}")
     private String clientSecret;
 
-    @Value("${spring.naver.chatbot.invoke-url}")
-    private String invokeUrl;
-
-    @Value("${spring.naver.chatbot.secret-key}")
-    private String secretKey;
-
     @Value("${ffmpeg.location}")
     private String ffmpegLocation;
 
     @Value("${ffprobe.location}")
     private String ffprobeLocation;
 
-    private final WebClient webClient;
+    @Value("${google.service-account.privateKey.json}")
+    private String privateKeyJson;
+
+    public GoogleCredentials getGoogleCredentials() {
+        try {
+            return GoogleCredentials.fromStream(new ByteArrayInputStream(privateKeyJson.getBytes(StandardCharsets.UTF_8)));
+        } catch (IOException e) {
+            throw new RuntimeException("GoogleCredentials 생성 중 오류 발생", e);
+        }
+    }
 
     @Override
     public String convertSpeechToText(MultipartFile voiceFile) {
@@ -131,33 +136,46 @@ public class ChatbotServiceImpl implements ChatbotService{
 
     @Override
     public String talkToChatbot(String text) {
-        // 챗봇 API 호출을 위한 요청 본문 작성
-        String requestBody = "{ \"event\": \"send\", \"user\": \"user_id\", \"textContent\": { \"inputType\": \"typing\", \"text\": \"" + text + "\" } }";
+        try {
+            log.info("Dialogflow API 요청: {}", text);
 
-        // WebClient 생성
-        WebClient webClient = WebClient.builder()
-                .baseUrl(invokeUrl)
-                .defaultHeader("X-NCP-CHATBOT_SIGNATURE", secretKey)
-                .build();
+            // GoogleCredentials 객체를 생성합니다.
+            GoogleCredentials credentials = getGoogleCredentials();
 
-        // 챗봇 API 호출
-        String response = webClient.post()
-                .uri(invokeUrl) // Invoke URL
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+            // SessionsSettings 객체를 생성하고 GoogleCredentials 객체를 설정합니다.
+            SessionsSettings sessionsSettings = SessionsSettings.newBuilder().setCredentialsProvider(FixedCredentialsProvider.create(credentials)).build();
 
-        // 응답에서 챗봇의 응답 텍스트 추출
-        String chatbotResponse = extractChatbotResponse(response);
+            // GoogleCredentials 객체를 사용하여 SessionsClient를 생성합니다.
+            SessionsClient sessionsClient = SessionsClient.create(sessionsSettings);
 
-        return chatbotResponse;
+            // 세션 ID를 생성합니다. 일반적으로 UUID를 사용합니다.
+            String sessionId = UUID.randomUUID().toString();
+
+            // Dialogflow에서 사용하는 프로젝트 ID를 입력합니다.
+            String projectId = "seniornaver-qysk";
+
+            // 세션 이름을 생성합니다.
+            SessionName session = SessionName.of(projectId, sessionId);
+
+            // 사용자로부터 입력받은 텍스트를 설정합니다.
+            TextInput.Builder textInput = TextInput.newBuilder().setText(text).setLanguageCode("ko-KR");
+
+            // 쿼리 입력을 생성합니다.
+            QueryInput queryInput = QueryInput.newBuilder().setText(textInput).build();
+
+            // Dialogflow API에 쿼리를 전송하고 응답을 받습니다.
+            DetectIntentResponse response = sessionsClient.detectIntent(session, queryInput);
+
+            // 응답에서 fulfillmentText를 추출합니다.
+            String fulfillmentText = response.getQueryResult().getFulfillmentText();
+
+            log.info("Dialogflow API 응답: {}", response);
+
+            return fulfillmentText;
+        } catch (Exception e) {
+            log.error("Dialogflow API 에러 발생", e);
+            throw new BadRequestException(ErrorCode.DIALOGFLOW_API_ERROR);
+        }
     }
 
-    private String extractChatbotResponse(String response) {
-        // 응답에서 챗봇의 응답 텍스트를 추출하는 로직을 작성합니다.
-        // ...
-
-        return "테스트";
-    }
 }

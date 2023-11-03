@@ -41,8 +41,10 @@ dependencies {
 	//ffmpeg
 	implementation("net.bramp.ffmpeg:ffmpeg:0.7.0")
 	testImplementation 'org.springframework:spring-test:5.3.10'
-	implementation 'commons-fileupload:commons-fileupload:1.4' // 버전은 실제 사용하려는 버전으로 변경하세요
+	implementation 'commons-fileupload:commons-fileupload:1.4'
 
+	//googld cloud
+	implementation 'com.google.cloud:google-cloud-dialogflow:4.35.0'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
