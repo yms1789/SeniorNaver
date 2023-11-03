@@ -9,6 +9,11 @@ import "./assets/fonts/Font.css";
 import { BrowserRouter } from "react-router-dom";
 import { GlobalStyle } from "./styles/SGlobal";
 import { NavermapsProvider } from "react-naver-maps";
+import { worker } from "./mocks/worker";
+
+if (process.env.NODE_ENV === "development") {
+  worker.start();
+}
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -16,7 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
         <BrowserRouter>
-          <NavermapsProvider ncpClientId={import.meta.env.VITE_NAVERMAP_CLIENT_ID}>
+          <NavermapsProvider ncpClientId={process.env.VITE_NAVERMAP_CLIENT_ID!}>
             <App />
           </NavermapsProvider>
         </BrowserRouter>

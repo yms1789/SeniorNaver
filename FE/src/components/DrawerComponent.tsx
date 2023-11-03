@@ -107,11 +107,10 @@ function DrawerComponent({ setCoordinates }: IDrawerComponent) {
 
   const fetchPlaces = async (query: string) => {
     try {
-      const response = await axios.get("/api/v1/search/local.json", {
+      const response = await axios.get("/naver/v1/search/local.json", {
         params: {
           query: query,
           display: 20,
-          sort: "comment",
         },
         headers: {
           "X-Naver-Client-Id": process.env.VITE_NAVER_SEARCH_CLIENT_ID,
