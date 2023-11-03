@@ -14,10 +14,6 @@ export interface IAddress {
   roadAddress: string;
 }
 
-const PlacesWrapper = styled.div`
-  display: flex;
-`;
-
 function Places() {
   const navermaps = useNavermaps();
   const location = useGeolocation();
