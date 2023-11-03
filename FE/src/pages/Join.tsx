@@ -2,6 +2,8 @@
 import styled from "styled-components";
 import HeadBar from "../components/HeadBar";
 import JoinProcessBox from "../components/JoinProcessBox";
+import { useState } from "react";
+import SetInfoBox from "../components/SetInfoBox";
 const JoinInWrapper = styled.div`
   width: 100vw;
   height: 100%;
@@ -38,7 +40,7 @@ function Join() {
       <HeadBar />
       <JoinInBox>
         <JoinInInnerBox>
-          <JoinProcessBox />
+         <JoinProcessBox/>
         </JoinInInnerBox>
       </JoinInBox>
     </JoinInWrapper>

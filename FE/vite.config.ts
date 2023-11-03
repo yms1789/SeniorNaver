@@ -6,9 +6,9 @@ export default defineConfig({
   plugins: [react(), EnvironmentPlugin("all")],
   server: {
     proxy: {
-      "/api": {
+      "/naver": {
         target: "https://openapi.naver.com",
-        rewrite: path => path.replace(/^\/api/, ""),
+        rewrite: path => path.replace(/^\/naver/, ""),
         changeOrigin: true,
       },
       "/api": {
