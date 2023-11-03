@@ -5,6 +5,7 @@ import useGeolocation from "../hooks/useGeolocation";
 import { useRecoilState } from "recoil";
 import coordinateState from "../states/coordinates";
 import { useEffect, useRef, useState, Suspense } from "react";
+import { styled } from "styled-components";
 export interface ICoordinate {
   mapX: string;
   mapY: string;
@@ -13,6 +14,9 @@ export interface IAddress {
   jibunAddress: string;
   roadAddress: string;
 }
+const PlacesWrapper = styled.div`
+  display: flex;
+`;
 
 function Places() {
   const navermaps = useNavermaps();
@@ -64,7 +68,7 @@ function Places() {
   }, [isWork]);
 
   return (
-    <>
+    <PlacesWrapper>
       <Suspense fallback={<div>로딩 중...</div>}>
         <MapDiv
           style={{
@@ -112,7 +116,7 @@ function Places() {
         />
         <NavigationBar />
       </Suspense>
-    </>
+    </PlacesWrapper>
   );
 }
 
