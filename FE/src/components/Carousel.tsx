@@ -146,7 +146,7 @@ const MzDictionaryWrapper = styled.div`
   padding: 0.25rem;
   border-radius: 99rem;
   white-space: nowrap;
-  font-size: var(--font-size-xl);
+  font-size: 1vw;
   background-color: var(--white);
 `;
 const MzDictionaryText = styled.div`
@@ -158,7 +158,7 @@ const MzDictionaryText = styled.div`
 const MzWordText = styled.div`
   position: relative;
   white-space: nowrap;
-  font-size: var(--font-size-3xl);
+  font-size: 2vw;
   color: var(--white);
 `;
 const MzWordWrapper = styled.div`
@@ -174,7 +174,7 @@ const MzWordWrapper = styled.div`
 const MzQuestionText = styled.div`
   position: relative;
   white-space: nowrap;
-  font-size: var(--font-size-2xl);
+  font-size: 1vw;
   color: var(--dark02);
 `;
 const PlaceContainerWrapper = styled.li`
@@ -204,7 +204,7 @@ const PlaceText = styled.div`
   justify-content: center;
   text-overflow: ellipsis;
   white-space: wrap;
-  font-size: var(--font-size-2xl-5);
+  font-size: 1vw;
   color: var(--dark02);
   z-index: 20;
 `;
