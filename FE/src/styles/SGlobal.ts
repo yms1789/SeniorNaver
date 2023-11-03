@@ -35,7 +35,7 @@ export const GlobalStyle = createGlobalStyle`
   ul {
     margin: 0;
   }
-
+/* 
   @font-face {
         font-family: 'NanumSquareNeoLight';
         src: local('NanumSquareNeoLight'), local('NanumSquareNeoLight');
@@ -67,7 +67,7 @@ export const GlobalStyle = createGlobalStyle`
         src: local('NanumSquareNeoHeavy'), local('NanumSquareNeoHeavy');
         font-style: normal;
         src: url(${NanumSquareNeoHeavy}) format('truetype');
-  }
+  } */
 
   :root {
 
