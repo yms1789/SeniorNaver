@@ -2,6 +2,9 @@ import { useCombobox } from "downshift";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { styled } from "styled-components";
 const SelectPlace = styled.div`
+  @media screen and (max-width: 400px) {
+    display: none;
+  }
   width: fit-content;
   z-index: 10px;
 `;
