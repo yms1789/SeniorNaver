@@ -26,11 +26,17 @@ public class JobServiceImpl implements JobService {
     private final ObjectMapper objectMapper;
     @Value("${data.job.api-key}") private String apiKey;
 
+    /*
+    * 상세검색 -> JobId로 상세내용 확인
+    * */
     @Override
-    public JobDetailResponseDto getDetailService(String jobId) {
-        JSONObject post = xmlToJson(getDetailData(jobId));
-        System.out.println(post);
-        return null;
+    public JobDetailResponseDto getDetailService(String jobId) throws JsonProcessingException {
+
+        JSONObject post = xmlToJson(getDetailData(jobId)).getJSONObject("items").getJSONObject("item");
+        JobDetailResponseDto jobDetailResponseDto = objectMapper.readValue(post.toString(), JobDetailResponseDto.class);
+        updateJobDetail(jobDetailResponseDto);
+
+        return jobDetailResponseDto;
     }
 
     /*
@@ -144,5 +150,23 @@ public class JobServiceImpl implements JobService {
             totalPage++;
         }
         return totalPage;
+    }
+
+    private void updateJobDetail(JobDetailResponseDto jobDetailResponseDto) {
+        String acpt = jobDetailResponseDto.getAcptMthdCd();
+
+        if (acpt.equals("CM0801")) {
+            acpt = "온라인";
+        } else if (acpt.equals("CM0802")) {
+            acpt = "이메일";
+        } else if (acpt.equals("CM0803")) {
+            acpt = "팩스";
+        } else if (acpt.equals("CM0804")){
+            acpt = "방문";
+        }
+
+        jobDetailResponseDto.updateAcptMthdCd(acpt);
+        jobDetailResponseDto.getFrAcptDd().insert(4, "-").insert(7,"-");
+        jobDetailResponseDto.getToAcptDd().insert(4, "-").insert(7,"-");
     }
 }
