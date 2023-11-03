@@ -3,35 +3,88 @@ import Carousel from "../components/Carousel";
 import CurationCategoryButton from "../components/CurationCategoryButton";
 import RoundedButton from "../components/RoundedButton";
 import News from "../components/News";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const HomeWrapper = styled.div`
-  background-color: var(--white);
   width: 100vw;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
+  padding: 4vh 4vw;
+  gap: 6vw;
   font-size: var(--font-size-base);
-  color: var(--dark02);
-  padding: 0;
   font-family: "NanumSquare Neo ExtraBold";
+  overflow-x: hidden;
+  color: var(--dark02);
 `;
 
+interface caouselData {
+  curationImages: string[];
+  curationTexts: string[];
+  mzWords: string[];
+  places: string[][];
+}
+interface ShowData {
+  pfId: string;
+  pfName: string;
+  startDate: string;
+  endDate: string;
+  theater: string;
+  poster: string;
+  genre: string;
+  pfState: string;
+  openRun: string;
+}
+
 function Home() {
-  const images = [
-    "https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg",
-    "https://png.pngtree.com/thumb_back/fh260/background/20210902/pngtree-into-the-june-sunflower-background-image_788302.jpg",
-    "https://png.pngtree.com/thumb_back/fh260/background/20230803/pngtree-blue-sky-and-sunflowers-image_12987016.jpg",
-    "https://www.urbanbrush.net/web/wp-content/uploads/edd/2022/12/urbanbrush-20221214144619159434.jpg",
-    "https://cdn.crowdpic.net/list-thumb/thumb_l_D623AE308211C3678E61EC0E3FF3C969.jpg",
-    "https://png.pngtree.com/background/20230314/original/pngtree-dramatic-sky-and-clouds-dramatic-sky-and-clouds-summer-ultramarine-outdoor-picture-image_2136784.jpg",
-  ];
+  const [dataCarousel, setDataCarousel] = useState<caouselData>({
+    curationImages: [],
+    curationTexts: [],
+    mzWords: [],
+    places: [[]],
+  });
+  const [dataShows, setDataShows] = useState<ShowData[]>([]);
+  const [category, setCategory] = useState<string>("뉴스");
+  useEffect(() => {
+    fetchCarousel();
+    fetchShows();
+  }, []);
+
+  const fetchCarousel = async () => {
+    try {
+      const response = await axios.get("/carousel");
+      setDataCarousel(response.data);
+      console.log("캐러셀 데이터", dataCarousel);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchShows = async () => {
+    try {
+      const response = await axios.get("/shows");
+      setDataShows(response.data);
+      console.log("공연 데이터", dataShows);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <HomeWrapper>
-      <Carousel images={images} />
-      {/* <CurationCategoryButton /> */}
+      <Carousel {...dataCarousel} />
+      <CurationCategoryButton setCategory={setCategory} />
+      <div>{category}</div>
+      {dataShows.map(show => {
+        return (
+          <div key={show.pfId}>
+            <div>{show.pfName}</div>
+          </div>
+        );
+      })}
       {/* <News /> */}
       {/* <RoundedButton /> */}
     </HomeWrapper>
