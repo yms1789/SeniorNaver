@@ -4,8 +4,11 @@ import Intro from "./pages/Intro";
 import Home from "./pages/Home";
 import Places from "./pages/Places";
 import Login from "./pages/Login";
-import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import Join from "./pages/Join";
+import Wait from "./pages/Wait";
+import CompletedSignUp from "./components/CompletedSignUp";
+import Mypage from "./pages/Mypage";
 import Jobs from "./pages/Jobs";
 
 function App() {
@@ -15,11 +18,13 @@ function App() {
     <Routes>
       <Route path="/" element={<Intro />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Intro />} />
       <Route path="/home" element={<Home />} />
-      <Route path="/signin" element={<SignIn />} />
+      <Route path="/signup" element={<SignUp />} />
       <Route path="/join" element={<Join />} />
       <Route path="/places" element={<Places />} />
+      <Route path="/oauth/login/oauth2/code/naver" element={<Wait />} />
+      <Route path="/completed" element={<CompletedSignUp />} />
+      <Route path="/mypage" element={<Mypage />} />
       <Route path="/jobs" element={<Jobs />} />
     </Routes>
   );

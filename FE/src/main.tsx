@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./queryClient";
 import App from "./App";
 import "./index.css";
+import "./assets/fonts/Font.css";
 import { BrowserRouter } from "react-router-dom";
 import { GlobalStyle } from "./styles/SGlobal";
 import { NavermapsProvider } from "react-naver-maps";

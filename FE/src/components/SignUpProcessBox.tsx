@@ -125,7 +125,7 @@ const NextButtonText = styled.div`
   font-size: 44px;
   color: #ffffff;
 `;
-function SignInProcessBox() {
+function SignUpProcessBox() {
   const [nowCheckAll, setCheckAll] = useState(false);
   const [nowCheckFirst, setCheckFirst] = useState(false);
   const [nowCheckSecond, setCheckSecond] = useState(false);
@@ -199,4 +199,4 @@ function SignInProcessBox() {
     </ProcessBoxWrapper>
   );
 }
-export default SignInProcessBox;
+export default SignUpProcessBox;

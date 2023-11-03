@@ -1,48 +1,81 @@
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { SetterOrUpdater } from "recoil";
 import { styled } from "styled-components";
-import { ICoordinate } from "../pages/Places";
-import useQueryDebounce from "../hooks/useDebounceQuery";
+import { useCategoryQuery, useSearchQuery } from "../hooks/usePlaceQuery";
+import { IAddress, ICoordinate } from "../pages/Places";
+import { IconContext } from "react-icons";
+import { BiSearch } from "react-icons/bi";
 
-interface IPlace {
-  title: string;
-  link?: string;
+export type IPlace = {
   category: string;
-  address: string;
-  mapx: string;
-  mapy: string;
-}
+  thumbnail: string;
+  shopName: string;
+  mapX: string;
+  mapY: string;
+  shopLocation: string;
+};
 interface IDrawerComponent {
-  setCoordinates: SetterOrUpdater<ICoordinate[]>;
+  setCoordinates?: SetterOrUpdater<ICoordinate[]>;
+  currentAddr?: IAddress;
+  setIsWork: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SearchWrapper = styled.div`
-  width: 100%;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 12px;
+  display: flex;
 `;
-const SearchButton = styled.button``;
+const SearchButton = styled.button`
+  background-color: var(--gray02);
+  margin-left: 4px;
+  font-size: 16px;
+  padding: 4px;
+  font-family: NanumSquareNeoReuglar;
+`;
 
-const SearchBar = styled.input.attrs({ type: "text" })``;
+const SearchBar = styled.input.attrs({ type: "text" })`
+  padding: 10px 6px;
+  width: 300px;
+  ::placeholder {
+    font-family: NanumSquareNeoReuglar;
+  }
+  border-radius: 6px;
+`;
 
 const ContentsWrapper = styled.div`
   width: 100%;
-  background-color: pink;
 `;
 const Text = styled.p`
   color: black;
+  padding: 5px 10px;
+  font-family: NanumSquareNeoReuglar;
 `;
 
 const CategoryButtonWrapper = styled.div`
-  width: 100%;
+  width: fit-content;
+  margin: 0 auto;
 `;
-const CategoryButton = styled.input.attrs({ type: "button" })``;
+const CategoryButton = styled.input.attrs({ type: "button" })`
+  background-color: var(--gray02);
+  border: none;
+  padding: 12px;
+  margin-right: 12px;
+  border-radius: 20px;
+  font-size: 16px;
+  margin-top: 10px;
+  font-family: NanumSquareNeoBold;
+  color: white;
+  &:hover {
+    background-color: #f74245;
+  }
+`;
 const PlacesWrapper = styled.div`
-  background-color: blue;
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
@@ -60,10 +93,11 @@ const Drawer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow-y: scroll;
   background-color: #ffffff;
   color: white;
   @media screen and (max-width: 360px) {
-    width: 120px;
+    display: none;
   }
   @media screen and (min-width: 360px) and (max-width: 780px) {
     width: 380px;
@@ -72,7 +106,7 @@ const Drawer = styled.div`
     width: 400px;
   }
   @media screen and (min-width: 1280px) {
-    width: 100%;
+    width: 500px;
   }
 `;
 const DrawerButton = styled.button`
@@ -95,55 +129,95 @@ const DrawerButton = styled.button`
   border-radius: 0px 5px 5px 0px;
 `;
 
-function DrawerComponent({ setCoordinates }: IDrawerComponent) {
+const PlaceText = styled.p`
+  font-family: NanumSquareNeoExtraBold;
+  display: inline;
+  text-align: start;
+  color: black;
+  font-size: 20px;
+  width: fit-content;
+`;
+const PlaceDetail = styled.p`
+  display: inline;
+  text-align: end;
+  font-family: NanumSquareNeoRegular;
+  color: var(--gray02);
+  font-size: 16px;
+  width: fit-content;
+  overflow: hidden;
+`;
+const PlaceImage = styled.img`
+  object-fit: fill;
+  width: 100%;
+  height: 200px;
+  border-radius: 10px;
+`;
+const PlaceWrapper = styled.div`
+  border-top: 2px solid var(--gray03);
+  border-bottom: 2px solid var(--gray03);
+  margin-top: -2px;
+  padding: 10px 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
+`;
+
+function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComponent) {
   const [showDrawer, setShowDrawer] = useState(true);
   const [category, setCategory] = useState("맛집");
   const [inputSearch, setInputSearch] = useState("");
-  const debounceInputSearch = useQueryDebounce(inputSearch);
   const [isSearch, setIsSearch] = useState(false);
   const searchRef = useRef(null);
   const handleDrawer = () => {
     setShowDrawer(!showDrawer);
   };
+  const { data: categoryData, isFetched: isCategoryFetched } = useCategoryQuery(
+    category,
+    currentAddr?.jibunAddress,
+  );
 
-  const fetchPlaces = async (query: string) => {
-    try {
-      const response = await axios.get("/naver/v1/search/local.json", {
-        params: {
-          query: query,
-          display: 20,
-        },
-        headers: {
-          "X-Naver-Client-Id": process.env.VITE_NAVER_SEARCH_CLIENT_ID,
-          "X-Naver-Client-Secret": process.env.VITE_NAVER_SEARCH_CLIENT_SECRET,
-        },
-      });
-      console.log(response.data.items);
-      setCoordinates([
-        ...response.data.items.map((ele: IPlace) => {
-          return { mapx: ele.mapx, mapy: ele.mapy };
-        }),
-      ]);
-      return response.data.items;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.data.errorCode === "SE01") {
-          window.alert("검색어를 입력해주세요");
-        }
-      }
-    }
-  };
-  const { data, isFetched, refetch } = useQuery({
-    queryKey: ["places", category],
-    queryFn: () => fetchPlaces(isSearch ? debounceInputSearch : category),
-    suspense: false,
-    refetchOnWindowFocus: false,
-  });
+  const { data: searchData, isFetched: isSearchFetched, refetch } = useSearchQuery(inputSearch);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputSearch(e.target.value);
-    setIsSearch(true);
+    refetch();
   };
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      setIsSearch(true);
+      refetch();
+    }
+    if (e.key === "Backspace") {
+      setIsSearch(false);
+    }
+  };
+  useEffect(() => {
+    if (isSearch) {
+      if (isSearchFetched && searchData) {
+        setCoordinates!([
+          ...searchData.map((ele: IPlace) => {
+            return { mapX: ele.mapX, mapY: ele.mapY };
+          }),
+        ]);
+        setIsWork(true);
+      }
+    } else {
+      if (isCategoryFetched && categoryData) {
+        setCoordinates!([
+          ...categoryData.map((ele: IPlace) => {
+            return { mapX: ele.mapX, mapY: ele.mapY };
+          }),
+        ]);
+        setIsWork(true);
+      }
+    }
+  }, [isSearch, categoryData, searchData]);
+
   return (
     <DrawerWrapper $isShow={showDrawer}>
       <Drawer>
@@ -154,11 +228,23 @@ function DrawerComponent({ setCoordinates }: IDrawerComponent) {
             ref={searchRef}
             onChange={handleSearch}
             value={inputSearch}
+            onKeyDown={handleKeyDown}
           />
-          <SearchButton onClick={() => refetch()}>검색</SearchButton>
+          <SearchButton
+            onClick={() => {
+              setIsSearch(true);
+              refetch();
+            }}
+          >
+            <IconContext.Provider value={{ color: "white" }}>
+              <BiSearch size={30} />
+            </IconContext.Provider>
+          </SearchButton>
         </SearchWrapper>
         <ContentsWrapper>
-          <Text>이순자 님을 위한 추천 스팟이에요</Text>
+          <Text>
+            <b>이순자</b> 님을 위한 추천 스팟이에요
+          </Text>
           <CategoryButtonWrapper>
             <CategoryButton
               type="button"
@@ -176,10 +262,39 @@ function DrawerComponent({ setCoordinates }: IDrawerComponent) {
                 setCategory("공연");
               }}
             />
-            <CategoryButton type="button" value="휴양지" onClick={() => setCategory("휴양지")} />
+            <CategoryButton
+              type="button"
+              value="휴양지"
+              onClick={() => {
+                setIsSearch(false);
+                setCategory("휴양지");
+              }}
+            />
           </CategoryButtonWrapper>
           <PlacesWrapper data-testid="category">
-            {isFetched && data.map((place: IPlace) => <div key={place.title}>{place.title}</div>)}
+            {isSearch
+              ? isSearchFetched &&
+                searchData &&
+                searchData.map((place: IPlace) => {
+                  return (
+                    <PlaceWrapper key={place.shopName}>
+                      <PlaceImage src={place.thumbnail} />
+                      <PlaceText data-testid="title">{place.shopName}</PlaceText>
+                      <PlaceDetail>{place.shopLocation}</PlaceDetail>
+                    </PlaceWrapper>
+                  );
+                })
+              : isCategoryFetched &&
+                categoryData &&
+                categoryData.map((place: IPlace) => {
+                  return (
+                    <PlaceWrapper key={place.shopName}>
+                      <PlaceImage src={place.thumbnail} />
+                      <PlaceText data-testid="title">{place.shopName}</PlaceText>
+                      <PlaceDetail>{place.shopLocation}</PlaceDetail>
+                    </PlaceWrapper>
+                  );
+                })}
           </PlacesWrapper>
         </ContentsWrapper>
       </Drawer>

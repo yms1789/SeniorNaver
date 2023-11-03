@@ -11,7 +11,7 @@ const LoginWrapper = styled.div`
 `;
 
 const Logo = styled.div`
-  font-family: "NanumSquare Neo Heavy";
+  font-family: "NanumSquareNeoHeavy";
   font-style: normal;
   font-size: 90px;
   font-weight: 1000;

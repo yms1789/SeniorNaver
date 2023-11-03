@@ -1,18 +1,18 @@
 
 import styled from "styled-components";
 import HeadBar from "../components/HeadBar";
-import SignInProcessBox from "../components/SignInProcessBox";
-const SignInWrapper = styled.div`
+import SignUpProcessBox from "../components/SignUpProcessBox";
+const SignUpWrapper = styled.div`
   width: 100vw;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #d9d9d9;
+  background: var(--gray03);
   justify-content: center;
   z-index: 10;
 `;
-const SignInBox = styled.div`
+const SignUpBox = styled.div`
   margin-top: 180px;
   width: 740px;
   height: 895px;
@@ -21,27 +21,27 @@ const SignInBox = styled.div`
   background: linear-gradient(180deg, #46d780 0%, #5cbad8 100%);
   z-index: 10;
 `;
-const SignInInnerBox = styled.div`
+const SignUpInnerBox = styled.div`
   width: 735px;
   height: 895px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
+  background: var(--white);
   border-radius: 20px;
   z-index: 11;
 `;
-function SignIn() {
+function SignUp() {
   return (
-    <SignInWrapper>
+    <SignUpWrapper>
       <HeadBar />
-      <SignInBox>
-        <SignInInnerBox>
-          <SignInProcessBox />
-        </SignInInnerBox>
-      </SignInBox>
-    </SignInWrapper>
+      <SignUpBox>
+        <SignUpInnerBox>
+          <SignUpProcessBox />
+        </SignUpInnerBox>
+      </SignUpBox>
+    </SignUpWrapper>
   );
 }
-export default SignIn;
+export default SignUp;
