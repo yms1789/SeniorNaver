@@ -27,6 +27,7 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 1rem;
   }
   button {
+    background-color: transparent;
     padding: 0;
     &:focus{
       outline: none;
@@ -71,19 +72,6 @@ export const GlobalStyle = createGlobalStyle`
 
   :root {
 
-
-/* font sizes */
---font-size-sm: 0.75rem;
---font-size-base: 1rem;
---font-size-md: 1.25rem;
---font-size-lg: 1.5rem;
---font-size-xl: 1.75rem;
---font-size-2xl: 2rem;
---font-size-2xl-5: 2.5rem;
---font-size-3xl: 3rem;
---font-size-4xl: 4rem;
---font-size-5xl: 5rem;
-
 /* Colors */
 --dark01: #010101;
 --dark02: #202020;
@@ -97,6 +85,7 @@ export const GlobalStyle = createGlobalStyle`
 --gray02: #6c6c6c;
 --gray03: #d9d9d9;
 --aqua: #3FD5DE;
+--aqua50: #98E3E8;
 --emerald: #2deea8;
 --maingradient: linear-gradient(100deg, #3fd5de, #2deea8);
   }
