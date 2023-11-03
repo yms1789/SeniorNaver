@@ -2,6 +2,7 @@ package com.ssafy.seniornaver.auth.entity;
 
 import com.ssafy.seniornaver.auth.entity.enumType.AuthProvider;
 import com.ssafy.seniornaver.auth.entity.enumType.Role;
+import com.ssafy.seniornaver.mz.entity.VocabularyList;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -59,6 +60,9 @@ public class Member implements Serializable {
     @Column
     private Date tokenExpirationTime;
 
+    @Column
+    @OneToOne(mappedBy = "vocaId")
+    private VocabularyList vocabularyList;
 
     @Builder
     public Member(Long id, String memberId, String mobile, String name, String password, String nickname, String email,
