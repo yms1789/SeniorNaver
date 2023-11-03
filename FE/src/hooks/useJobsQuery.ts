@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { IJob } from "../components/JobList";
 
-async function fetchJobs(place: string, input?: string) {
+export async function fetchJobs(place: string, input?: string) {
   try {
-    const response = await axios.get("/test/jobs", {
+    const response = await axios.get<IJob>("/test/jobs", {
       params: {
         workplace: place,
         keyword: input || "",
       },
     });
-
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -18,14 +18,14 @@ async function fetchJobs(place: string, input?: string) {
   }
 }
 
-export const useJobsQuery = (place: string, input?: string) => {
+export const useJobsQuery = (place: string) => {
   const query = useQuery({
     queryKey: ["jobs", place],
-    queryFn: () => fetchJobs(place, input),
+    queryFn: () => fetchJobs(place),
     refetchOnMount: false,
     suspense: true,
     useErrorBoundary: true,
-    // retry: false,
+    refetchOnWindowFocus: false,
   });
 
   return query;

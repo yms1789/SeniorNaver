@@ -1,21 +1,20 @@
-import { Suspense, useCallback, useState } from "react";
+import { Suspense, useCallback, useRef, useState } from "react";
 import { IconContext } from "react-icons";
 import { BiSearch } from "react-icons/bi";
 import styled from "styled-components";
 import Combobox from "../components/Combobox";
 import HeadBar from "../components/HeadBar";
+import JobList from "../components/JobList";
 import NavigationBar from "../components/NavigationBar";
-import { useJobsQuery } from "../hooks/useJobsQuery";
-import { placeholderImage } from "../utils/utils";
+import Loading from "./Loading";
+
 const JobInput = styled.input`
+  @media screen and (max-width: 400px) {
+    width: 100%;
+  }
   border-radius: 10px;
   border: 1px solid #000;
   width: 333px;
-  height: fit-content;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
   font-size: 20px;
   padding: 12px;
 `;
@@ -26,7 +25,7 @@ const SearchButton = styled.button`
   border-radius: 10px;
   background: linear-gradient(180deg, #ff2e2e, #f19c4d);
   width: 48px;
-  padding-top: 2px;
+  padding-top: 1px;
   height: 48px;
 `;
 
@@ -36,64 +35,64 @@ const RectangleParent = styled.div`
   height: 47px;
 `;
 const FrameGroup = styled.div`
+  @media screen and (max-width: 400px) {
+  }
+  @media screen and (min-width: 400px) and (max-width: 780px) {
+  }
+  @media screen and (min-width: 780px) and (max-width: 1280px) {
+  }
   display: flex;
   gap: 10px;
   width: fit-content;
 `;
 const FrameParentRoot = styled.div`
-  /* @media screen and (max-width: 360px) {
-    width: 120px;
-  }
-  @media screen and (min-width: 360px) and (max-width: 780px) {
-    width: 380px;
-  }
-  @media screen and (min-width: 780px) and (max-width: 1280px) {
-    width: 400px;
-  }
-  @media screen and (min-width: 1280px) {
-    max-width: 1104px;
-  } */
   position: relative;
   display: block;
   justify-content: center;
-  min-width: 1340px;
   top: 200px;
 `;
 const JobCategoryWrapper = styled.div`
+  @media screen and (max-width: 400px) {
+    width: 100%;
+    padding: 0px 20px;
+  }
+  @media screen and (min-width: 400px) and (max-width: 780px) {
+    width: 100%;
+    padding: 0px 20px;
+  }
+  @media screen and (min-width: 780px) and (max-width: 1280px) {
+    width: 100%;
+    padding: 0px 40px;
+  }
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin: 0 auto;
-  width: 1300px;
+  max-width: 1300px;
 `;
 const JobsWrapper = styled.div`
+  @media screen and (max-width: 400px) {
+    width: 100%;
+    padding: 0px 20px;
+    grid-template-columns: repeat(1, 1fr);
+  }
+  @media screen and (min-width: 400px) and (max-width: 780px) {
+    width: 100%;
+    padding: 0px 20px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media screen and (min-width: 780px) and (max-width: 1280px) {
+    width: 100%;
+    padding: 0px 40px;
+    grid-template-columns: repeat(3, 1fr);
+  }
   position: relative;
   top: 20px;
-  width: 1300px;
+  max-width: 1300px;
   display: grid;
   margin: 0 auto;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px 20px;
-`;
-const JobWrapper = styled.div`
-  font-family: NanumSquareNeoRegular;
-`;
-const JobImage = styled.img`
-  display: block;
-  width: 300px;
-  height: 200px;
-  border-radius: 10px;
-`;
-
-const JobTitle = styled.div`
-  text-align: start;
-  font-family: NanumSquareNeoExtraBold;
-  white-space: nowrap;
-`;
-const JobDescription = styled.p`
-  display: inline;
-  text-align: start;
-  padding-right: 8px;
 `;
 
 const places = [
@@ -115,58 +114,15 @@ const places = [
   "충북",
 ];
 
-const jobs = Array.from({ length: 16 }, (_, idx) => {
-  return {
-    thumbnail: placeholderImage(Math.floor(Math.random() * 100) + idx),
-    title: `채용 제목${idx + 1}`,
-    place: `근무지${idx + 1}`,
-    workType: `고용 형태${idx + 1}`,
-  };
-});
-
-interface IJobTest {
-  title: string;
-  place: string;
-  thumbnail: string;
-  workType: string;
-}
-interface IJob {
-  pageNo: number;
-  totalCount: number;
-  items: IJobItem[];
-}
-interface IJobItem {
-  acptKMthd: string;
-  deadline: string;
-  emplymShpNm: string;
-  jobId: string;
-  jobcls: string;
-  jobclsNm: string;
-  recrtTitle: string;
-  workPlaceNm: string;
-}
-
 function Jobs() {
-  // const [width, setWidth] = useState(screen.width);
   const [workplace, setWorkplace] = useState("");
-  const [searchInput, setSearchInput] = useState("");
-  // const handleResize = () => {
-  //   setWidth(window.innerWidth);
-  // };
+  const [input, setInput] = useState("");
 
-  // useEffect(() => {
-  //   window.addEventListener("resize", handleResize);
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, []);
-  const { data, refetch } = useJobsQuery(workplace, searchInput);
+  const searchRef = useRef(null);
   const handleSearch = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      refetch();
     }
   }, []);
-
   return (
     <>
       <HeadBar />
@@ -175,10 +131,11 @@ function Jobs() {
           <Combobox items={places} placeholder="근무지" setWorkplace={setWorkplace} />
           <FrameGroup>
             <JobInput
+              ref={searchRef}
               placeholder="검색어를 입력하세요"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchInput(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
               onKeyDown={handleSearch}
-              value={searchInput}
+              value={input}
             />
             <RectangleParent>
               <SearchButton>
@@ -190,17 +147,8 @@ function Jobs() {
           </FrameGroup>
         </JobCategoryWrapper>
         <JobsWrapper>
-          <Suspense fallback={<p>로딩중...</p>}>
-            {data?.items.map((item: IJobItem) => {
-              return (
-                <JobWrapper key={item.jobId}>
-                  <JobTitle>{item.recrtTitle}</JobTitle>
-                  <JobDescription>{`위치: ${item.workPlaceNm},`}</JobDescription>
-
-                  <JobDescription>{`채용공고: ${item.emplymShpNm}`}</JobDescription>
-                </JobWrapper>
-              );
-            })}
+          <Suspense fallback={<Loading />}>
+            <JobList workplace={workplace} />
           </Suspense>
         </JobsWrapper>
       </FrameParentRoot>
