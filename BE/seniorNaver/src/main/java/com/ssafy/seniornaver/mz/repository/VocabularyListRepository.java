@@ -1,7 +1,11 @@
 package com.ssafy.seniornaver.mz.repository;
 
+import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.mz.entity.VocabularyList;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface VocabularyListRepository extends JpaRepository<VocabularyList, Long> {
+    Optional<VocabularyList> findByMemberId(Member memberId);
 }

@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,6 +28,10 @@ public class Directory {
 
     @Column(nullable = false)
     private Integer useYear;
+
+    @OneToMany
+    @JoinColumn
+    private List<ScrapWord> scrapWordList = new LinkedList<>();
 
     @Builder
     public Directory(String word, String mean, String example, Integer useYear) {
