@@ -5,8 +5,11 @@ import com.ssafy.seniornaver.mz.dto.response.DirectoryWordListResponseDto;
 import com.ssafy.seniornaver.mz.entity.Directory;
 import com.ssafy.seniornaver.mz.entity.VocabularyList;
 
+import java.util.List;
+
 public interface DirectoryService {
-    DirectoryWordListResponseDto getWordList(int page, Member member);
+    List<DirectoryWordListResponseDto> getMemberWordList(int page, Member member);
+    List<DirectoryWordListResponseDto> getWordList(int page);
     void scrapSave(VocabularyList vocaId, Directory wordId);
     void wordSave(VocabularyList vocaId, Directory wordId);
     void wordDelete(VocabularyList vocaId, Directory wordId);

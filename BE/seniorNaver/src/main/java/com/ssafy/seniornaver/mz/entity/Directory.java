@@ -35,10 +35,10 @@ public class Directory {
     @Column(nullable = false)
     private LocalDateTime updateAt;
 
-    @OneToMany
+    @OneToMany(mappedBy = "tagId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private List<Tag> tags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "scrapId", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "scrapId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private List<ScrapWord> scrapWordList = new ArrayList<>();
 
     @PrePersist

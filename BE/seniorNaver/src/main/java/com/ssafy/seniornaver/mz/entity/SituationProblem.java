@@ -42,10 +42,10 @@ public class SituationProblem {
     @Column(nullable = false)
     private String makeMember;
 
-    @OneToMany(mappedBy = "vocaId", fetch = FetchType.LAZY)
-    private List<VocabularyList> completeMember = new ArrayList<>();
+    @OneToMany(mappedBy = "vocaId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    private List<VocabularyList> completeVocaList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "vocaId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "vocaId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private List<VocabularyList> saveMember = new ArrayList<>();
 
     @Builder

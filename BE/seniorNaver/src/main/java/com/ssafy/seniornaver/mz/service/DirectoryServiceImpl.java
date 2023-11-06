@@ -31,25 +31,40 @@ public class DirectoryServiceImpl implements DirectoryService{
     private final ScrapWordRepository scrapWordRepository;
 
     @Override
-    public DirectoryWordListResponseDto getWordList(int page, Member member) {
+    public List<DirectoryWordListResponseDto> getMemberWordList(int page, Member member) {
         VocabularyList vocabularyList = vocabularyListRepository.findByVocaId(member.getVocaId()).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
         });
 
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("word").descending());
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("word").ascending());
         List<DirectoryWordListResponseDto> wordList = directoryRepository.findAll(pageable).stream()
                 .map(word -> DirectoryWordListResponseDto.builder()
                         .word(word.getWord())
                         .mean(word.getMean())
                         .example(word.getExample())
                         .tags(word.getTags())
-                        // 관련 문제 풀었는가
                         .complete(vocabularyList.getCompleteProblems().stream().anyMatch(problem ->
-                                problem.getProblemId().equals(word.getWordId())))
+                                problem.getCompleteVocaList().contains(vocabularyList.getVocaId())))
                         .build())
                 .collect(Collectors.toList());
 
-        return null;
+        return wordList;
+    }
+
+    @Override
+    public List<DirectoryWordListResponseDto> getWordList(int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("word").ascending());
+        List<DirectoryWordListResponseDto> wordList = directoryRepository.findAll(pageable).stream()
+                .map(word -> DirectoryWordListResponseDto.builder()
+                        .word(word.getWord())
+                        .mean(word.getMean())
+                        .example(word.getExample())
+                        .tags(word.getTags())
+                        .complete(false)
+                        .build())
+                .collect(Collectors.toList());
+
+        return wordList;
     }
 
     @Transactional

@@ -4,9 +4,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,6 +18,12 @@ public class Tag {
 
     @Column(nullable = false)
     private String tag;
+
+    @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    private List<VocabularyList> vocaList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    private List<Directory> wordList = new ArrayList<>();
 
     @Builder
     public Tag(Long tagId, String tag) {
