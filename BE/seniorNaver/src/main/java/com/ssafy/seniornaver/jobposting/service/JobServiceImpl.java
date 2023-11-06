@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.DontSuchException;
 import com.ssafy.seniornaver.jobposting.dto.request.JobListRequestDto;
@@ -43,24 +44,14 @@ public class JobServiceImpl implements JobService {
     *   근무지역 검색 기능 (기본 검색)
     * */
     @Override
-    public JobListResponseDto getWorkList(JobListRequestDto jobRequestDto) throws JsonProcessingException {
+    public JobListResponseDto getWorkList(JobListRequestDto jobRequestDto) throws JsonProcessingException, InvalidFormatException {
 
-        JSONObject posts = xmlToJson(getListData(jobRequestDto, 1));
-
-        objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-
-        JobListResponseDto jobListResponseDto = objectMapper.readValue(posts.toString(), JobListResponseDto.class);
-        jobListResponseDto.changeTotal(getTotalPage(jobListResponseDto.getTotalCount()));
-
-        return jobListResponseDto;
-    }
-
-    /*
-    *   근무지역 + 고용형태 검색 기능
-    * */
-    @Override
-    public JobListResponseDto getEmployList(JobListRequestDto jobRequestDto) throws JsonProcessingException{
-        JSONObject posts = xmlToJson(getListData(jobRequestDto, 2));
+        JSONObject posts;
+        if (!jobRequestDto.getKeyword().equals("")) {
+            posts = xmlToJson(getListData(jobRequestDto, 2));
+        } else {
+            posts = xmlToJson(getListData(jobRequestDto, 1));
+        }
 
         objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
@@ -91,7 +82,7 @@ public class JobServiceImpl implements JobService {
                     .block();
         }
 
-        // + 고용형태 검색
+        // + 키워드 검색
         if (searchNum == 2) {
             return webClient.mutate()
                     .baseUrl("http://apis.data.go.kr/B552474/SenuriService/getJobList")
@@ -102,7 +93,7 @@ public class JobServiceImpl implements JobService {
                             .queryParam("numOfRows", 16)
                             .queryParam("pageNo", jobRequestDto.getPageNum())
                             .queryParam("workPlcNm", jobRequestDto.getWorkPlcNm())
-                            .queryParam("emplymShp", jobRequestDto.getEmplymShp())
+                            .queryParam("search", jobRequestDto.getKeyword())
                             .build())
                     .retrieve()
                     .bodyToMono(String.class)

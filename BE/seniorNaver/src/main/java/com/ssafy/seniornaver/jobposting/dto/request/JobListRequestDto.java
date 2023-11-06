@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class JobListRequestDto {
     private int pageNum;
-    private String emplymShp;
+    private String keyword;
     private String workPlcNm;
 }
