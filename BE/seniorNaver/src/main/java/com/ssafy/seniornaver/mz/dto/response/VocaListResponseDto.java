@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class VocaListResponseDto {
-    private Member memberId;
+    private Long memberId;
 
     // 화면에 어떤걸 띄워야할지 생각해봅시다.
     @Builder
-    public VocaListResponseDto(Member memberId) {
+    public VocaListResponseDto(Long memberId) {
         this.memberId = memberId;
     }
 }

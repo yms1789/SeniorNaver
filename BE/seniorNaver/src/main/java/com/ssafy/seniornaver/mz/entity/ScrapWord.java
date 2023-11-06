@@ -1,5 +1,6 @@
 package com.ssafy.seniornaver.mz.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,9 +16,15 @@ public class ScrapWord {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private VocabularyList listId;
+    private VocabularyList vocaId;
 
     @ManyToOne
     @JoinColumn(nullable = false)
     private Directory wordId;
+
+    @Builder
+    public ScrapWord(VocabularyList vocaId, Directory wordId) {
+        this.vocaId = vocaId;
+        this.wordId = wordId;
+    }
 }

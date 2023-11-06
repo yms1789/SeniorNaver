@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -29,11 +29,22 @@ public class Directory {
     @Column(nullable = false)
     private Integer useYear;
 
+    @Column(nullable = false)
+    private LocalDateTime createAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updateAt;
+
     @OneToMany
     private List<Tag> tags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "listId", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "scrapId", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<ScrapWord> scrapWordList = new ArrayList<>();
+
+    @PrePersist
+    private void prePersist() {
+        this.createAt = LocalDateTime.now().withNano(0);
+    }
 
     @Builder
     public Directory(String word, String mean, String example, Integer useYear) {
@@ -41,5 +52,12 @@ public class Directory {
         this.mean = mean;
         this.example = example;
         this.useYear = useYear;
+    }
+
+    public void updateDirectory(String mean, String example, Integer useYear) {
+        this.mean = mean;
+        this.example = example;
+        this.useYear = useYear;
+        this.updateAt = LocalDateTime.now().withNano(0);
     }
 }

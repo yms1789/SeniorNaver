@@ -1,12 +1,12 @@
 package com.ssafy.seniornaver.mz.entity;
 
-import com.ssafy.seniornaver.auth.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -14,21 +14,26 @@ import java.util.*;
 public class VocabularyList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long listId;
+    private Long vocaId;
 
-    @OneToOne
-    @JoinColumn(nullable = false)
-    private Member memberId;
+    @Column(nullable = false)
+    private Long memberId;
 
-    @OneToMany(mappedBy = "listId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "scrapId", fetch = FetchType.LAZY)
     List<ScrapWord> scrapWords = new ArrayList<>();
 
-    @OneToMany(mappedBy = "listId", fetch = FetchType.LAZY)
-    List<VocabularyList> vocabularyLists = new ArrayList<>();
+    @OneToMany(mappedBy = "tagId", fetch = FetchType.LAZY)
+    List<Tag> tags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "problemId", fetch = FetchType.LAZY)
+    List<SituationProblem> completeProblems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "problemId", fetch = FetchType.LAZY)
+    List<SituationProblem> makeProblems = new ArrayList<>();
 
     @Builder
-    public VocabularyList(Member member) {
-        this.memberId = member;
+    public VocabularyList(Long memberId) {
+        this.memberId = memberId;
     }
 }
 

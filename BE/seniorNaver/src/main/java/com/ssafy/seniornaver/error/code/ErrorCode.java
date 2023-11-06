@@ -91,7 +91,8 @@ public enum ErrorCode {
 
     // 사전
     ALREADY_REGISTERED_VOCA_LIST(HttpStatus.BAD_REQUEST, "D-001", "이미 단어장을 가지고 있는 유저입니다."),
-    NOT_EXIST_VOCA_LIST(HttpStatus.BAD_REQUEST, "D-002", "단어장을 가지고 있지 않은 유저입니다. 단어장을 생성해주세요.")
+    NOT_EXIST_VOCA_LIST(HttpStatus.BAD_REQUEST, "D-002", "존재하지 않는 단어장 입니다. 단어장을 생성해주세요."),
+    NOT_EXIST_WORD(HttpStatus.BAD_REQUEST, "D-003", "존재하지 않는 단어입니다.")
     ;
 
     private HttpStatus httpStatus;

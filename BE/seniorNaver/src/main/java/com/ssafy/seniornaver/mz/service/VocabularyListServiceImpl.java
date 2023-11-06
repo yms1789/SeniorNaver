@@ -21,8 +21,8 @@ public class VocabularyListServiceImpl implements VocabularyListService{
     private final VocabularyListRepository vocabularyListRepository;
 
     @Override
-    public VocaListResponseDto getVocaList(Member memberId) {
-        VocabularyList vocabularyList = vocabularyListRepository.findByMemberId(memberId).orElseThrow(() -> {
+    public VocaListResponseDto getVocaList(Member member) {
+        VocabularyList vocabularyList = vocabularyListRepository.findByMemberId(member.getId()).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
         });
 
@@ -33,14 +33,14 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
     @Override
     @Transactional
-    public void createVocaList(Member memberId) {
-        Optional<VocabularyList> vocabularyList = vocabularyListRepository.findByMemberId(memberId);
+    public void createVocaList(Member member) {
+        Optional<VocabularyList> vocabularyList = vocabularyListRepository.findByMemberId(member.getId());
         if (vocabularyList.isPresent()) {
             throw new BadRequestException(ErrorCode.ALREADY_REGISTERED_VOCA_LIST);
         }
 
         vocabularyListRepository.save(VocabularyList.builder()
-                        .member(memberId)
+                        .memberId(member.getId())
                         .build());
     }
 }

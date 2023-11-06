@@ -61,8 +61,7 @@ public class Member implements Serializable {
     private Date tokenExpirationTime;
 
     @Column
-    @OneToOne(mappedBy = "vocaId")
-    private VocabularyList vocabularyList;
+    private Long vocaId;
 
     @Builder
     public Member(Long id, String memberId, String mobile, String name, String password, String nickname, String email,
@@ -112,6 +111,9 @@ public class Member implements Serializable {
     }
     public void updateRegion(String region){
         this.region = region;
+    }
+    public void createVocaId(Long vocaId) {
+        this.vocaId = vocaId;
     }
 
 }

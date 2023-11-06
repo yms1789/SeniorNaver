@@ -19,6 +19,6 @@ public class TagToVocaList {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private VocabularyList listId;
+    private VocabularyList vocaId;
 
 }
