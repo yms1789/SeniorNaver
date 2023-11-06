@@ -34,12 +34,6 @@ public class ChatbotServiceImpl implements ChatbotService{
     @Value("${spring.naver.clientSecret}")
     private String clientSecret;
 
-    @Value("${ffmpeg.location}")
-    private String ffmpegLocation;
-
-    @Value("${ffprobe.location}")
-    private String ffprobeLocation;
-
     @Value("${google.service-account.privateKey.json}")
     private String privateKeyJson;
 
