@@ -30,8 +30,10 @@ public class Directory {
     private Integer useYear;
 
     @OneToMany
-    @JoinColumn
-    private List<ScrapWord> scrapWordList = new LinkedList<>();
+    private List<Tag> tags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "listId", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<ScrapWord> scrapWordList = new ArrayList<>();
 
     @Builder
     public Directory(String word, String mean, String example, Integer useYear) {

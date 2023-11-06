@@ -20,8 +20,11 @@ public class VocabularyList {
     @JoinColumn(nullable = false)
     private Member memberId;
 
-    @OneToMany(mappedBy = "listId")
-    List<ScrapWord> scrapWords = new LinkedList<>();
+    @OneToMany(mappedBy = "listId", fetch = FetchType.LAZY)
+    List<ScrapWord> scrapWords = new ArrayList<>();
+
+    @OneToMany(mappedBy = "listId", fetch = FetchType.LAZY)
+    List<VocabularyList> vocabularyLists = new ArrayList<>();
 
     @Builder
     public VocabularyList(Member member) {
