@@ -10,6 +10,7 @@ import Wait from "./pages/Wait";
 import CompletedSignUp from "./components/CompletedSignUp";
 import Mypage from "./pages/Mypage";
 import Jobs from "./pages/Jobs";
+import MemeDictionary from "./pages/MemeDictionary";
 
 function App() {
   // let navigate = useNavigate();
@@ -26,6 +27,7 @@ function App() {
       <Route path="/completed" element={<CompletedSignUp />} />
       <Route path="/mypage" element={<Mypage />} />
       <Route path="/jobs" element={<Jobs />} />
+      <Route path="/Meme" element={<MemeDictionary/>} />
     </Routes>
   );
 }
