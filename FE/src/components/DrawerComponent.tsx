@@ -6,6 +6,8 @@ import { useCategoryQuery, useSearchQuery } from "../hooks/usePlaceQuery";
 import { IAddress, ICoordinate } from "../pages/Places";
 import { IconContext } from "react-icons";
 import { BiSearch } from "react-icons/bi";
+import { placeholderImage } from "../utils/utils";
+import Loading from "../pages/Loading";
 
 export type IPlace = {
   category: string;
@@ -22,6 +24,9 @@ interface IDrawerComponent {
 }
 
 const SearchWrapper = styled.div`
+  @media screen and (min-width: 400px) and (max-width: 780px) {
+    width: 300px;
+  }
   width: fit-content;
   margin: 0 auto;
   padding: 12px;
@@ -60,7 +65,10 @@ const CategoryButtonWrapper = styled.div`
 const CategoryButton = styled.input.attrs({ type: "button" })`
   background-color: var(--gray02);
   border: none;
-  padding: 12px;
+  @media screen and (min-width: 400px) and (max-width: 780px) {
+    padding: 12px 16px;
+  }
+  padding: 12px 20px;
   margin-right: 12px;
   border-radius: 20px;
   font-size: 16px;
@@ -96,20 +104,23 @@ const Drawer = styled.div`
   overflow-y: scroll;
   background-color: #ffffff;
   color: white;
-  @media screen and (max-width: 360px) {
+  @media screen and (max-width: 400px) {
     display: none;
   }
-  @media screen and (min-width: 360px) and (max-width: 780px) {
-    width: 380px;
+  @media screen and (min-width: 400px) and (max-width: 780px) {
+    width: 300px;
   }
-  @media screen and (min-width: 780px) and (max-width: 1280px) {
+  @media screen and (min-width: 780px) and (max-width: 1030px) {
     width: 400px;
   }
-  @media screen and (min-width: 1280px) {
-    width: 500px;
+  @media screen and (min-width: 1030px) {
+    width: 450px;
   }
 `;
 const DrawerButton = styled.button`
+  @media screen and (max-width: 400px) {
+    display: none;
+  }
   background-color: white;
   position: absolute;
   top: 50%;
@@ -181,11 +192,15 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
     currentAddr?.jibunAddress,
   );
 
-  const { data: searchData, isFetched: isSearchFetched, refetch } = useSearchQuery(inputSearch);
+  const {
+    data: searchData,
+    isFetched: isSearchFetched,
+    refetch,
+    isFetching,
+  } = useSearchQuery(inputSearch);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputSearch(e.target.value);
-    refetch();
   };
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -217,6 +232,9 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
       }
     }
   }, [isSearch, categoryData, searchData]);
+  if (isFetching) {
+    <Loading />;
+  }
 
   return (
     <DrawerWrapper $isShow={showDrawer}>
@@ -286,10 +304,13 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
                 })
               : isCategoryFetched &&
                 categoryData &&
-                categoryData.map((place: IPlace) => {
+                categoryData.map((place: IPlace, idx: number) => {
                   return (
                     <PlaceWrapper key={place.shopName}>
-                      <PlaceImage src={place.thumbnail} />
+                      <PlaceImage
+                        src={place.thumbnail}
+                        alt={placeholderImage(Math.floor(Math.random() * 100 + idx))}
+                      />
                       <PlaceText data-testid="title">{place.shopName}</PlaceText>
                       <PlaceDetail>{place.shopLocation}</PlaceDetail>
                     </PlaceWrapper>

@@ -204,8 +204,8 @@ export const handlers = [
     };
     // console.log(req.url.searchParams.get("workplace"), req.url.searchParams.get("keyword"));
 
-    // if (req.url.searchParams.get("workplace") && req.url.searchParams.get("keyword"))
-    //   return res(ctx.delay(1000), ctx.json(response), ctx.status(200));
-    return res(ctx.delay(1000), ctx.json(response2), ctx.status(200));
+    if (req.url.searchParams.get("workplace") && req.url.searchParams.get("keyword"))
+      return res(ctx.delay(), ctx.json(response), ctx.status(200));
+    return res(ctx.delay(), ctx.json(response2), ctx.status(200));
   }),
 ];

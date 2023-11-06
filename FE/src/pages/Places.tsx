@@ -1,11 +1,13 @@
+import { useEffect, useRef, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { Container as MapDiv, Marker, NaverMap, useNavermaps } from "react-naver-maps";
+import { useRecoilState } from "recoil";
+import { styled } from "styled-components";
 import DrawerComponent from "../components/DrawerComponent";
+import Error from "../components/Error";
 import NavigationBar from "../components/NavigationBar";
 import useGeolocation from "../hooks/useGeolocation";
-import { useRecoilState } from "recoil";
 import coordinateState from "../states/coordinates";
-import { useEffect, useRef, useState, Suspense } from "react";
-import { styled } from "styled-components";
 export interface ICoordinate {
   mapX: string;
   mapY: string;
@@ -62,14 +64,14 @@ function Places() {
         new navermaps.LatLng(parseFloat(minLat), parseFloat(minLng)),
         new navermaps.LatLng(parseFloat(maxLat), parseFloat(maxLng)),
       );
-      map.current.fitBounds(boundary);
+      map.current.panToBounds(boundary);
     }
     setIsWork(false);
   }, [isWork]);
 
   return (
     <PlacesWrapper>
-      <Suspense fallback={<div>로딩 중...</div>}>
+      <ErrorBoundary fallbackRender={Error}>
         <MapDiv
           style={{
             position: "absolute",
@@ -115,7 +117,7 @@ function Places() {
           setIsWork={setIsWork}
         />
         <NavigationBar />
-      </Suspense>
+      </ErrorBoundary>
     </PlacesWrapper>
   );
 }
