@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,6 +38,15 @@ public class SituationProblem {
 
     @Column(nullable = false)
     private Integer useYear;
+
+    @Column(nullable = false)
+    private String makeMember;
+
+    @OneToMany(mappedBy = "vocaId", fetch = FetchType.LAZY)
+    private List<VocabularyList> completeMember = new ArrayList<>();
+
+    @OneToMany(mappedBy = "vocaId", fetch = FetchType.LAZY)
+    private List<VocabularyList> saveMember = new ArrayList<>();
 
     @Builder
     public SituationProblem(String image, int answer, String review, String problem_explanation, Integer useYear) {

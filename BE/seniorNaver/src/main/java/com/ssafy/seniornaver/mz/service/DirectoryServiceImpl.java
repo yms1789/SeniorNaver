@@ -43,6 +43,7 @@ public class DirectoryServiceImpl implements DirectoryService{
                         .mean(word.getMean())
                         .example(word.getExample())
                         .tags(word.getTags())
+                        // 관련 문제 풀었는가
                         .complete(vocabularyList.getCompleteProblems().stream().anyMatch(problem ->
                                 problem.getProblemId().equals(word.getWordId())))
                         .build())
