@@ -37,18 +37,6 @@ public class JobServiceController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD_REQUEST", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    @GetMapping("/search/employ")
-    public ResponseEntity<JobListResponseDto> jobEmploySearch(JobListRequestDto jobRequestDto) throws JsonProcessingException {
-
-        JobListResponseDto jobListResponseDto = jobService.getEmployList(jobRequestDto);
-
-        return ResponseEntity.ok(jobListResponseDto);
-    }
-
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "502", description = "BAD_GATEWAY", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @GetMapping("/post/detail/{id}")

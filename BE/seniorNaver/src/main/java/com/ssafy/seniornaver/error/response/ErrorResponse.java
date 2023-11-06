@@ -1,6 +1,8 @@
 package com.ssafy.seniornaver.error.response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.ssafy.seniornaver.error.exception.BadRequestException;
 import com.ssafy.seniornaver.error.exception.DontSuchException;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,6 +39,15 @@ public class ErrorResponse {
                         .httpStatus(HttpStatus.BAD_GATEWAY.toString())
                         .errorCode("F-003")
                         .errorMessage("확인할수 없는 데이터입니다.")
+                        .build());
+    }
+
+    public static ResponseEntity<ErrorResponse> of(BadRequestException e) {
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                .body(ErrorResponse.builder()
+                        .httpStatus(e.getErrorCode().getHttpStatus().toString())
+                        .errorCode(e.getErrorCode().getErrorCode())
+                        .errorMessage(e.getErrorCode().getMessage())
                         .build());
     }
 }
