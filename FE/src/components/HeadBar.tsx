@@ -5,18 +5,17 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router";
 import { useRecoilState,useSetRecoilState } from "recoil";
 import { userState, isLoggedInState, logout } from "./../states/useLogin";
-import { useEffect } from "react";
 
 const NavBarWrapper = styled.div<IbackgroundColor>`
   position: fixed;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   padding: 0px 120px;
   gap: 10px;
-  width: 1440px;
+  width: 100vw;
   height: 110px;
-  left: calc(50% - 1440px / 2 - 19px);
   top: 0px;
   z-index: 990;
   background: ${(props) => props.backgroundColor};
@@ -27,7 +26,6 @@ const NavBar = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 1200px;
   min-width: 600px;
   max-width: 1440px;
   height: 110px;
@@ -58,6 +56,7 @@ const NavLogoText = styled.div`
   margin-left: 20px;
   letter-spacing: 0.05em;
   color: #010101;
+  text-shadow: -0.5px -0.5px 0 black, 0.5px -0.5px 0 black, -0.5px 0.5px 0 black, 0.5px 0.5px 0 black;
   flex: none;
   order: 0;
   flex-grow: 1;
@@ -182,6 +181,7 @@ function HeadBar() {
 
   const handleLogout = () => {
     try {
+      console.log(userLogoutData)
       logout(userLogoutData);
       setUser({ memberId: "",
       nickname: "",
@@ -192,7 +192,7 @@ function HeadBar() {
       refreshTokenExpirationTime: "",});
       setIsLoggedIn(false);
       alert("성공적으로 로그아웃 되었습니다.");
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       alert("로그아웃 실패.");
       console.error(error);
@@ -200,14 +200,14 @@ function HeadBar() {
   };
 
 
-  useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  });
+  // useEffect(() => {
+  //   const accessToken = localStorage.getItem("accessToken");
+  //   if (accessToken) {
+  //     setIsLoggedIn(true);
+  //   } else {
+  //     setIsLoggedIn(false);
+  //   }
+  // });
 
     const location = useLocation();
     let backgroundColor;
@@ -219,7 +219,8 @@ function HeadBar() {
       backgroundColor = ' var(--white);'; 
     } else if (location.pathname === '/') {
       backgroundColor = ' var(--white);'; 
-
+    } else if (location.pathname === '/meme') {
+      backgroundColor = ' var(--gray04);'; 
     }
 
   switch (isLoggedIn) {

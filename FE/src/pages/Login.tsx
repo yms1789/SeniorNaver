@@ -15,6 +15,7 @@ const Logo = styled.div`
   font-style: normal;
   font-size: 90px;
   font-weight: 1000;
+  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black; 
   line-height: 99px;
   letter-spacing: 0.05em;
   color: #000000;
@@ -22,6 +23,7 @@ const Logo = styled.div`
   margin-bottom: 50px;
   cursor: pointer;
   user-select: none;
+
 `;
 
 const LoginCopylight = styled.div`
@@ -34,6 +36,7 @@ const LoginCopylight = styled.div`
   font-weight: bolder;
   font-size: 12px;
 `;
+
 function Login() {
   return (
     <LoginWrapper>
