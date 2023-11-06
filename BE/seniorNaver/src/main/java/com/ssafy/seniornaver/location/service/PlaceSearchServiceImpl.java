@@ -22,7 +22,7 @@ import java.util.StringTokenizer;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SearchServiceImpl implements SearchService{
+public class PlaceSearchServiceImpl implements PlaceSearchService {
 
     private final WebClient webClient;
     @Value("${naver.developer.client.id}") private String clientId;
