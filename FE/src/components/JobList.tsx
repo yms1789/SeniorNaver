@@ -6,7 +6,7 @@ export interface IJob {
   totalCount: number;
   items: { item: IJobItem[] };
 }
-interface IJobItem {
+export interface IJobItem {
   acptKMthd: string;
   deadline: string;
   emplymShpNm: string;
@@ -38,6 +38,7 @@ const JobDescription = styled.p`
 
 function JobList({ workplace }: { workplace: string }) {
   const { data } = useJobsQuery(workplace);
+
   return data?.items.item.map((item: IJobItem) => {
     return (
       <JobWrapper key={item.jobId}>
