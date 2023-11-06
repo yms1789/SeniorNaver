@@ -87,9 +87,13 @@ public enum ErrorCode {
     INSUFFICIENT_POINT(HttpStatus.BAD_REQUEST, "P-001", "포인트가 부족합니다."),
 
     // 검색
+
     DONT_SUCH_PLACE(HttpStatus.BAD_REQUEST, "F-001", "데이터가 부족합니다. 요청 값을 확인해주세요"),
     DONT_SUCH_JOB_POST(HttpStatus.BAD_REQUEST, "F-002", "존재하지 않는 검색 유형입니다."),
-    DONT_PARSE_RESPONSE_DATA(HttpStatus.BAD_GATEWAY, "F-003", "확인할수 없는 데이터입니다.")
+    DONT_PARSE_RESPONSE_DATA(HttpStatus.BAD_GATEWAY, "F-003", "확인할수 없는 데이터입니다."),
+
+    //google cloud
+    DIALOGFLOW_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G-001", "Dialogflow API 에러 발생")
     ;
 
     private HttpStatus httpStatus;

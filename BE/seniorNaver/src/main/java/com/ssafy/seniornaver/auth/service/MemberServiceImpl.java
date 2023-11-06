@@ -83,15 +83,15 @@ public class MemberServiceImpl implements MemberService{
 		TokenDto accessTokenDto = jwtProvider.createAccessToken(logInRequestDto.getMemberId(), member.getAuthProvider());
 		TokenDto refreshTokenDto = jwtProvider.createRefreshToken(logInRequestDto.getMemberId(), member.getAuthProvider());
 
-		member.updateRefreshToken(refreshTokenDto.getToken(), refreshTokenDto.getTokenExpirationTime());
+		member.updateRefreshToken(refreshTokenDto.getAccesstoken(), refreshTokenDto.getTokenExpirationTime());
 
 		return LogInResponseDto.builder()
 			.memberId(member.getMemberId())
 			.nickname(member.getNickname())
 			.email(member.getEmail())
 			.mobile(member.getMobile())
-			.accessToken(accessTokenDto.getToken())
-			.refreshToken(refreshTokenDto.getToken())
+			.accessToken(accessTokenDto.getAccesstoken())
+			.refreshToken(refreshTokenDto.getAccesstoken())
 			.refreshTokenExpirationTime(refreshTokenDto.getTokenExpirationTime())
 			.build();
 	}

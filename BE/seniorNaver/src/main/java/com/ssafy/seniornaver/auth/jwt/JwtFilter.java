@@ -1,8 +1,10 @@
 package com.ssafy.seniornaver.auth.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
+import com.ssafy.seniornaver.error.response.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 
@@ -70,14 +73,33 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
             log.info("Bearer 지나침");
+            filterChain.doFilter(request, response);
         } catch (BadRequestException e) {
             log.info("BadRequest");
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-            throw new BadRequestException(ErrorCode.NOT_VALID_TOKEN);
+
+            // 에러 메시지를 ErrorResponse로 변환
+            ErrorCode errorCode = e.getErrorCode();
+            ErrorResponse errorResponse = ErrorResponse.of(
+                    errorCode.getHttpStatus().toString(),
+                    errorCode.getErrorCode(),
+                    errorCode.getMessage()
+            );
+            response.setStatus(errorCode.getHttpStatus().value());
+            response.setContentType("application/json");
+
+            // 에러 메시지를 JSON으로 변환
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonErrorResponse = mapper.writeValueAsString(errorResponse);
+
+            // 에러 메시지를 응답에 작성
+            PrintWriter out = response.getWriter();
+            out.print(jsonErrorResponse);
+
+            return;
         } finally {
             log.debug("**** SECURITY FILTER FINISH");
         }
-        filterChain.doFilter(request, response);
+
     }
 
 }
