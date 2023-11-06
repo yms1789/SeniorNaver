@@ -18,7 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Service
@@ -54,21 +56,8 @@ public class ChatbotServiceImpl implements ChatbotService{
         log.info("서비스 도착");
         String result = null;
         try {
-            // 임시 파일 생성
-            File tempFile = File.createTempFile("temp", ".tmp");
-            voiceFile.transferTo(tempFile);
-            log.info("임시 파일 생성 완료: " + tempFile.getAbsolutePath());
-
-            // WAV 파일 경로 생성
-            String wavFilePath = tempFile.getParentFile().getAbsolutePath() + File.separator + "converted.wav";
-
-            // FFmpeg 명령 실행
-            ffmpegToWav(tempFile.getAbsolutePath(), wavFilePath);
-            log.info("FFmpeg 명령 실행 완료: " + wavFilePath);
-
-            // 변환된 WAV 파일의 InputStream 생성
-            File wavFile = new File(wavFilePath);
-            InputStream inputStream = new FileInputStream(wavFile);
+            // 받은 음성 파일의 InputStream 생성
+            InputStream inputStream = voiceFile.getInputStream();
 
             String language = "Kor";        // 언어 코드 ( Kor, Jpn, Eng, Chn )
             String apiURL = "https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang=" + language;
@@ -120,20 +109,6 @@ public class ChatbotServiceImpl implements ChatbotService{
         return result;
     }
 
-    private void ffmpegToWav(String inputFilePath, String outputFilePath) throws IOException {
-        // FFmpeg 및 FFprobe 경로 설정
-        FFmpeg ffmpeg = new FFmpeg(ffmpegLocation);
-        FFprobe ffprobe = new FFprobe(ffprobeLocation);
-
-        // FFmpeg 명령 실행
-        FFmpegBuilder builder = new FFmpegBuilder()
-                .setInput(inputFilePath)
-                .overrideOutputFiles(true)
-                .addOutput(outputFilePath)
-                .done();
-        ffmpeg.run(builder);
-    }
-
     @Override
     public String talkToChatbot(String text) {
         try {
@@ -176,6 +151,58 @@ public class ChatbotServiceImpl implements ChatbotService{
             log.error("Dialogflow API 에러 발생", e);
             throw new BadRequestException(ErrorCode.DIALOGFLOW_API_ERROR);
         }
+    }
+
+    @Override
+    public byte[] convertTextToSpeech(String text) {
+        byte[] voiceData = null;
+        try {
+            String apiURL = "https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts";
+            URL url = new URL(apiURL);
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("X-NCP-APIGW-API-KEY-ID", clientId);
+            conn.setRequestProperty("X-NCP-APIGW-API-KEY", clientSecret);
+
+            // 요청 본문에 텍스트를 설정
+            String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8.toString()); // 텍스트를 URL 인코딩
+            String postParams = "speaker=nnarae&volume=0&speed=0&pitch=0&format=mp3&text=" + encodedText;
+
+            conn.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+            wr.writeBytes(postParams);
+            wr.flush();
+            wr.close();
+
+            int responseCode = conn.getResponseCode();
+            if(responseCode == 200) { // 정상 호출
+                InputStream is = conn.getInputStream();
+                int read = 0;
+                byte[] bytes = new byte[1024];
+                // 빈 바이트 배열을 생성
+                voiceData = new byte[0];
+                while ((read =is.read(bytes)) != -1) {
+                    // 바이트 배열에 읽어온 데이터를 추가
+                    voiceData = Arrays.copyOf(voiceData, voiceData.length + read);
+                    System.arraycopy(bytes, 0, voiceData, voiceData.length - read, read);
+                }
+                is.close();
+            } else {  // 오류 발생
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+                while ((inputLine = br.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                br.close();
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return voiceData;
     }
 
 }
