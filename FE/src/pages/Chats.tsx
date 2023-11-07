@@ -1,7 +1,8 @@
-import React from "react";
+import ChatButton from "../components/ChatButton";
+import { IconContext } from "react-icons";
 
 function Chats() {
-  return <div>Chats</div>;
+  return <ChatButton />;
 }
 
 export default Chats;
