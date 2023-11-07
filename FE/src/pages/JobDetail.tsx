@@ -321,7 +321,12 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
                   <DetailConditionList>
                     <DetailConditionTextTitle>홈페이지</DetailConditionTextTitle>
                     <DetailConditionTextContent>
-                      <DetailConditionHomePage href={`http://${data.homepage}`} target="_blank">
+                      <DetailConditionHomePage
+                        href={`${
+                          data.homepage.includes("http") ? data.homepage : "http://" + data.homepage
+                        }`}
+                        target="_blank"
+                      >
                         {data.homepage}
                       </DetailConditionHomePage>
                     </DetailConditionTextContent>
