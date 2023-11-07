@@ -200,7 +200,7 @@ function Jobs() {
                       <JobTitle>{item.recrtTitle}</JobTitle>
                       <JobDescription>{`위치: ${item.workPlaceNm || "미지정"},`}</JobDescription>
 
-                      <JobDescription>{`채용공고: ${item.emplymShpNm}`}</JobDescription>
+                      <JobDescription>{`채용공고: ${item.jobclsNm}`}</JobDescription>
                     </JobWrapper>
                   );
                 })
