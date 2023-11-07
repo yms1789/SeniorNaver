@@ -14,15 +14,15 @@ public class DirectoryWordListResponseDto {
     private String mean;
     private String example;
     private List<Tag> tags;
-    private boolean complete;
+    private boolean scrap;
 
     @Builder
     public DirectoryWordListResponseDto(String word, String mean, String example,
-                                        List<Tag> tags, boolean complete) {
+                                        List<Tag> tags, boolean scrap) {
         this.word = word;
         this.mean = mean;
         this.example = example;
         this.tags = tags;
-        this.complete = complete;
+        this.scrap = scrap;
     }
 }

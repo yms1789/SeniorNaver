@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class TagCreateRequest {
-    private String Tag;
+public class VocaListRequestDto {
+    private int page;
+    private int category;
 }

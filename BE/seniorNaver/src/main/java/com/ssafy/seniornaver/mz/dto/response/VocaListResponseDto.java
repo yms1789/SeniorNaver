@@ -1,6 +1,5 @@
 package com.ssafy.seniornaver.mz.dto.response;
 
-import com.ssafy.seniornaver.auth.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,11 +7,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class VocaListResponseDto {
-    private Long memberId;
+    private Long wordId;
+    private String word;
+    private int year;
 
-    // 화면에 어떤걸 띄워야할지 생각해봅시다.
     @Builder
-    public VocaListResponseDto(Long memberId) {
-        this.memberId = memberId;
+    public VocaListResponseDto(Long wordId, String word, int year) {
+        this.wordId = wordId;
+        this.word = word;
+        this.year = year;
     }
 }

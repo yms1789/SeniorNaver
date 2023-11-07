@@ -8,17 +8,17 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class TagToVocaList {
+public class TagToProblem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Tag tag;
+    private Tag tagId;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private VocabularyList vocaId;
+    private SituationProblem problemId;
 
 }

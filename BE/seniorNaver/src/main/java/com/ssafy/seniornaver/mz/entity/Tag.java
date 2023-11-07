@@ -20,10 +20,10 @@ public class Tag {
     private String tag;
 
     @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-    private List<VocabularyList> vocaList = new ArrayList<>();
+    private List<TagToWord> vocaList = new ArrayList<>();
 
     @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-    private List<Directory> wordList = new ArrayList<>();
+    private List<TagToWord> wordList = new ArrayList<>();
 
     @Builder
     public Tag(Long tagId, String tag) {

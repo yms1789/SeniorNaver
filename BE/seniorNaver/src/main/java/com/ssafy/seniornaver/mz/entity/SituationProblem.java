@@ -18,6 +18,9 @@ public class SituationProblem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long problemId;
 
+    @Column(nullable = false)
+    private String title;
+
     @Column
     private String image;
 
@@ -43,13 +46,14 @@ public class SituationProblem {
     private String makeMember;
 
     @OneToMany(mappedBy = "vocaId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-    private List<VocabularyList> completeVocaList = new ArrayList<>();
+    private List<CompleteProblem> completeVocaList = new ArrayList<>();
 
     @OneToMany(mappedBy = "vocaId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-    private List<VocabularyList> saveMember = new ArrayList<>();
+    private List<SaveProblem> saveMember = new ArrayList<>();
 
     @Builder
-    public SituationProblem(String image, int answer, String review, String problem_explanation, Integer useYear) {
+    public SituationProblem(String title, String image, int answer, String review, String problem_explanation, Integer useYear) {
+        this.title = title;
         this.image = image;
         this.answer = answer;
         this.review = review;
@@ -62,7 +66,12 @@ public class SituationProblem {
         this.createAt = LocalDateTime.now().withNano(0);
     }
 
-    public void updateProblem() {
+    public void updateProblem(String title, int answer, String review, String problem_explanation, int useYear) {
+        this.title = title;
+        this.answer = answer;
+        this.review = review;
+        this.problem_explanation = problem_explanation;
+        this.useYear = useYear;
         this.updateAt = LocalDateTime.now().withNano(0);
     }
 }

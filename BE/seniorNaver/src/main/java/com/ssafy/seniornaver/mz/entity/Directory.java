@@ -35,8 +35,8 @@ public class Directory {
     @Column(nullable = false)
     private LocalDateTime updateAt;
 
-    @OneToMany(mappedBy = "tagId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-    private List<Tag> tags = new ArrayList<>();
+    @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    private List<TagToProblem> tags = new ArrayList<>();
 
     @OneToMany(mappedBy = "scrapId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private List<ScrapWord> scrapWordList = new ArrayList<>();

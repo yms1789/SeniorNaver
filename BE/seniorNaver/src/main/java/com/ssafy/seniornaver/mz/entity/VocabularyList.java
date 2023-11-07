@@ -22,14 +22,14 @@ public class VocabularyList {
     @OneToMany(mappedBy = "scrapId", fetch = FetchType.LAZY)
     List<ScrapWord> scrapWords = new ArrayList<>();
 
-    @OneToMany(mappedBy = "tagId", fetch = FetchType.LAZY)
-    List<Tag> tags = new ArrayList<>();
+    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
+    List<TagToWord> tags = new ArrayList<>();
 
     @OneToMany(mappedBy = "problemId", fetch = FetchType.LAZY)
-    List<SituationProblem> completeProblems = new ArrayList<>();
+    List<CompleteProblem> completeProblems = new ArrayList<>();
 
     @OneToMany(mappedBy = "problemId", fetch = FetchType.LAZY)
-    List<SituationProblem> makeProblems = new ArrayList<>();
+    List<MakeProblem> makeProblems = new ArrayList<>();
 
     @Builder
     public VocabularyList(Long memberId) {
