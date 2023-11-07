@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Tag {
     @Id
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagId;
 
     @Column(nullable = false)

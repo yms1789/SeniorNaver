@@ -15,11 +15,11 @@ public class WordDetailResponseDto {
     private String example;
     private Integer useYear;
     private List<String> tags;
-    private List<Map<String, Long>> relProblem;
+    private Map<String, Long> relProblem;
 
     @Builder
     public WordDetailResponseDto(String word, String mean, String example, Integer useYear,
-                                 List<String> tags, List<Map<String, Long>> relProblem) {
+                                 List<String> tags, Map<String, Long> relProblem) {
 
         this.word = word;
         this.mean = mean;

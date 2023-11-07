@@ -12,7 +12,7 @@ import java.util.List;
 public interface DirectoryService {
     List<DirectoryWordListResponseDto> getMemberWordList(int page, Member member);
     List<DirectoryWordListResponseDto> getWordList(int page);
-    void wordScrap(VocabularyList vocaId, Directory wordId);
+    void wordScrap(Long vocaId, Long wordId);
     WordDetailResponseDto wordCreate(WordCreateRequestDto wordCreateRequestDto);
     void wordDelete(Long wordId);
 

@@ -1,5 +1,6 @@
 package com.ssafy.seniornaver.mz.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,4 +22,9 @@ public class TagToProblem {
     @JoinColumn(nullable = false)
     private SituationProblem problemId;
 
+    @Builder
+    public TagToProblem(Tag tagId, SituationProblem problemId) {
+        this.tagId = tagId;
+        this.problemId = problemId;
+    }
 }

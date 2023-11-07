@@ -27,7 +27,7 @@ public class SituationProblem {
     @Column(nullable = false)
     private LocalDateTime createAt;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime updateAt;
 
     @Column(nullable = false)

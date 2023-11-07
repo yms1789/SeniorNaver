@@ -3,6 +3,7 @@ package com.ssafy.seniornaver.mz.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,11 +33,14 @@ public class Directory {
     @Column(nullable = false)
     private LocalDateTime createAt;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime updateAt;
 
     @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-    private List<TagToProblem> tags = new ArrayList<>();
+    private List<TagToProblem> ProblemTags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    private List<TagToWord> wordTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "scrapId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private List<ScrapWord> scrapWordList = new ArrayList<>();

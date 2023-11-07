@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 @Getter
 @SuperBuilder
 @NoArgsConstructor
-public class SaveProblem extends ProblemBaseEntity{
+public class SaveProblem extends ProblemBaseEntity {
 
     @ManyToOne
     @JoinColumn(nullable = false)

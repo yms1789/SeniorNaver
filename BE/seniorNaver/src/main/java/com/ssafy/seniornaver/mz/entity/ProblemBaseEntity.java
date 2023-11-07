@@ -7,8 +7,8 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
+@MappedSuperclass
 @NoArgsConstructor
 @SuperBuilder
 public class ProblemBaseEntity {
