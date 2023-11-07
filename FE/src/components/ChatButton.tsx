@@ -175,7 +175,6 @@ function ChatButton() {
           </FloatingButton>
         )}
       </FloatingContainer>
-      {/* <button onClick={onSubmitAudioFile}>결과 확인</button> */}
       {audioUrl && <audio src={URL.createObjectURL(audioUrl)} controls></audio>}
     </>
   );
