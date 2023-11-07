@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import { Container as MapDiv, Marker, NaverMap, useNavermaps } from "react-naver-maps";
+import { Container as MapDiv, Marker, NaverMap } from "react-naver-maps";
 import { useRecoilState } from "recoil";
 import { styled } from "styled-components";
 import DrawerComponent from "../components/DrawerComponent";
@@ -8,6 +7,7 @@ import Error from "../components/Error";
 import NavigationBar from "../components/NavigationBar";
 import useGeolocation from "../hooks/useGeolocation";
 import coordinateState from "../states/coordinates";
+import { ErrorBoundary } from "react-error-boundary";
 export interface ICoordinate {
   mapX: string;
   mapY: string;
@@ -20,8 +20,7 @@ const PlacesWrapper = styled.div`
   display: flex;
 `;
 
-function Places() {
-  const navermaps = useNavermaps();
+function Places({ navermaps }: { navermaps: typeof naver.maps }) {
   const location = useGeolocation();
   const [currentAddr, setCurrentAddr] = useState<IAddress>();
   // const [mapState, setMapState] = useState(null);s
