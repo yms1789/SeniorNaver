@@ -47,10 +47,12 @@ function Combobox({
   placeholder,
   items,
   setWorkplace,
+  setIsSearch,
 }: {
   placeholder: string;
   items: string[];
   setWorkplace: React.Dispatch<React.SetStateAction<string>>;
+  setIsSearch: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const {
     isOpen,
@@ -64,6 +66,7 @@ function Combobox({
     onInputValueChange({ inputValue }) {
       if (inputValue) {
         setWorkplace(inputValue);
+        setIsSearch(false);
       }
     },
   });

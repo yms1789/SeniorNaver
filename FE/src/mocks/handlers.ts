@@ -49,6 +49,33 @@ export const handlers = [
         ],
       },
     };
+    const response3 = {
+      pageNo: 1,
+      totalCount: 17,
+      items: {
+        item: [
+          {
+            acptKMthd: "이메일",
+            deadline: "마감",
+            emplymShpNm: "시간제일자리",
+            jobId: "RECR_000000000013950",
+            jobcls: "A08009",
+            jobclsNm: "기타",
+            recrtTitle: "[서울시립미술관 르누아르전]",
+            workPlaceNm: "중구",
+          },
+          {
+            acptMthd: "이메일",
+            deadline: "마감 X",
+            emplymShpNm: "시간제일자리",
+            jobId: "RECR_000000000013951",
+            jobclsNm: "기타",
+            recrtTitle: "[서울시립박물관]",
+            workPlaceNm: "북구",
+          },
+        ],
+      },
+    };
     const response2 = {
       pageNo: 1,
       totalCount: 46948,
@@ -204,8 +231,10 @@ export const handlers = [
     };
     // console.log(req.url.searchParams.get("workplace"), req.url.searchParams.get("keyword"));
 
+    if (req.url.searchParams.get("keyword") === "미화원")
+      return res(ctx.delay(1000), ctx.json(response3), ctx.status(200));
     if (req.url.searchParams.get("workplace") && req.url.searchParams.get("keyword"))
-      return res(ctx.delay(), ctx.json(response), ctx.status(200));
-    return res(ctx.delay(), ctx.json(response2), ctx.status(200));
+      return res(ctx.delay(1000), ctx.json(response), ctx.status(200));
+    return res(ctx.delay(1000), ctx.json(response2), ctx.status(200));
   }),
 ];

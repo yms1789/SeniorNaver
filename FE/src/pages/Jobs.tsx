@@ -4,8 +4,9 @@ import { BiSearch } from "react-icons/bi";
 import styled from "styled-components";
 import Combobox from "../components/Combobox";
 import HeadBar from "../components/HeadBar";
-import JobList from "../components/JobList";
+import JobList, { IJob, IJobItem } from "../components/JobList";
 import NavigationBar from "../components/NavigationBar";
+import { fetchSearchJobs } from "../hooks/useJobsQuery";
 import Loading from "./Loading";
 
 const JobInput = styled.input`
@@ -94,6 +95,24 @@ const JobsWrapper = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 10px 20px;
 `;
+const JobWrapper = styled.div`
+  font-family: NanumSquareNeoRegular;
+`;
+
+const JobTitle = styled.div`
+  text-align: start;
+  font-family: NanumSquareNeoExtraBold;
+  width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  white-space: nowrap;
+`;
+const JobDescription = styled.p`
+  display: inline;
+  text-align: start;
+  padding-right: 8px;
+`;
 
 const places = [
   "서울",
@@ -117,18 +136,41 @@ const places = [
 function Jobs() {
   const [workplace, setWorkplace] = useState("");
   const [input, setInput] = useState("");
-
+  const [isSearch, setIsSearch] = useState(false);
+  const [searchData, setSearchData] = useState<IJob>();
+  const [isLoading, setIsLoading] = useState(false);
   const searchRef = useRef(null);
-  const handleSearch = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-    }
-  }, []);
+  const handleSearch = useCallback(
+    async (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        setIsLoading(true);
+        const response = await fetchSearchJobs(input, workplace);
+        setSearchData(response);
+        setIsLoading(false);
+        setIsSearch(true);
+      }
+    },
+    [input],
+  );
+  const handleClick = useCallback(async () => {
+    setIsLoading(true);
+    const response = await fetchSearchJobs(input, workplace);
+    setSearchData(response);
+    setIsLoading(false);
+    setIsSearch(true);
+  }, [input]);
+
   return (
     <>
       <HeadBar />
       <FrameParentRoot>
         <JobCategoryWrapper>
-          <Combobox items={places} placeholder="근무지" setWorkplace={setWorkplace} />
+          <Combobox
+            items={places}
+            placeholder="근무지"
+            setWorkplace={setWorkplace}
+            setIsSearch={setIsSearch}
+          />
           <FrameGroup>
             <JobInput
               ref={searchRef}
@@ -138,7 +180,7 @@ function Jobs() {
               value={input}
             />
             <RectangleParent>
-              <SearchButton>
+              <SearchButton onClick={handleClick}>
                 <IconContext.Provider value={{ color: "white" }}>
                   <BiSearch size={30} />
                 </IconContext.Provider>
@@ -148,7 +190,24 @@ function Jobs() {
         </JobCategoryWrapper>
         <JobsWrapper>
           <Suspense fallback={<Loading />}>
-            <JobList workplace={workplace} />
+            {isSearch ? (
+              isLoading ? (
+                <Loading />
+              ) : (
+                searchData?.items.item.map((item: IJobItem) => {
+                  return (
+                    <JobWrapper key={item.jobId}>
+                      <JobTitle>{item.recrtTitle}</JobTitle>
+                      <JobDescription>{`위치: ${item.workPlaceNm || "미지정"},`}</JobDescription>
+
+                      <JobDescription>{`채용공고: ${item.emplymShpNm}`}</JobDescription>
+                    </JobWrapper>
+                  );
+                })
+              )
+            ) : (
+              <JobList workplace={workplace} />
+            )}
           </Suspense>
         </JobsWrapper>
       </FrameParentRoot>
