@@ -9,11 +9,10 @@ export interface IJob {
   items: { item: IJobItem[] };
 }
 export interface IJobItem {
-  acptKMthd: string;
+  acptMthd: string;
   deadline: string;
   emplymShpNm: string;
   jobId: string;
-  jobcls: string;
   jobclsNm: string;
   recrtTitle: string;
   workPlaceNm: string;
