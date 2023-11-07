@@ -323,7 +323,9 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
                     <DetailConditionTextContent>
                       <DetailConditionHomePage
                         href={`${
-                          data.homepage.includes("http") ? data.homepage : "http://" + data.homepage
+                          data.homepage && data.homepage.includes("http")
+                            ? data.homepage
+                            : "http://" + data.homepage
                         }`}
                         target="_blank"
                       >
