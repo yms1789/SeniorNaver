@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { IconContext } from "react-icons";
+import { BiSearch } from "react-icons/bi";
 import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { SetterOrUpdater } from "recoil";
 import { styled } from "styled-components";
-import { useCategoryQuery, useSearchQuery } from "../hooks/usePlaceQuery";
-import { IAddress, ICoordinate } from "../pages/Places";
-import { IconContext } from "react-icons";
-import { BiSearch } from "react-icons/bi";
-import { placeholderImage } from "../utils/utils";
+import { fetchSearch, useCategoryQuery } from "../hooks/usePlaceQuery";
 import Loading from "../pages/Loading";
+import { IAddress, ICoordinate } from "../pages/Places";
 
-export type IPlace = {
+export type IPlaceItem = {
   category: string;
   thumbnail: string;
   shopName: string;
@@ -183,7 +182,8 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
   const [category, setCategory] = useState("맛집");
   const [inputSearch, setInputSearch] = useState("");
   const [isSearch, setIsSearch] = useState(false);
-  const searchRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchData, setSearchData] = useState<IPlaceItem[] | undefined>([]);
   const handleDrawer = () => {
     setShowDrawer(!showDrawer);
   };
@@ -192,30 +192,30 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
     currentAddr?.jibunAddress,
   );
 
-  const {
-    data: searchData,
-    isFetched: isSearchFetched,
-    refetch,
-    isFetching,
-  } = useSearchQuery(inputSearch);
-
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputSearch(e.target.value);
   };
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      setIsSearch(true);
-      refetch();
-    }
-    if (e.key === "Backspace") {
-      setIsSearch(false);
-    }
-  };
+  const fetchSearchData = useCallback(
+    async (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        await handleClick();
+      }
+    },
+    [inputSearch],
+  );
+  const handleClick = useCallback(async () => {
+    setIsLoading(true);
+    const response = await fetchSearch(inputSearch);
+    setSearchData(response);
+    setIsLoading(false);
+    setIsSearch(true);
+  }, [inputSearch]);
+
   useEffect(() => {
     if (isSearch) {
-      if (isSearchFetched && searchData) {
+      if (searchData) {
         setCoordinates!([
-          ...searchData.map((ele: IPlace) => {
+          ...searchData.map((ele: IPlaceItem) => {
             return { mapX: ele.mapX, mapY: ele.mapY };
           }),
         ]);
@@ -224,7 +224,7 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
     } else {
       if (isCategoryFetched && categoryData) {
         setCoordinates!([
-          ...categoryData.map((ele: IPlace) => {
+          ...categoryData.map((ele: IPlaceItem) => {
             return { mapX: ele.mapX, mapY: ele.mapY };
           }),
         ]);
@@ -232,7 +232,7 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
       }
     }
   }, [isSearch, categoryData, searchData]);
-  if (isFetching) {
+  if (isLoading) {
     <Loading />;
   }
 
@@ -243,15 +243,13 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
           <SearchBar
             placeholder="검색"
             type="text"
-            ref={searchRef}
             onChange={handleSearch}
             value={inputSearch}
-            onKeyDown={handleKeyDown}
+            onKeyDown={fetchSearchData}
           />
           <SearchButton
             onClick={() => {
-              setIsSearch(true);
-              refetch();
+              handleClick();
             }}
           >
             <IconContext.Provider value={{ color: "white" }}>
@@ -270,6 +268,7 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
               onClick={() => {
                 setIsSearch(false);
                 setCategory("맛집");
+                setInputSearch("");
               }}
             />
             <CategoryButton
@@ -278,45 +277,45 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
               onClick={() => {
                 setIsSearch(false);
                 setCategory("공연");
+                setInputSearch("");
               }}
             />
             <CategoryButton
               type="button"
-              value="휴양지"
+              value="관광지"
               onClick={() => {
                 setIsSearch(false);
-                setCategory("휴양지");
+                setCategory("관광지");
+                setInputSearch("");
               }}
             />
           </CategoryButtonWrapper>
-          <PlacesWrapper data-testid="category">
-            {isSearch
-              ? isSearchFetched &&
-                searchData &&
-                searchData.map((place: IPlace) => {
-                  return (
-                    <PlaceWrapper key={place.shopName}>
-                      <PlaceImage src={place.thumbnail} />
-                      <PlaceText data-testid="title">{place.shopName}</PlaceText>
-                      <PlaceDetail>{place.shopLocation}</PlaceDetail>
-                    </PlaceWrapper>
-                  );
-                })
-              : isCategoryFetched &&
-                categoryData &&
-                categoryData.map((place: IPlace, idx: number) => {
-                  return (
-                    <PlaceWrapper key={place.shopName}>
-                      <PlaceImage
-                        src={place.thumbnail}
-                        alt={placeholderImage(Math.floor(Math.random() * 100 + idx))}
-                      />
-                      <PlaceText data-testid="title">{place.shopName}</PlaceText>
-                      <PlaceDetail>{place.shopLocation}</PlaceDetail>
-                    </PlaceWrapper>
-                  );
-                })}
-          </PlacesWrapper>
+          <Suspense fallback={<Loading />}>
+            <PlacesWrapper data-testid="category">
+              {isSearch
+                ? searchData &&
+                  searchData.map((place: IPlaceItem) => {
+                    return (
+                      <PlaceWrapper key={place.shopName}>
+                        <PlaceImage src={place.thumbnail} />
+                        <PlaceText data-testid="title">{place.shopName}</PlaceText>
+                        <PlaceDetail>{place.shopLocation}</PlaceDetail>
+                      </PlaceWrapper>
+                    );
+                  })
+                : isCategoryFetched &&
+                  categoryData &&
+                  categoryData.map((place: IPlaceItem) => {
+                    return (
+                      <PlaceWrapper key={place.shopName}>
+                        <PlaceImage src={place.thumbnail} />
+                        <PlaceText data-testid="title">{place.shopName}</PlaceText>
+                        <PlaceDetail>{place.shopLocation}</PlaceDetail>
+                      </PlaceWrapper>
+                    );
+                  })}
+            </PlacesWrapper>
+          </Suspense>
         </ContentsWrapper>
       </Drawer>
       <DrawerButton onClick={handleDrawer}>
