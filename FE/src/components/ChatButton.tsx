@@ -4,7 +4,6 @@ import { IconContext } from "react-icons";
 import { BsFillMicFill, BsRecordCircle } from "react-icons/bs";
 import { styled } from "styled-components";
 
-// Create styled components
 const FloatingContainer = styled.div`
   position: fixed;
   width: 100px;
