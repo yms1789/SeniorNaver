@@ -8,6 +8,7 @@ import styled from "styled-components";
 import HeadBar from "../components/HeadBar";
 import NavigationBar from "../components/NavigationBar";
 import Loading from "./Loading";
+import { getDateDiff } from "../utils/utils";
 
 interface IJobDetail {
   wantedTitle: string;
@@ -278,7 +279,6 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
           <JobDetailWrapper>
             <DetailWrapper>
               <DetailTitle>{data.wantedTitle}</DetailTitle>
-              {/* 마감 몇 일 전, 위치, 내용, 전화번호, 지원 방법 */}
               <DetailContentWrapper>
                 <DetailImage
                   src="https://image.alba.kr/job/photo_no.png
@@ -289,7 +289,7 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
                     <DetailDate>{`${
                       data.toAcptDd.split("-")[1] + "-" + data.toAcptDd.split("-")[2]
                     }`}</DetailDate>
-                    마감 4일전
+                    {getDateDiff(data.toAcptDd)}
                   </DetailText>
                   <DetailText>
                     <DetailIcon src="https://image.alba.kr/job/JobDetail_period_I03.png" />
@@ -355,14 +355,14 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
                 >
                   <NaverMap
                     defaultCenter={new navermaps.LatLng(jobCoord.mapx, jobCoord.mapy)}
-                    defaultZoom={21}
+                    defaultZoom={18}
                     disableKineticPan={false}
                     zoomControl
                     zoomControlOptions={{
                       position: naver.maps.Position.TOP_RIGHT,
                     }}
                     minZoom={8}
-                    maxZoom={21}
+                    maxZoom={18}
                   >
                     <Marker position={new navermaps.LatLng(jobCoord.mapx, jobCoord.mapy)} />
                   </NaverMap>
