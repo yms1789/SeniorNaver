@@ -51,7 +51,7 @@ function JobList({ workplace }: { workplace: string }) {
     return (
       <JobWrapper key={item.jobId} onClick={() => handleClick(item)} role="button">
         <JobTitle>{item.recrtTitle}</JobTitle>
-        <JobDescription>{`위치: ${item.workPlaceNm},`}</JobDescription>
+        <JobDescription>{`위치: ${item.workPlaceNm || "미지정"},`}</JobDescription>
 
         <JobDescription>{`채용공고: ${item.emplymShpNm}`}</JobDescription>
       </JobWrapper>
