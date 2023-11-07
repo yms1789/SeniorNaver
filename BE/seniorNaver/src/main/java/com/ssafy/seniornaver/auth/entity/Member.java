@@ -9,9 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Getter
@@ -59,6 +57,8 @@ public class Member implements Serializable {
     @Column
     private Date tokenExpirationTime;
 
+    @Column
+    private Long vocaId;
 
     @Builder
     public Member(Long id, String memberId, String mobile, String name, String password, String nickname, String email,
@@ -108,6 +108,9 @@ public class Member implements Serializable {
     }
     public void updateRegion(String region){
         this.region = region;
+    }
+    public void createVocaId(Long vocaId) {
+        this.vocaId = vocaId;
     }
 
 }
