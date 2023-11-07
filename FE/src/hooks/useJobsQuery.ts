@@ -4,9 +4,10 @@ import { IJob } from "../components/JobList";
 
 export async function fetchJobs(place: string) {
   try {
-    const response = await axios.get<IJob>("/test/jobs", {
+    const response = await axios.get<IJob>("/api/job/v1/search", {
       params: {
-        workplace: place,
+        pageNum: 1,
+        workPlcNm: place,
         keyword: "",
       },
     });
@@ -26,8 +27,9 @@ export async function fetchSearchJobs(
   console.log("fetch", input);
   setIsLoading?.(true);
   try {
-    const response = await axios.get<IJob>("/test/jobs", {
+    const response = await axios.get<IJob>("/api/job/v1/search", {
       params: {
+        pageNum: 1,
         workplace: places || "구미",
         keyword: input,
       },
