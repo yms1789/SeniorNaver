@@ -21,6 +21,11 @@ export const handlers = [
       ctx.status(200),
     );
   }),
+  rest.post("/test/chats", (req, res, ctx) => {
+    const audio = req.body;
+    console.log(audio);
+    return res(ctx.status(201), ctx.json(audio));
+  }),
   rest.get("/test/jobs", (req, res, ctx) => {
     const response = {
       pageNo: 1,
