@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useJobsQuery } from "../hooks/useJobsQuery";
+import { useNavigate } from "react-router";
+import { useCallback } from "react";
 
 export interface IJob {
   pageNo: number;
@@ -19,6 +21,9 @@ export interface IJobItem {
 
 const JobWrapper = styled.div`
   font-family: NanumSquareNeoRegular;
+  &:hover {
+    background-color: #c5e3ed;
+  }
 `;
 
 const JobTitle = styled.div`
@@ -38,10 +43,13 @@ const JobDescription = styled.p`
 
 function JobList({ workplace }: { workplace: string }) {
   const { data } = useJobsQuery(workplace);
-
+  const navigate = useNavigate();
+  const handleClick = useCallback((item: IJobItem) => {
+    navigate("/job-detail", { state: item });
+  }, []);
   return data?.items.item.map((item: IJobItem) => {
     return (
-      <JobWrapper key={item.jobId}>
+      <JobWrapper key={item.jobId} onClick={() => handleClick(item)} role="button">
         <JobTitle>{item.recrtTitle}</JobTitle>
         <JobDescription>{`위치: ${item.workPlaceNm},`}</JobDescription>
 
