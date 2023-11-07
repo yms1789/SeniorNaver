@@ -10,9 +10,12 @@ import Wait from "./pages/Wait";
 import CompletedSignUp from "./components/CompletedSignUp";
 import Mypage from "./pages/Mypage";
 import Jobs from "./pages/Jobs";
+import JobDetail from "./pages/JobDetail";
+import { useNavermaps } from "react-naver-maps";
 
 function App() {
   // let navigate = useNavigate();
+  const navermaps = useNavermaps();
 
   return (
     <Routes>
@@ -21,11 +24,12 @@ function App() {
       <Route path="/home" element={<Home />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/join" element={<Join />} />
-      <Route path="/places" element={<Places />} />
+      <Route path="/places" element={<Places navermaps={navermaps} />} />
       <Route path="/oauth/login/oauth2/code/naver" element={<Wait />} />
       <Route path="/completed" element={<CompletedSignUp />} />
       <Route path="/mypage" element={<Mypage />} />
       <Route path="/jobs" element={<Jobs />} />
+      <Route path="/job-detail" element={<JobDetail navermaps={navermaps} />} />
     </Routes>
   );
 }
