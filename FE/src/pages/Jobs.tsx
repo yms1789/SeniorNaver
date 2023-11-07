@@ -143,16 +143,20 @@ function Jobs() {
   const handleSearch = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        const response = await fetchSearchJobs(input, workplace, setIsLoading);
+        setIsLoading(true);
+        const response = await fetchSearchJobs(input, workplace);
         setSearchData(response);
+        setIsLoading(false);
         setIsSearch(true);
       }
     },
     [input],
   );
   const handleClick = useCallback(async () => {
-    const response = await fetchSearchJobs(input, workplace, setIsLoading);
+    setIsLoading(true);
+    const response = await fetchSearchJobs(input, workplace);
     setSearchData(response);
+    setIsLoading(false);
     setIsSearch(true);
   }, [input]);
 
@@ -194,7 +198,7 @@ function Jobs() {
                   return (
                     <JobWrapper key={item.jobId}>
                       <JobTitle>{item.recrtTitle}</JobTitle>
-                      <JobDescription>{`위치: ${item.workPlaceNm},`}</JobDescription>
+                      <JobDescription>{`위치: ${item.workPlaceNm || "미지정"},`}</JobDescription>
 
                       <JobDescription>{`채용공고: ${item.emplymShpNm}`}</JobDescription>
                     </JobWrapper>
