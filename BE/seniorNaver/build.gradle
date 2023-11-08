@@ -38,6 +38,10 @@ dependencies {
 	//swagger
 	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
+	// xml -> json
+	implementation group: 'org.json', name: 'json', version: '20230227'
+	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'

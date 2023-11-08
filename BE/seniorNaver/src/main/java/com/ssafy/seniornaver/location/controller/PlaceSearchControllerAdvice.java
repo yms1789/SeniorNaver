@@ -3,13 +3,11 @@ package com.ssafy.seniornaver.location.controller;
 import com.ssafy.seniornaver.error.exception.DontSuchException;
 import com.ssafy.seniornaver.error.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@Order(1)
 @RestControllerAdvice
 public class PlaceSearchControllerAdvice {
 

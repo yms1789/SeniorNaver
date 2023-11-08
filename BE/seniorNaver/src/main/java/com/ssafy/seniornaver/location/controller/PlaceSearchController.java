@@ -1,8 +1,13 @@
 package com.ssafy.seniornaver.location.controller;
 
+import com.ssafy.seniornaver.error.response.ErrorResponse;
 import com.ssafy.seniornaver.location.dto.request.RequestCategorySearchDto;
 import com.ssafy.seniornaver.location.dto.request.RequestKeywordSearchDto;
 import com.ssafy.seniornaver.location.dto.response.ResponseSearchDto;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import com.ssafy.seniornaver.location.service.PlaceSearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +27,10 @@ public class PlaceSearchController {
 
     private final PlaceSearchService searchService;
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @Operation(summary = "키워드 검색", description = "키워드를 통해 검색합니다.")
     @GetMapping("/keyword")
     public ResponseEntity<ResponseSearchDto> keywordSearch(// HttpServletRequest httpServletRequest,
@@ -32,6 +41,10 @@ public class PlaceSearchController {
         return ResponseEntity.ok(responseSearchDto);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @Operation(summary = "카테고리 검색", description = "자신의 지역기반으로 검색합니다.")
     @GetMapping("/category")
     public ResponseEntity<ResponseSearchDto> categorySearch(// HttpServletRequest httpServletRequest,
