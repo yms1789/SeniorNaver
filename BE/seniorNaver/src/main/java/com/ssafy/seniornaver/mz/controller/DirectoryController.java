@@ -36,7 +36,7 @@ public class DirectoryController {
     private final TagService tagService;
     private final VocabularyListService vocabularyListService;
 
-    @Operation(summary = "전체 단어 조회", description = "ㄱㄴㄷ 순으로 단어 목록을 조회한다")
+    @Operation(summary = "전체 단어 조회", description = "ㄱㄴㄷ 순으로 단어 목록을 조회한다, page는 0부터 시작")
     @GetMapping("/word/list")
     public ResponseEntity<List<DirectoryWordListResponseDto>> getWordList(DirectoryWordListRequestDto requestDto) {
 
@@ -45,7 +45,7 @@ public class DirectoryController {
         return ResponseEntity.ok(directoryWordListResponseDto);
     }
 
-    @Operation(summary = "멤버 별 전체 단어 조회", description = "ㄱㄴㄷ 순으로 단어 목록을 조회한다, complete 값이 완료 단어에 따라 상이")
+    @Operation(summary = "멤버 별 전체 단어 조회", description = "ㄱㄴㄷ 순으로 단어 목록을 조회한다, complete 값이 완료 단어에 따라 상이, page는 0부터 시작")
     @GetMapping("member/word/list")
     public ResponseEntity<List<DirectoryWordListResponseDto>> getMemberWordList(HttpServletRequest httpServletRequest,
                                                                           DirectoryWordListRequestDto requestDto) {
