@@ -1,6 +1,7 @@
 package com.ssafy.seniornaver.mz.service;
 
 import com.ssafy.seniornaver.auth.entity.Member;
+import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import com.ssafy.seniornaver.mz.dto.request.VocaListRequestDto;
@@ -31,6 +32,7 @@ public class VocabularyListServiceImpl implements VocabularyListService{
     private final ScrapWordRepository scrapWordRepository;
     private final SaveProblemRepository saveProblemRepository;
     private final MakeProblemRepository makeProblemRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
@@ -46,6 +48,7 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
         vocabularyListRepository.saveAndFlush(vocaList);
         member.createVocaId(vocaList.getVocaId());
+        memberRepository.save(member);
     }
 
     @Override

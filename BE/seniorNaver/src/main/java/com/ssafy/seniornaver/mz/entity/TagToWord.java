@@ -20,10 +20,10 @@ public class TagToWord {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Directory wordId;
+    private Dictionary wordId;
 
     @Builder
-    public TagToWord(Tag tagId, Directory wordId) {
+    public TagToWord(Tag tagId, Dictionary wordId) {
         this.tagId = tagId;
         this.wordId = wordId;
     }

@@ -37,7 +37,7 @@ public class TagServiceImpl implements TagService{
     }
 
     @Override
-    public void relationWordTag(Directory wordId, Tag tag) {
+    public void relationWordTag(Dictionary wordId, Tag tag) {
         tagToWordRepository.save(TagToWord.builder()
                         .tagId(tag)
                         .wordId(wordId)
