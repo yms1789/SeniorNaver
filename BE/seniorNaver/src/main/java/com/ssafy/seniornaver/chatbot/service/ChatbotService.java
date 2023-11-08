@@ -6,4 +6,6 @@ public interface ChatbotService {
     String convertSpeechToText(MultipartFile voiceFile);
 
     String talkToChatbot(String text);
+
+    byte[] convertTextToSpeech(String response);
 }
