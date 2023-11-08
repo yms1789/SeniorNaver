@@ -24,7 +24,9 @@ public class ChatbotController {
     @PostMapping(value="/v1/talk",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "음성 텍스트 변형", security = @SecurityRequirement(name = "Bearer"))
     public ResponseEntity<byte[]> convertAndTalk(@RequestPart("voiceFile") MultipartFile voiceFile) {
-        log.info(String.valueOf("테스트1" + voiceFile));
+        // 파일 이름 확인
+        String originalFilename = voiceFile.getOriginalFilename();
+        log.info("전송된 파일 이름: " + originalFilename);
         // 음성을 텍스트로 변환
         String text = chatbotService.convertSpeechToText(voiceFile);
         log.info("테스트2" + text);
