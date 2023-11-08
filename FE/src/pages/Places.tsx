@@ -75,14 +75,14 @@ function Places({ navermaps }: { navermaps: typeof naver.maps }) {
               defaultCenter={
                 new navermaps.LatLng(location.coordinates!.lat, location.coordinates!.lng)
               }
-              defaultZoom={10}
+              defaultZoom={18}
               disableKineticPan={false}
               zoomControl
               zoomControlOptions={{
                 position: navermaps.Position.TOP_RIGHT,
               }}
               minZoom={8}
-              maxZoom={13}
+              maxZoom={19}
             >
               {coordinates.length
                 ? coordinates.map((coordinate, idx) => {

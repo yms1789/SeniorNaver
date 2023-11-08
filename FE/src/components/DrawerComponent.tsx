@@ -9,12 +9,15 @@ import Loading from "../pages/Loading";
 import { ICoordinate } from "../pages/Places";
 
 export type IPlaceItem = {
-  category: string;
+  place_name: string;
+  place_url: string;
+  category_name: string;
   thumbnail: string;
-  shopName: string;
-  mapX: string;
-  mapY: string;
-  shopLocation: string;
+  address_name: string;
+  id: string;
+  category_group_name: string;
+  x: string;
+  y: string;
 };
 interface IDrawerComponent {
   setCoordinates?: SetterOrUpdater<ICoordinate[]>;
@@ -166,7 +169,7 @@ const PlaceImage = styled.img`
   height: 200px;
   border-radius: 10px;
 `;
-const PlaceWrapper = styled.div`
+const PlaceWrapper = styled.a`
   border-top: 2px solid var(--gray03);
   border-bottom: 2px solid var(--gray03);
   margin-top: -2px;
@@ -179,6 +182,10 @@ const PlaceWrapper = styled.div`
   white-space: nowrap;
   text-overflow: ellipsis;
   word-break: break-all;
+  cursor: pointer;
+  &:hover {
+    background-color: lightblue;
+  }
 `;
 
 function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerComponent) {
@@ -188,7 +195,6 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
   const [isSearch, setIsSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchData, setSearchData] = useState<IPlaceItem[] | undefined>([]);
-  const [clickIdx, setClickIdx] = useState(0);
   const handleDrawer = () => {
     setShowDrawer(!showDrawer);
   };
@@ -222,7 +228,7 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
       if (searchData) {
         setCoordinates!([
           ...searchData.map((ele: IPlaceItem) => {
-            return { mapX: ele.mapX, mapY: ele.mapY };
+            return { mapX: ele.x, mapY: ele.y };
           }),
         ]);
         setIsWork(true);
@@ -231,7 +237,7 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
       if (isCategoryFetched && categoryData) {
         setCoordinates!([
           ...categoryData.map((ele: IPlaceItem) => {
-            return { mapX: ele.mapX, mapY: ele.mapY };
+            return { mapX: ele.x, mapY: ele.y };
           }),
         ]);
         setIsWork(true);
@@ -280,13 +286,13 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
             />
             <CategoryButton
               type="button"
-              value="공연"
+              value="병원"
               onClick={() => {
                 setIsSearch(false);
-                setCategory("공연");
+                setCategory("병원");
                 setInputSearch("");
               }}
-              className={category === "공연" ? "active" : ""}
+              className={category === "병원" ? "active" : ""}
             />
             <CategoryButton
               type="button"
@@ -304,10 +310,10 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
                 ? searchData &&
                   searchData.map((place: IPlaceItem) => {
                     return (
-                      <PlaceWrapper key={place.shopName}>
-                        <PlaceImage src={place.thumbnail} />
-                        <PlaceText data-testid="title">{place.shopName}</PlaceText>
-                        <PlaceDetail>{place.shopLocation}</PlaceDetail>
+                      <PlaceWrapper key={place.place_name}>
+                        <PlaceImage src={place.thumbnail} referrerPolicy="no-referrer" />
+                        <PlaceText data-testid="title">{place.place_name}</PlaceText>
+                        <PlaceDetail>{place.address_name}</PlaceDetail>
                       </PlaceWrapper>
                     );
                   })
@@ -315,10 +321,10 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
                   categoryData &&
                   categoryData.map((place: IPlaceItem) => {
                     return (
-                      <PlaceWrapper key={place.shopName}>
-                        <PlaceImage src={place.thumbnail} />
-                        <PlaceText data-testid="title">{place.shopName}</PlaceText>
-                        <PlaceDetail>{place.shopLocation}</PlaceDetail>
+                      <PlaceWrapper key={place.place_name} href={place.place_url} target="_blank">
+                        <PlaceImage src={place.thumbnail} referrerPolicy="no-referrer" />
+                        <PlaceText data-testid="title">{place.place_name}</PlaceText>
+                        <PlaceDetail>{place.address_name}</PlaceDetail>
                       </PlaceWrapper>
                     );
                   })}

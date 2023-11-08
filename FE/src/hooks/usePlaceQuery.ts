@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { IPlaceItem } from "../components/DrawerComponent";
-import { placeholderImage } from "../utils/utils";
+import { CategoryGroupCode, placeholderImage } from "../utils/utils";
 
 export type User = {
   firstName: string;
@@ -13,27 +13,25 @@ export type UsersPage = {
   next: number | undefined;
 };
 interface IPlace {
-  items: IPlaceItem[];
+  meta: {
+    totalPage: number;
+    pageable_count: number;
+  };
+  documents: IPlaceItem[];
 }
 
 const fetchCategory = async (category: string = "맛집", lat: string, lng: string) => {
   try {
     const response = await axios.get(`/api/search/v1/category`, {
       params: {
-        category,
+        page: 1,
+        category: CategoryGroupCode[category],
         x: lng,
         y: lat,
       },
     });
 
-    response.data.items.map((fetchItem: IPlaceItem) => {
-      if (!fetchItem.thumbnail.length) {
-        fetchItem.thumbnail = placeholderImage(200);
-      }
-    });
-    console.log(response.data.items);
-
-    return response.data.items;
+    return response.data.documents;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response?.data.errorCode === "SE01") {
@@ -51,18 +49,18 @@ export const fetchSearch = async (query: string, lat: string, lng: string) => {
   try {
     const response = await axios.get<IPlace>(`/api/search/v1/keyword`, {
       params: {
+        page: 1,
         keyword: query,
         x: lng,
         y: lat,
       },
     });
-    response.data.items.map((fetchItem: IPlaceItem) => {
+    response.data.documents.map((fetchItem: IPlaceItem) => {
       if (!fetchItem.thumbnail.length) {
         fetchItem.thumbnail = placeholderImage(200);
       }
     });
-    console.log(response.data.items);
-    return response.data.items;
+    return response.data.documents;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response?.data.errorCode === "SE01") {
