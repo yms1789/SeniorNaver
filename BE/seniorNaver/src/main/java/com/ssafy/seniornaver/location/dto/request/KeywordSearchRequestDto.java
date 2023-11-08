@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class RequestKeywordSearchDto {
+public class KeywordSearchRequestDto {
+    private int page;
     private String keyword;
 }

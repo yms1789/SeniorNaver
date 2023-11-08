@@ -9,10 +9,11 @@ import java.util.List;
 @NoArgsConstructor
 public class LoadImageData {
 
-    private List<Item> items;
+    private List<Document> documents;
 
     @Getter
-    public static class Item {
-        private String thumbnail;
+    public static class Document {
+        private String thumbnail_url;
+        private String image_url;
     }
 }

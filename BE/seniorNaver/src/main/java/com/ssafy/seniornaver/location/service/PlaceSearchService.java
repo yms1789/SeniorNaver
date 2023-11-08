@@ -1,14 +1,14 @@
 package com.ssafy.seniornaver.location.service;
 
 import com.ssafy.seniornaver.location.dto.LoadImageData;
-import com.ssafy.seniornaver.location.dto.LoadSearchData;
-import com.ssafy.seniornaver.location.dto.request.RequestCategorySearchDto;
-import com.ssafy.seniornaver.location.dto.request.RequestKeywordSearchDto;
-import com.ssafy.seniornaver.location.dto.response.ResponseSearchDto;
+import com.ssafy.seniornaver.location.dto.request.CategorySearchRequestDto;
+import com.ssafy.seniornaver.location.dto.request.KeywordSearchRequestDto;
+import com.ssafy.seniornaver.location.dto.response.SearchResponseDto;
 
 public interface PlaceSearchService {
-    ResponseSearchDto keywordSearch(RequestKeywordSearchDto requestSearchDto);
-    ResponseSearchDto categorySearch(RequestCategorySearchDto requestSearchDto);
+    SearchResponseDto keywordSearch(KeywordSearchRequestDto requestSearchDto);
+    SearchResponseDto categorySearch(CategorySearchRequestDto requestSearchDto);
     LoadImageData imageSearch(String baseUrl, String keyword);
-    LoadSearchData getData(String baseUrl, String keyword);
+    SearchResponseDto getKeywordData(String baseUrl, KeywordSearchRequestDto keywordSearchRequestDto);
+    SearchResponseDto getCategoryData(String baseUrl, CategorySearchRequestDto categorySearchRequestDto);
 }
