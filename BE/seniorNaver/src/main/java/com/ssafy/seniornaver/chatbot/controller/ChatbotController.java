@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ChatbotController {
     private final ChatbotService chatbotService;
 
-    @PostMapping(value="/talk",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value="/v1/talk",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "음성 텍스트 변형", security = @SecurityRequirement(name = "Bearer"))
     public ResponseEntity<byte[]> convertAndTalk(@RequestPart("voiceFile") MultipartFile voiceFile) {
         log.info(String.valueOf("테스트1" + voiceFile));
