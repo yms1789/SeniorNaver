@@ -20,10 +20,10 @@ public class ScrapWord {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Directory wordId;
+    private Dictionary wordId;
 
     @Builder
-    public ScrapWord(VocabularyList vocaId, Directory wordId) {
+    public ScrapWord(VocabularyList vocaId, Dictionary wordId) {
         this.vocaId = vocaId;
         this.wordId = wordId;
     }

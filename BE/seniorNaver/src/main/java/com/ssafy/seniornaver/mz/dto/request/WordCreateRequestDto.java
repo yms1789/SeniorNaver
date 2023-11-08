@@ -12,6 +12,5 @@ public class WordCreateRequestDto {
     private String mean;
     private String example;
     private int year;
-    private List<String> problemTags;
     private List<String> wordTags;
 }

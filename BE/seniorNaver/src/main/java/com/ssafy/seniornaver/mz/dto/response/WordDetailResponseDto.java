@@ -14,17 +14,21 @@ public class WordDetailResponseDto {
     private String mean;
     private String example;
     private Integer useYear;
+    private boolean scrap;
     private List<String> tags;
+    private long totalScrap;
     private Map<String, Long> relProblem;
 
     @Builder
-    public WordDetailResponseDto(String word, String mean, String example, Integer useYear,
-                                 List<String> tags, Map<String, Long> relProblem) {
+    public WordDetailResponseDto(String word, String mean, String example, Integer useYear, boolean scrap,
+                                 long total, List<String> tags, Map<String, Long> relProblem) {
 
         this.word = word;
         this.mean = mean;
         this.example = example;
-        this. useYear = useYear;
+        this.useYear = useYear;
+        this.totalScrap = total;
+        this.scrap = scrap;
         this.tags = tags;
         this.relProblem = relProblem;
     }

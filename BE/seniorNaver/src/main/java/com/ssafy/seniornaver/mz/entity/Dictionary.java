@@ -3,7 +3,6 @@ package com.ssafy.seniornaver.mz.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Directory {
+public class Dictionary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long wordId;
@@ -51,14 +50,14 @@ public class Directory {
     }
 
     @Builder
-    public Directory(String word, String mean, String example, Integer useYear) {
+    public Dictionary(String word, String mean, String example, Integer useYear) {
         this.word = word;
         this.mean = mean;
         this.example = example;
         this.useYear = useYear;
     }
 
-    public void updateDirectory(String mean, String example, Integer useYear) {
+    public void updateDictionary(String mean, String example, Integer useYear) {
         this.mean = mean;
         this.example = example;
         this.useYear = useYear;
