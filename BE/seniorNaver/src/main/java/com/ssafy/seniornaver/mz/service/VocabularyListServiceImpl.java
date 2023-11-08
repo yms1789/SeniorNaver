@@ -56,6 +56,7 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
         if (member.getVocaId() == null) {
             throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
+
         }
 
         Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 10, Sort.by("word").ascending());

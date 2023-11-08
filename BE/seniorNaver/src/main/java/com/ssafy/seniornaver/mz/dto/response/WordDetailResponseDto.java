@@ -16,16 +16,18 @@ public class WordDetailResponseDto {
     private Integer useYear;
     private boolean scrap;
     private List<String> tags;
+    private long totalScrap;
     private Map<String, Long> relProblem;
 
     @Builder
     public WordDetailResponseDto(String word, String mean, String example, Integer useYear, boolean scrap,
-                                 List<String> tags, Map<String, Long> relProblem) {
+                                 long total, List<String> tags, Map<String, Long> relProblem) {
 
         this.word = word;
         this.mean = mean;
         this.example = example;
-        this. useYear = useYear;
+        this.useYear = useYear;
+        this.totalScrap = total;
         this.scrap = scrap;
         this.tags = tags;
         this.relProblem = relProblem;

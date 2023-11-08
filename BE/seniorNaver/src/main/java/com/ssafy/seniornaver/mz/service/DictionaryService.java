@@ -13,6 +13,7 @@ public interface DictionaryService {
     List<DictionaryWordListResponseDto> getWordList(int page);
     WordDetailResponseDto getWordDetail(Long wordId, Long vocaId);
     void wordScrap(Long vocaId, Long wordId);
+    void unScrap(Long vocaId, Long wordId);
     WordDetailResponseDto wordCreate(WordCreateRequestDto wordCreateRequestDto);
     void wordDelete(Long wordId);
 

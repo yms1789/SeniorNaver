@@ -66,25 +66,36 @@ public class DictionaryController {
     }
 
     @Operation(summary = "단어 상세", description = "id -> wordId")
-    @PostMapping("word/{id}")
+    @GetMapping("word/{id}")
     public ResponseEntity<WordDetailResponseDto> wordDetail(@PathVariable("id") Long id,
                                     HttpServletRequest httpServletRequest) {
 
-        WordDetailResponseDto wordDetailResponseDto = dictionaryService.getWordDetail(id, getMember(httpServletRequest).getVocaId());
+        if (httpServletRequest.getHeader("Authorization") == null) {
+            WordDetailResponseDto wordDetailResponseDto = dictionaryService.getWordDetail(id, 0L);
+            return ResponseEntity.ok(wordDetailResponseDto);
+        }
 
+        WordDetailResponseDto wordDetailResponseDto = dictionaryService.getWordDetail(id, getMember(httpServletRequest).getVocaId());
         return ResponseEntity.ok(wordDetailResponseDto);
     }
 
-    @Operation(summary = "단어 스크랩", description = "단어장이 있는 경우, 단어장에 단어 추가. id는 단어의 id => wordId")
+    @Operation(summary = "단어 스크랩", description = "단어장에 단어 추가. id는 단어의 id => wordId")
     @PostMapping("word/scrap/{id}")
-    public ResponseEntity scrapWord(@PathVariable("id") Long id,
-                                    HttpServletRequest httpServletRequest) {
+    public ResponseEntity scrapWord(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
 
         dictionaryService.wordScrap(getMember(httpServletRequest).getVocaId(), id);
 
         return ResponseEntity.ok("스크랩 성공");
     }
 
+    @Operation(summary = "단어 스크랩 취소", description = "단어장이 있는 경우, 단어장에 단어 추가. id는 단어의 id => wordId")
+    @DeleteMapping("word/cancel/{id}")
+    public ResponseEntity unScrap(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
+
+        dictionaryService.unScrap(getMember(httpServletRequest).getVocaId(), id);
+
+        return ResponseEntity.ok("스크랩 취소 성공");
+    }
 
     private Member getMember(HttpServletRequest httpServletRequest) {
         String header = httpServletRequest.getHeader("Authorization");
