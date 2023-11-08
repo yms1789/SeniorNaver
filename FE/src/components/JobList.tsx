@@ -20,6 +20,7 @@ export interface IJobItem {
 
 const JobWrapper = styled.div`
   font-family: NanumSquareNeoRegular;
+  cursor: pointer;
   &:hover {
     background-color: #c5e3ed;
   }

@@ -8,6 +8,9 @@ import JobList, { IJob, IJobItem } from "../components/JobList";
 import NavigationBar from "../components/NavigationBar";
 import { fetchSearchJobs } from "../hooks/useJobsQuery";
 import Loading from "./Loading";
+import { useNavigate } from "react-router";
+import workplaceState from "../states/workplace";
+import { useRecoilState } from "recoil";
 
 const JobInput = styled.input`
   @media screen and (max-width: 400px) {
@@ -97,6 +100,10 @@ const JobsWrapper = styled.div`
 `;
 const JobWrapper = styled.div`
   font-family: NanumSquareNeoRegular;
+  cursor: pointer;
+  &:hover {
+    background-color: #c5e3ed;
+  }
 `;
 
 const JobTitle = styled.div`
@@ -134,7 +141,8 @@ const places = [
 ];
 
 function Jobs() {
-  const [workplace, setWorkplace] = useState("");
+  const navigate = useNavigate();
+  const [workplace, setWorkplace] = useRecoilState(workplaceState);
   const [input, setInput] = useState("");
   const [isSearch, setIsSearch] = useState(false);
   const [searchData, setSearchData] = useState<IJob>();
@@ -143,22 +151,27 @@ function Jobs() {
   const handleSearch = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
+        setIsSearch(true);
         setIsLoading(true);
         const response = await fetchSearchJobs(input, workplace);
         setSearchData(response);
         setIsLoading(false);
-        setIsSearch(true);
+        setIsSearch(false);
       }
     },
     [input],
   );
   const handleClick = useCallback(async () => {
+    setIsSearch(true);
     setIsLoading(true);
     const response = await fetchSearchJobs(input, workplace);
     setSearchData(response);
     setIsLoading(false);
-    setIsSearch(true);
+    setIsSearch(false);
   }, [input]);
+  const handleDetailClick = useCallback((item: IJobItem) => {
+    navigate("/job-detail", { state: item });
+  }, []);
 
   return (
     <>
@@ -169,7 +182,8 @@ function Jobs() {
             items={places}
             placeholder="근무지"
             setWorkplace={setWorkplace}
-            setIsSearch={setIsSearch}
+            workplace={workplace}
+            setInput={setInput}
           />
           <FrameGroup>
             <JobInput
@@ -196,7 +210,11 @@ function Jobs() {
               ) : (
                 searchData?.items.item.map((item: IJobItem) => {
                   return (
-                    <JobWrapper key={item.jobId}>
+                    <JobWrapper
+                      key={item.jobId}
+                      onClick={() => handleDetailClick(item)}
+                      role="button"
+                    >
                       <JobTitle>{item.recrtTitle}</JobTitle>
                       <JobDescription>{`위치: ${item.workPlaceNm || "미지정"},`}</JobDescription>
 
