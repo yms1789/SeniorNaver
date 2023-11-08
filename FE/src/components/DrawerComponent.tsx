@@ -6,7 +6,7 @@ import { SetterOrUpdater } from "recoil";
 import { styled } from "styled-components";
 import { fetchSearch, useCategoryQuery } from "../hooks/usePlaceQuery";
 import Loading from "../pages/Loading";
-import { IAddress, ICoordinate } from "../pages/Places";
+import { ICoordinate } from "../pages/Places";
 
 export type IPlaceItem = {
   category: string;
@@ -18,7 +18,7 @@ export type IPlaceItem = {
 };
 interface IDrawerComponent {
   setCoordinates?: SetterOrUpdater<ICoordinate[]>;
-  currentAddr?: IAddress;
+  currentCoord: ICoordinate;
   setIsWork: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -74,7 +74,11 @@ const CategoryButton = styled.input.attrs({ type: "button" })`
   margin-top: 10px;
   font-family: NanumSquareNeoBold;
   color: white;
+  cursor: pointer;
   &:hover {
+    background-color: #f74245;
+  }
+  &.active {
     background-color: #f74245;
   }
 `;
@@ -177,19 +181,21 @@ const PlaceWrapper = styled.div`
   word-break: break-all;
 `;
 
-function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComponent) {
+function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerComponent) {
   const [showDrawer, setShowDrawer] = useState(true);
   const [category, setCategory] = useState("맛집");
   const [inputSearch, setInputSearch] = useState("");
   const [isSearch, setIsSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchData, setSearchData] = useState<IPlaceItem[] | undefined>([]);
+  const [clickIdx, setClickIdx] = useState(0);
   const handleDrawer = () => {
     setShowDrawer(!showDrawer);
   };
   const { data: categoryData, isFetched: isCategoryFetched } = useCategoryQuery(
     category,
-    currentAddr?.jibunAddress,
+    currentCoord.mapY,
+    currentCoord.mapX,
   );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -205,7 +211,7 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
   );
   const handleClick = useCallback(async () => {
     setIsLoading(true);
-    const response = await fetchSearch(inputSearch);
+    const response = await fetchSearch(inputSearch, currentCoord.mapY, currentCoord.mapX);
     setSearchData(response);
     setIsLoading(false);
     setIsSearch(true);
@@ -270,6 +276,7 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
                 setCategory("맛집");
                 setInputSearch("");
               }}
+              className={category === "맛집" ? "active" : ""}
             />
             <CategoryButton
               type="button"
@@ -279,6 +286,7 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
                 setCategory("공연");
                 setInputSearch("");
               }}
+              className={category === "공연" ? "active" : ""}
             />
             <CategoryButton
               type="button"
@@ -286,8 +294,8 @@ function DrawerComponent({ setCoordinates, currentAddr, setIsWork }: IDrawerComp
               onClick={() => {
                 setIsSearch(false);
                 setCategory("관광지");
-                setInputSearch("");
               }}
+              className={category === "관광지" ? "active" : ""}
             />
           </CategoryButtonWrapper>
           <Suspense fallback={<Loading />}>

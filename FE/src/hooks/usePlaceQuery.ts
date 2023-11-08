@@ -16,16 +16,16 @@ interface IPlace {
   items: IPlaceItem[];
 }
 
-const fetchCategory = async (category: string = "맛집", location = "경북 구미시 진평동") => {
+const fetchCategory = async (category: string = "맛집", lat: string, lng: string) => {
   try {
     const response = await axios.get(`/api/search/v1/category`, {
       params: {
-        location: location,
         category,
+        x: lng,
+        y: lat,
       },
     });
 
-    // const match = /src=([^&]+)/.exec(fetchItem.thumbnail);
     response.data.items.map((fetchItem: IPlaceItem) => {
       if (!fetchItem.thumbnail.length) {
         fetchItem.thumbnail = placeholderImage(200);
@@ -44,7 +44,7 @@ const fetchCategory = async (category: string = "맛집", location = "경북 구
   }
 };
 
-export const fetchSearch = async (query: string) => {
+export const fetchSearch = async (query: string, lat: string, lng: string) => {
   if (!query) {
     return;
   }
@@ -52,6 +52,8 @@ export const fetchSearch = async (query: string) => {
     const response = await axios.get<IPlace>(`/api/search/v1/keyword`, {
       params: {
         keyword: query,
+        x: lng,
+        y: lat,
       },
     });
     response.data.items.map((fetchItem: IPlaceItem) => {
@@ -71,10 +73,10 @@ export const fetchSearch = async (query: string) => {
   }
 };
 
-export const useCategoryQuery = (category: string, location?: string) => {
+export const useCategoryQuery = (category: string, lat: string, lng: string) => {
   const query = useQuery({
     queryKey: ["category", category],
-    queryFn: () => fetchCategory(category, location),
+    queryFn: () => fetchCategory(category, lat, lng),
     suspense: false,
     refetchOnWindowFocus: false,
   });
@@ -82,10 +84,10 @@ export const useCategoryQuery = (category: string, location?: string) => {
   return query;
 };
 
-export const useSearchQuery = (search: string) => {
+export const useSearchQuery = (search: string, lat: string, lng: string) => {
   const query = useQuery({
     queryKey: ["search"],
-    queryFn: () => fetchSearch(search),
+    queryFn: () => fetchSearch(search, lat, lng),
     suspense: false,
     refetchOnWindowFocus: false,
     enabled: false,
