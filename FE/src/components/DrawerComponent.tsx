@@ -310,7 +310,7 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
                 ? searchData &&
                   searchData.map((place: IPlaceItem) => {
                     return (
-                      <PlaceWrapper key={place.place_name}>
+                      <PlaceWrapper key={place.place_name} href={place.place_url} target="_blank">
                         <PlaceImage src={place.thumbnail} referrerPolicy="no-referrer" />
                         <PlaceText data-testid="title">{place.place_name}</PlaceText>
                         <PlaceDetail>{place.address_name}</PlaceDetail>
