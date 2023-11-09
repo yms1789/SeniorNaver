@@ -18,7 +18,7 @@ const NavBarWrapper = styled.div<IbackgroundColor>`
   height: 110px;
   top: 0px;
   z-index: 990;
-  background: ${(props) => props.backgroundColor};
+  background: ${(props) => props.$backgroundColor};
 `;
 
 const NavBar = styled.div`
@@ -50,13 +50,11 @@ const NavLogo = styled.img`
 const NavLogoText = styled.div`
   font-family: "NanumSquareNeoHeavy";
   font-style: normal;
-  font-weight: 900;
   font-size: 34px;
   line-height: 38px;
   margin-left: 20px;
   letter-spacing: 0.05em;
   color: #010101;
-  text-shadow: -0.5px -0.5px 0 black, 0.5px -0.5px 0 black, -0.5px 0.5px 0 black, 0.5px 0.5px 0 black;
   flex: none;
   order: 0;
   flex-grow: 1;
@@ -165,7 +163,7 @@ const NavEmpty = styled.div`
 `;
 
 interface IbackgroundColor{
-  backgroundColor?: string;
+  $backgroundColor?: string;
 }
 
 
@@ -173,7 +171,6 @@ function HeadBar() {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const user = useRecoilState(userState);
   const setUser = useSetRecoilState(userState);
-  const navigate = useNavigate();
   const userLogoutData = {
     accessToken: user[0].accessToken,
     refreshToken: user[0].refreshToken,
@@ -192,22 +189,12 @@ function HeadBar() {
       refreshTokenExpirationTime: "",});
       setIsLoggedIn(false);
       alert("성공적으로 로그아웃 되었습니다.");
-      // window.location.reload();
+      window.location.reload();
     } catch (error) {
       alert("로그아웃 실패.");
       console.error(error);
     }
   };
-
-
-  // useEffect(() => {
-  //   const accessToken = localStorage.getItem("accessToken");
-  //   if (accessToken) {
-  //     setIsLoggedIn(true);
-  //   } else {
-  //     setIsLoggedIn(false);
-  //   }
-  // });
 
     const location = useLocation();
     let backgroundColor;
@@ -226,7 +213,7 @@ function HeadBar() {
   switch (isLoggedIn) {
     case true:
     return (
-      <NavBarWrapper backgroundColor={backgroundColor}>
+      <NavBarWrapper $backgroundColor={backgroundColor}>
           <NavBar>
             <NavLink to="/">
               <NavLogo src={snlogo} />
@@ -246,7 +233,7 @@ function HeadBar() {
         )
         case false:
           return (
-            <NavBarWrapper backgroundColor={backgroundColor}>
+            <NavBarWrapper $backgroundColor={backgroundColor}>
           <NavBar>
             <NavLink to="/">
               <NavLogo src={snlogo} />
