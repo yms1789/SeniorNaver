@@ -3,7 +3,7 @@ import { memeMineCurrentPracticeState } from "../states/useMeme";
 import styled from "styled-components";
 import MemeDictionaryPracticeSelector from "./MemeDictionaryPracticeSelector";
 import MemeDictionaryPracticePose from "./MemeDictionaryPracticePose";
-import MemeDictionaryPracticeRandomSolving from "./MemeDictionaryPracticeRandomsolving";
+import MemeDictionaryPracticeRandomSolving from "./MemeDictionaryPracticeRandomSolving";
 
 const MemeDictionaryPracticeWraaper = styled.div`
   width: 930px;
