@@ -29,9 +29,10 @@ declare global {
 
 function NaverLogin() {
   const postNaverLogin = () =>{   
-    const url = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dZcpr9yM6QZMkL3oTzAh&redirect_uri=http://localhost:5173/oauth/login/oauth2/code/naver&state=1234"
+    const url = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dZcpr9yM6QZMkL3oTzAh&redirect_uri=https://ggok2.duckdns.org/api/oauth/login/oauth2/code/naver&state=1234"
     window.location.replace(url);
   }
+  // const url = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dZcpr9yM6QZMkL3oTzAh&redirect_uri=http://localhost:5173/oauth/login/oauth2/code/naver&state=1234"
 
   // 네이버 로그인 ( 프론트에서 토큰 바로 받아오는 경우)
   // const { naver } = window as any;

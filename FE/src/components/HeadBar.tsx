@@ -189,7 +189,7 @@ function HeadBar() {
       refreshTokenExpirationTime: "",});
       setIsLoggedIn(false);
       alert("성공적으로 로그아웃 되었습니다.");
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       alert("로그아웃 실패.");
       console.error(error);
