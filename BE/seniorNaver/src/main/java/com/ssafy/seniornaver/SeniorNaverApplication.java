@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 				org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration.class
 		}
 )
-@SpringBootApplication
 @EnableScheduling // 스케줄러 사용을 위한 어노테이션
 public class SeniorNaverApplication {
 

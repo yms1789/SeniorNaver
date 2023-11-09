@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/curation")
+@RequestMapping("/curation/v1")
 public class CurationController {
 
     private final PerformanceService performanceService;
