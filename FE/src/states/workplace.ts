@@ -1,7 +1,7 @@
 import { atom } from "recoil";
 
 const workplaceState = atom({
-  key: "coordinate",
+  key: "workplace",
   default: "",
 });
 
