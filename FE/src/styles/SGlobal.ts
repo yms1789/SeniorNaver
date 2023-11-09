@@ -1,9 +1,9 @@
 import { createGlobalStyle } from "styled-components";
-import NanumSquareNeoLight from "..assets/fonts/NanumSquareNeo-aLt.ttf";
-import NanumSquareNeoRegular from "..assets/fonts/NanumSquareNeo-bRg.ttf";
-import NanumSquareNeoBold from "..assets/fonts/NanumSquareNeo-cBd.ttf";
-import NanumSquareNeoExtraBold from "..assets/fonts/NanumSquareNeo-dEb.ttf";
-import NanumSquareNeoHeavy from "..assets/fonts/NanumSquareNeo-eHv.ttf";
+import NanumSquareNeoLight from "../assets/fonts/NanumSquareNeo-aLt.ttf";
+import NanumSquareNeoRegular from "../assets/fonts/NanumSquareNeo-bRg.ttf";
+import NanumSquareNeoBold from "../assets/fonts/NanumSquareNeo-cBd.ttf";
+import NanumSquareNeoExtraBold from "../assets/fonts/NanumSquareNeo-dEb.ttf";
+import NanumSquareNeoHeavy from "../assets/fonts/NanumSquareNeo-eHv.ttf";
 
 export const GlobalStyle = createGlobalStyle`
   *, *::before, *::after {

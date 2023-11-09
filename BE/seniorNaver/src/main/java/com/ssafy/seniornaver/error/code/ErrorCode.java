@@ -84,7 +84,21 @@ public enum ErrorCode {
     FAIL_DELETE_FILE(HttpStatus.BAD_REQUEST, "S3-002", "S3에 업로드 된 파일을 지울 때 오류가 발생하였습니다."),
 
     //포인트 관련
-    INSUFFICIENT_POINT(HttpStatus.BAD_REQUEST, "P-001", "포인트가 부족합니다.")
+    INSUFFICIENT_POINT(HttpStatus.BAD_REQUEST, "P-001", "포인트가 부족합니다."),
+
+    // 사전
+    ALREADY_REGISTERED_VOCA_LIST(HttpStatus.BAD_REQUEST, "D-001", "이미 단어장을 가지고 있는 유저입니다."),
+    NOT_EXIST_VOCA_LIST(HttpStatus.BAD_REQUEST, "D-002", "존재하지 않는 단어장 입니다. 단어장을 생성해주세요."),
+    NOT_EXIST_WORD(HttpStatus.BAD_REQUEST, "D-003", "존재하지 않는 단어입니다."),
+
+    NOT_MATCH_CATEGORY(HttpStatus.BAD_REQUEST, "V-001", "요청 목록과 메서드가 상이합니다."),
+
+    DONT_SUCH_PLACE(HttpStatus.BAD_REQUEST, "F-001", "데이터가 부족합니다. 요청 값을 확인해주세요"),
+    DONT_SUCH_JOB_POST(HttpStatus.BAD_REQUEST, "F-002", "존재하지 않는 검색 유형입니다."),
+    DONT_PARSE_RESPONSE_DATA(HttpStatus.BAD_GATEWAY, "F-003", "확인할수 없는 데이터입니다."),
+
+    //google cloud
+    DIALOGFLOW_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G-001", "Dialogflow API 에러 발생")
     ;
 
     private HttpStatus httpStatus;
