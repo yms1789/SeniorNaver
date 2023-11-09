@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { IPlaceItem } from "../components/DrawerComponent";
-import { CategoryGroupCode, placeholderImage } from "../utils/utils";
+import { CategoryGroupCode } from "../utils/utils";
 
 export type User = {
   firstName: string;
