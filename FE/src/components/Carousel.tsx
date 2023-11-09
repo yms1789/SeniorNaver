@@ -7,7 +7,6 @@ const CarouselWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  
 `;
 const FrameContainerWrapper = styled.div`
   height: 100%;
