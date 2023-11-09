@@ -76,6 +76,7 @@ export const GlobalStyle = createGlobalStyle`
 /* Colors */
 --dark01: #010101;
 --dark02: #202020;
+--dark10: rgba(1, 1, 1, 0.1);
 --dark30: rgba(1, 1, 1, 0.3);
 --dark50: rgba(1, 1, 1, 0.5);
 --dark70: rgba(1, 1, 1, 0.7);
@@ -86,6 +87,8 @@ export const GlobalStyle = createGlobalStyle`
 --gray02: #6c6c6c;
 --gray03: #d9d9d9;
 --gray04: #cfcfcf;
+--gray05: #6C6C6C;
+--red: #F33434;
 --aqua: #3FD5DE;
 --aqua50: #98E3E8;
 --emerald: #2deea8;
