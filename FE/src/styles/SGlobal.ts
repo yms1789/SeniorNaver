@@ -81,16 +81,20 @@ export const GlobalStyle = createGlobalStyle`
 --dark50: rgba(1, 1, 1, 0.5);
 --dark70: rgba(1, 1, 1, 0.7);
 --white: #ffffff;
+--white30: rgba(255, 255, 255, 0.3);
 --white50: rgba(255, 255, 255, 0.5);
+--white70: rgba(255, 255, 255, 0.7);
 --white90: rgba(255, 255, 255, 0.9);
 --gray01: #4a4a4a;
 --gray02: #6c6c6c;
 --gray03: #d9d9d9;
---gray06: #cfcfcf;
+--gray04: #EAEAEA;
 --gray05: #6C6C6C;
+--gray06: #cfcfcf;
 --red: #F33434;
 --aqua: #3FD5DE;
---aqua50: #98E3E8;
+--aqua01: #EBFBFC;
+--aqua02: #98E3E8;
 --emerald: #2deea8;
 --maingradient: linear-gradient(100deg, #3fd5de, #2deea8);
   }

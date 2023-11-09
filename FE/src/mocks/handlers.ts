@@ -1,4 +1,6 @@
 import { rest } from "msw";
+import hoveredImg from "../assets/Frame 185.png";
+import nonhoveredImg from "../assets/Frame 186.png";
 
 export const handlers = [
   rest.get("/test/places", (req, res, ctx) => {
@@ -202,10 +204,356 @@ export const handlers = [
         ],
       },
     };
+
     // console.log(req.url.searchParams.get("workplace"), req.url.searchParams.get("keyword"));
 
     // if (req.url.searchParams.get("workplace") && req.url.searchParams.get("keyword"))
     //   return res(ctx.delay(1000), ctx.json(response), ctx.status(200));
     return res(ctx.delay(1000), ctx.json(response2), ctx.status(200));
+  }),
+
+  rest.get("/carousel", (req, res, ctx) => {
+    return res(
+      ctx.json({
+        curationImages: [
+          "https://newsimg-hams.hankookilbo.com/2023/10/30/20e18974-774c-4f89-b1f4-e3861bdab60f.jpg",
+          "https://www.urbanbrush.net/web/wp-content/uploads/edd/2022/12/urbanbrush-20221214144619159434.jpg",
+          "https://png.pngtree.com/thumb_back/fh260/background/20210902/pngtree-into-the-june-sunflower-background-image_788302.jpg",
+          "https://img.freepik.com/free-photo/the-red-or-white-cat-i-on-white-studio_155003-13189.jpg?size=626&ext=jpg&ga=GA1.1.386372595.1698192000&semt=ais",
+          "https://media.istockphoto.com/id/510690180/ko/%EC%82%AC%EC%A7%84/%EC%98%81%EA%B5%AD-%EC%87%BC%ED%8A%B8%ED%97%A4%EC%96%B4-%EA%B3%A0%EC%96%91%EC%9D%B4-%EC%83%88%EB%81%BC-3-%EA%B0%9C%EC%9B%94.jpg?s=1024x1024&w=is&k=20&c=L7OQkkO6wurrMo6q294IEY3_g8Dt3VeXDFOKi-lUsrY=",
+          "https://src.hidoc.co.kr/image/lib/2022/5/12/1652337370806_0.jpg",
+          "https://www.shutterstock.com/image-photo/pomeranian-spitz-smiling-lying-house-260nw-2169338377.jpg",
+          "https://dimg.donga.com/wps/NEWS/IMAGE/2022/01/28/111500268.2.jpg",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrtzjK-W7Xvt5lOIRBB4Zmvsg_CyzoOD4eqclHLMm-wQafndnqeEOZS7I0ANIHSEU7HEY&usqp=CAU",
+          "https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg",
+        ],
+        curationTexts: [
+          "밤 되면 이 가수 공연장에 등장하는 '효도텐트'",
+          "2번째 뉴스 기사 제목이 이렇게 길다면 어떡할건데에에에에에에에에ㅔ에에d",
+          "3번째 뉴스 기사 제목",
+          "4번째 뉴스 기사 제목",
+          "5번째 뉴스 기사 제목",
+          "6번째 뉴스 기사 제목",
+          "7번째 뉴스 기사 제목",
+          "8번째 뉴스 기사 제목",
+          "9번째 뉴스 기사 제목",
+          "10번째 뉴스 기사 제목",
+        ],
+        mzWords: [
+          "탕후루",
+          "알잘딱깔센",
+          "어쩔티비",
+          "어쩔티비4",
+          "어쩔티비5",
+          "어쩔티비6",
+          "어쩔티비7",
+          "어쩔티비8",
+          "어쩔티비9",
+          "어쩔티비10",
+        ],
+        places: [
+          [
+            "https://a.cdn-hotels.com/gdcs/production60/d893/3172bd6f-726c-4561-810f-deec13d17a6e.jpg?impolicy=fcrop&w=800&h=533&q=medium",
+            "경복궁",
+          ],
+          [
+            "https://www.urbanbrush.net/web/wp-content/uploads/edd/2022/12/urbanbrush-20221214144619159434.jpg",
+            "여기가핫풀2",
+          ],
+          [
+            "https://png.pngtree.com/thumb_back/fh260/background/20210902/pngtree-into-the-june-sunflower-background-image_788302.jpg",
+            "여기가핫풀3",
+          ],
+          [
+            "https://img.freepik.com/free-photo/the-red-or-white-cat-i-on-white-studio_155003-13189.jpg?size=626&ext=jpg&ga=GA1.1.386372595.1698192000&semt=ais",
+            "여기가핫풀4",
+          ],
+          [
+            "https://media.istockphoto.com/id/510690180/ko/%EC%82%AC%EC%A7%84/%EC%98%81%EA%B5%AD-%EC%87%BC%ED%8A%B8%ED%97%A4%EC%96%B4-%EA%B3%A0%EC%96%91%EC%9D%B4-%EC%83%88%EB%81%BC-3-%EA%B0%9C%EC%9B%94.jpg?s=1024x1024&w=is&k=20&c=L7OQkkO6wurrMo6q294IEY3_g8Dt3VeXDFOKi-lUsrY=",
+            "여기가핫풀5",
+          ],
+          ["https://src.hidoc.co.kr/image/lib/2022/5/12/1652337370806_0.jpg", "여기가핫풀6"],
+          [
+            "https://www.shutterstock.com/image-photo/pomeranian-spitz-smiling-lying-house-260nw-2169338377.jpg",
+            "여기가핫풀7",
+          ],
+          ["https://dimg.donga.com/wps/NEWS/IMAGE/2022/01/28/111500268.2.jpg", "여기가핫풀8"],
+          [
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrtzjK-W7Xvt5lOIRBB4Zmvsg_CyzoOD4eqclHLMm-wQafndnqeEOZS7I0ANIHSEU7HEY&usqp=CAU",
+            "여기가핫풀9",
+          ],
+          [
+            "https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg",
+            "여기가핫풀10",
+          ],
+        ],
+      }),
+    );
+  }),
+
+  rest.get("/shows", (req, res, ctx) => {
+    return res(
+      ctx.json([
+        {
+          pfId: "PF144567",
+          pfName: "뮤지컬: 미녀와 야수",
+          startDate: "2022-09-01",
+          endDate: "2023-02-28",
+          theater: "세종문화회관 대극장",
+          poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF229001_231031_125302.gif",
+          genre: "뮤지컬",
+          pfState: "공연예정",
+          openRun: "N",
+        },
+        {
+          pfId: "PF144568",
+          pfName: "연극: 햄릿",
+          startDate: "2022-11-10",
+          endDate: "2023-01-08",
+          theater: "대학로 올림픽 소극장",
+          poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF229001_231031_125302.gif",
+          genre: "연극",
+          pfState: "공연중",
+          openRun: "N",
+        },
+        {
+          pfId: "PF144569",
+          pfName: "뮤지컬: 레드북",
+          startDate: "2022-12-20",
+          endDate: "2023-01-15",
+          theater: "세종문화회관 M 씨어터",
+          poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF229001_231031_125302.gif",
+          genre: "뮤지컬",
+          pfState: "공연중",
+          openRun: "N",
+        },
+        {
+          pfId: "PF144570",
+          pfName: "무용: 백조의 호수",
+          startDate: "2022-11-15",
+          endDate: "2022-12-10",
+          theater: "아린아트홀",
+          poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF229001_231031_125302.gif",
+          genre: "무용",
+          pfState: "공연중",
+          openRun: "N",
+        },
+        {
+          pfId: "PF144571",
+          pfName: "연극: 블루스 인 더 나잇",
+          startDate: "2022-11-25",
+          endDate: "2022-12-18",
+          theater: "대학로 흰토빈 소극장",
+          poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF229001_231031_125302.gif",
+          genre: "연극",
+          pfState: "공연예정",
+          openRun: "N",
+        },
+        {
+          pfId: "PF144572",
+          pfName: "뮤지컬: 산타클로스",
+          startDate: "2022-12-10",
+          endDate: "2022-12-24",
+          theater: "세종문화회관 대극장",
+          poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF229001_231031_125302.gif",
+          genre: "뮤지컬",
+          pfState: "공연예정",
+          openRun: "N",
+        },
+        {
+          pfId: "PF144573",
+          pfName: "뮤지컬: 레미제라블",
+          startDate: "2022-12-20",
+          endDate: "2023-02-26",
+          theater: "예술의 전당 오페라극장",
+          poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF229001_231031_125302.gif",
+          genre: "뮤지컬",
+          pfState: "공연예정",
+          openRun: "N",
+        },
+        {
+          pfId: "PF144574",
+          pfName: "연극: 벤자민 버튼의 시간은 거꾸로 간다",
+          startDate: "2023-01-10",
+          endDate: "2023-02-05",
+          theater: "세종문화회관 M 씨어터",
+          poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF229001_231031_125302.gif",
+          genre: "연극",
+          pfState: "공연예정",
+          openRun: "N",
+        },
+        {
+          pfId: "PF144575",
+          pfName: "뮤지컬: 더 포레스토",
+          startDate: "2023-01-13",
+          endDate: "2023-02-26",
+          theater: "씨어터 산",
+          poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF229001_231031_125302.gif",
+          genre: "뮤지컬",
+          pfState: "공연예정",
+          openRun: "N",
+        },
+      ]),
+    );
+  }),
+
+  rest.get("/showDetail", (req, res, ctx) => {
+    return res(
+      ctx.json({
+        mt20id: "PF144565",
+        prfnm: "아기돼지삼형제: 늑대숲 또옹돼지 원정대",
+        prfpdfrom: "2018-04-07",
+        prfpdto: "2023-11-26",
+        fcltynm: "서연아트홀(구. 인아소극장) (서연아트홀(구. 인아소극장))",
+        prfcast: " ",
+        prfcrew: " ",
+        prfruntime: "50분",
+        prfage: "24개월 이상",
+        entrpsnm: "지니아트랩",
+        pcseguidance: "전석 30,000원",
+        poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF144565_220811_114818.jpg",
+        sty: " ",
+        area: "서울특별시",
+        genrenm: "뮤지컬",
+        openrun: "Y",
+        prfstate: "공연중",
+        styUrlList: [
+          "http://www.kopis.or.kr/upload/pfmIntroImage/PF_PF144565_220811_1148183.jpg",
+          "http://www.kopis.or.kr/upload/pfmIntroImage/PF_PF144565_220811_1148182.jpg",
+          "http://www.kopis.or.kr/upload/pfmIntroImage/PF_PF144565_220811_1148181.jpg",
+        ],
+        dtguidance:
+          "토요일 ~ 일요일(11:20,12:00,12:50,13:30), HOL(11:20,11:30,12:00,12:50,13:30), 월요일(12:00)",
+      }),
+    );
+  }),
+
+  // rest.get("/travels", (req, res, ctx) => {
+  //   return res(
+  //     ctx.json([
+  //       {
+  //         addr1: "대구광역시 달성군 가창면 가창로 1099",
+  //         addr2: "(가창면)",
+  //         createdtime: "20151021001307",
+  //         contentid: "203444d6",
+  //         firstimage: hoveredImg,
+  //         firstimage2: nonhoveredImg,
+  //         mapx: "128.6222232980",
+  //         mapy: "35.8027142041",
+  //         modifiedtime: "20231026155741",
+  //         title: "가창 찐빵 골목",
+  //       },
+  //       {
+  //         addr1: "대구광역시 서구 서대구로3길 43",
+  //         addr2: "(내당동)",
+  //         createdtime: "20101028191433",
+  //         contentid: "111s8418",
+  //         firstimage: hoveredImg,
+  //         firstimage2: nonhoveredImg,
+  //         mapx: "128.5522334637",
+  //         mapy: "35.8586426972",
+  //         modifiedtime: "20231106163411",
+  //         title: "감삼못공원",
+  //       },
+  //       {
+  //         addr1: "대구광역시 달성군 가창면 가창로 1099",
+  //         addr2: "(가창면)",
+  //         createdtime: "20151021001307",
+  //         contentid: "2034f446",
+  //         firstimage: hoveredImg,
+  //         firstimage2: nonhoveredImg,
+  //         mapx: "128.6222232980",
+  //         mapy: "35.8027142041",
+  //         modifiedtime: "20231026155741",
+  //         title: "가창 찐빵 골목",
+  //       },
+  //       {
+  //         addr1: "대구광역시 서구 서대구로3길 43",
+  //         addr2: "(내당동)",
+  //         createdtime: "20101028191433",
+  //         contentid: "1118a418",
+  //         firstimage: hoveredImg,
+  //         firstimage2: nonhoveredImg,
+  //         mapx: "128.5522334637",
+  //         mapy: "35.8586426972",
+  //         modifiedtime: "20231106163411",
+  //         title: "감삼못공원",
+  //       },
+  //       {
+  //         addr1: "대구광역시 달성군 가창면 가창로 1099",
+  //         addr2: "(가창면)",
+  //         createdtime: "20151021001307",
+  //         contentid: "20344f46",
+  //         firstimage: hoveredImg,
+  //         firstimage2: nonhoveredImg,
+  //         mapx: "128.6222232980",
+  //         mapy: "35.8027142041",
+  //         modifiedtime: "20231026155741",
+  //         title: "가창 찐빵 골목",
+  //       },
+  //       {
+  //         addr1: "대구광역시 서구 서대구로3길 43",
+  //         addr2: "(내당동)",
+  //         createdtime: "20101028191433",
+  //         contentid: "1118ag418",
+  //         firstimage: hoveredImg,
+  //         firstimage2: nonhoveredImg,
+  //         mapx: "128.5522334637",
+  //         mapy: "35.8586426972",
+  //         modifiedtime: "20231106163411",
+  //         title: "감삼못공원",
+  //       },
+  //       {
+  //         addr1: "대구광역시 달성군 가창면 가창로 1099",
+  //         addr2: "(가창면)",
+  //         createdtime: "20151021001307",
+  //         contentid: "2034sd446",
+  //         firstimage: hoveredImg,
+  //         firstimage2: nonhoveredImg,
+  //         mapx: "128.6222232980",
+  //         mapy: "35.8027142041",
+  //         modifiedtime: "20231026155741",
+  //         title: "가창 찐빵 골목",
+  //       },
+  //       {
+  //         addr1: "대구광역시 서구 서대구로3길 43",
+  //         addr2: "(내당동)",
+  //         createdtime: "20101028191433",
+  //         contentid: "1118sdf418",
+  //         firstimage: hoveredImg,
+  //         firstimage2: nonhoveredImg,
+  //         mapx: "128.5522334637",
+  //         mapy: "35.8586426972",
+  //         modifiedtime: "20231106163411",
+  //         title: "감삼못공원",
+  //       },
+  //     ]),
+  //   );
+  // }),
+
+  rest.get("/travelDetail", (req, res, ctx) => {
+    return res(
+      ctx.json({
+        contentid: "2034446",
+        title: "가창 찐빵 골목",
+        createdtime: "20151021001307",
+        modifiedtime: "20231026155741",
+        tel: "101-595-5644",
+        telname: "",
+        homepage: "https://www.npmjs.com/package/uuid",
+        firstimage: "http://tong.visitkorea.or.kr/cms/resource/70/1876170_image2_1.jpg",
+        firstimage2: "http://tong.visitkorea.or.kr/cms/resource/70/1876170_image3_1.jpg",
+        areacode: "4",
+        sigungucode: "3",
+        addr1: "대구광역시 달성군 가창면 가창로 1099",
+        addr2: "(가창면)",
+        zipcode: "42933",
+        mapx: "128.6222232980",
+        mapy: "35.8027142041",
+        mlevel: "6",
+        overview:
+          "가창 찐빵 골목은 대구광역시 달성군 가창면에 위치하고 있다. 대구방향에서 가창, 청도 방향 신천대로로 진입하다 가창댐으로 들어가는 길목 대로변과 가창면 행정복지 센터로 들어가는 가창로 주변에 모여 있다. 대구 수성구 파동에서 가창 냉천(스파벨리), 가창댐, 헐티재, 청도 방면으로 오가는 시민과 관광객들에게 맛있는 찐빵으로 알려졌으며, 2000년에 가창면사무소 맞은편 찐빵집이 문을 열면서 시작된 골목의 역사가 이후 20여 년이 지난 지금 9곳의 찐빵집이 골목을 이루고 있다.\n대구 지역 방송에 처음 소개되면서 널리 알려지기 시작해 여러 방송에 출연하며 전국적으로 유명한 대구 명물거리가 되었고, 가창 찐빵은 대구 달성의 대표 브랜드로 자리 잡았다. 골목 어느 상점이여도 찐빵 맛집으로는 손색이 없어 가게마다 나름의 특색과 장점을 내세워 단골을 확보, 가게 앞에 구매 고객들의 행렬을 만들고 있다.\n겨울이면 만두와 찐빵을 찌는 하얀 김이 거리를 덮어 이곳이 가창 모락모락 찐빵 골목임을 증명한다.",
+      }),
+    );
   }),
 ];
