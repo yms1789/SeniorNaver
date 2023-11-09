@@ -1,9 +1,12 @@
-import MemeDictionaryWords from "./MemeDictionaryWords";
+import MemeDictionaryBookList from "./MemeDictionaryBookList";
 import searchicon from "./../assets/images/searchicon.png"
 import styled from "styled-components";
+import Pagination  from "./Pagination";
+import { useState } from "react";
 const MemeDictionaryBookWraaper = styled.div`
   width: 930px;
-  height: 100vh;
+  margin-top: 100px;
+  height: 100%;
   background: var(--white);
   display: flex;
   flex-direction: column;
@@ -16,8 +19,6 @@ const MemeDictionaryBookHeadText = styled.div`
   margin-bottom: 20px;
   text-align: center;
   user-select: none;
-
-
 `
 const MemeDictionaryBookSearchBarWrapper = styled.form`
   display: flex;
@@ -44,9 +45,10 @@ const MemeDictionaryBookSearchIcon = styled.img`
 const MemeDictionaryBookFilterWrapper = styled.form`
   display: flex;
   margin-bottom: 40px;
-
 `
-
+const MemeDictionaryBookEmpty = styled.div`
+  height: 450px;
+`
 const MemeDictionaryBookFilter = styled.div`
   width: 98px;
   height: 46px;
@@ -72,7 +74,56 @@ const MemeDictionaryBookFilter = styled.div`
   }
 `
 
+const PaginationWrapper = styled.div`
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const data = [{
+  no : "당모치",
+  page : 0,
+  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
+},
+{
+  no : "갑분싸",
+  page : 0,
+  content : "'갑자기 분위기 싸해진다.'의 준말. 특정 상황에서 갑자기 분위기가 싸늘해지는 상황을 표현하는 신조어.",
+},
+{
+  no : "당모치",
+  page : 0,
+  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
+},
+{
+  no : "당모치",
+  page : 0,
+  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
+},
+{
+  no : "당모치",
+  page : 0,
+  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
+},
+{
+  no : "당모치",
+  page : 0,
+  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
+},
+]
+
 function MemeDictionaryBook() {
+  const [posts, setPosts] = useState(data);
+  const [currentPage, setCurrentPage] = useState(data[0].page+1);
+  const [postsPerPage, setPostsPerPage] = useState(5);
+  const firstPostIndex = (currentPage - 1) * postsPerPage;
+  const lastPostIndex = firstPostIndex + postsPerPage;
+  const currentPosts = posts.slice(firstPostIndex, lastPostIndex);
+  // console.log(firstPostIndex)
+  // console.log(lastPostIndex)
+  // console.log(currentPosts)
+
   return (
     <MemeDictionaryBookWraaper>
       <MemeDictionaryBookHeadText>MZ 용어사전</MemeDictionaryBookHeadText>
@@ -85,8 +136,17 @@ function MemeDictionaryBook() {
       <MemeDictionaryBookFilter>2010</MemeDictionaryBookFilter>
       <MemeDictionaryBookFilter>2020</MemeDictionaryBookFilter>
       </MemeDictionaryBookFilterWrapper>
-      <MemeDictionaryWords></MemeDictionaryWords>
+      <MemeDictionaryBookList currentPosts={currentPosts}/>
+      <PaginationWrapper>
+      <Pagination
+          postsNum={posts.length}
+          postsPerPage={postsPerPage}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
+      </PaginationWrapper>
       </MemeDictionaryBookWraaper>
+      
   )
 }
 export default MemeDictionaryBook;
