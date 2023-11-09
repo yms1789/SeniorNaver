@@ -12,40 +12,28 @@ export interface ICoordinate {
   mapX: string;
   mapY: string;
 }
-export interface IAddress {
-  jibunAddress: string;
-  roadAddress: string;
-}
+
 const PlacesWrapper = styled.div`
   display: flex;
 `;
 
 function Places({ navermaps }: { navermaps: typeof naver.maps }) {
   const location = useGeolocation();
-  const [currentAddr, setCurrentAddr] = useState<IAddress>();
-  // const [mapState, setMapState] = useState(null);s
+  const [currentCoord, setcurrentCoord] = useState<ICoordinate>();
   const map = useRef<naver.maps.Map>(null);
+  const [coordinates, setCoordinates] = useRecoilState<ICoordinate[]>(coordinateState);
 
   const [isWork, setIsWork] = useState(false);
 
   useEffect(() => {
     if (location.loaded) {
       console.log(location.coordinates);
-      naver.maps.Service.reverseGeocode(
-        {
-          coords: new naver.maps.LatLng(location.coordinates!.lat, location.coordinates!.lng),
-        },
-        (status, response) => {
-          if (status !== naver.maps.Service.Status.OK) {
-            return alert("Something wrong!");
-          }
-
-          setCurrentAddr(response.v2.address); // 검색 결과의 컨테이너
-        },
-      );
+      setcurrentCoord({
+        mapX: "" + location.coordinates?.lng,
+        mapY: "" + location.coordinates?.lat,
+      });
     }
   }, [location.loaded]);
-  const [coordinates, setCoordinates] = useRecoilState<ICoordinate[]>(coordinateState);
 
   useEffect(() => {
     if (map.current && isWork && coordinates.length) {
@@ -87,34 +75,46 @@ function Places({ navermaps }: { navermaps: typeof naver.maps }) {
               defaultCenter={
                 new navermaps.LatLng(location.coordinates!.lat, location.coordinates!.lng)
               }
-              defaultZoom={10}
+              defaultZoom={18}
               disableKineticPan={false}
               zoomControl
               zoomControlOptions={{
                 position: navermaps.Position.TOP_RIGHT,
               }}
               minZoom={8}
-              maxZoom={13}
+              maxZoom={19}
             >
-              {coordinates.length &&
-                coordinates.map((coordinate, idx) => {
-                  const lat = coordinate.mapY;
-                  const lng = coordinate.mapX;
-                  return (
+              {coordinates.length
+                ? coordinates.map((coordinate, idx) => {
+                    const lat = coordinate.mapY;
+                    const lng = coordinate.mapX;
+                    return (
+                      <Marker
+                        key={`좌표${idx}`}
+                        position={new navermaps.LatLng(parseFloat(lat), parseFloat(lng))}
+                      />
+                    );
+                  })
+                : currentCoord && (
                     <Marker
-                      key={`좌표${idx}`}
-                      position={new navermaps.LatLng(parseFloat(lat), parseFloat(lng))}
+                      position={
+                        new navermaps.LatLng(
+                          parseFloat(currentCoord!.mapY),
+                          parseFloat(currentCoord!.mapX),
+                        )
+                      }
                     />
-                  );
-                })}
+                  )}
             </NaverMap>
           )}
         </MapDiv>
-        <DrawerComponent
-          setCoordinates={setCoordinates}
-          currentAddr={currentAddr}
-          setIsWork={setIsWork}
-        />
+        {currentCoord && (
+          <DrawerComponent
+            setCoordinates={setCoordinates}
+            currentCoord={currentCoord}
+            setIsWork={setIsWork}
+          />
+        )}
         <NavigationBar />
       </ErrorBoundary>
     </PlacesWrapper>

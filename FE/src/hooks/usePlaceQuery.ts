@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { IPlace } from "../components/DrawerComponent";
+import { IPlaceItem } from "../components/DrawerComponent";
+import { CategoryGroupCode } from "../utils/utils";
 
 export type User = {
   firstName: string;
@@ -11,18 +12,26 @@ export type UsersPage = {
   results: User[];
   next: number | undefined;
 };
+export interface IPlace {
+  meta: {
+    totalPage: number;
+    pageable_count: number;
+  };
+  documents: IPlaceItem[];
+}
 
-const fetchCategory = async (category: string = "맛집", location = "경북 구미시 진평동") => {
+const fetchCategory = async (page: number, category: string = "맛집", lat: string, lng: string) => {
   try {
-    const response = await axios.get(`/api/search/v1/category`, {
+    const response = await axios.get<IPlace>(`/api/search/v1/category`, {
       params: {
-        location: location,
-        category,
+        page,
+        category: CategoryGroupCode[category],
+        x: lng,
+        y: lat,
       },
     });
 
-    const data: IPlace[] = response.data.items;
-    return data;
+    return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response?.data.errorCode === "SE01") {
@@ -33,19 +42,21 @@ const fetchCategory = async (category: string = "맛집", location = "경북 구
   }
 };
 
-const fetchSearch = async (query: string) => {
+export const fetchSearch = async (page: number, query: string, lat: string, lng: string) => {
   if (!query) {
     return;
   }
   try {
-    const response = await axios.get(`/api/search/v1/keyword`, {
+    const response = await axios.get<IPlace>(`/api/search/v1/keyword`, {
       params: {
+        page,
         keyword: query,
+        x: lng,
+        y: lat,
       },
     });
 
-    const data: IPlace[] = response.data.items;
-    return data;
+    return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response?.data.errorCode === "SE01") {
@@ -56,24 +67,16 @@ const fetchSearch = async (query: string) => {
   }
 };
 
-export const useCategoryQuery = (category: string, location?: string) => {
-  const query = useQuery({
+export const useCategoryQuery = (category: string, lat: string, lng: string) => {
+  const query = useInfiniteQuery({
     queryKey: ["category", category],
-    queryFn: () => fetchCategory(category, location),
+    queryFn: ({ pageParam = 1 }) => fetchCategory(pageParam, category, lat, lng),
+    getNextPageParam: (lastPage, allPages) => {
+      return allPages?.length < lastPage?.meta.totalPage! ? allPages.length + 1 : undefined;
+    },
+
     suspense: false,
     refetchOnWindowFocus: false,
-  });
-
-  return query;
-};
-
-export const useSearchQuery = (search: string) => {
-  const query = useQuery({
-    queryKey: ["search"],
-    queryFn: () => fetchSearch(search),
-    suspense: false,
-    refetchOnWindowFocus: false,
-    enabled: false,
   });
 
   return query;
