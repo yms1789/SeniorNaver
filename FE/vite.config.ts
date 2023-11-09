@@ -11,11 +11,11 @@ export default defineConfig({
         rewrite: path => path.replace(/^\/naver/, ""),
         changeOrigin: true,
       },
-      // "/api": {
-      //   target: "http://k9d105.p.ssafy.io:9999",
-      //   rewrite: path => path.replace(/^\/api/, ""),
-      //   changeOrigin: true,
-      // },
+      "/api": {
+        target: "http://k9d105.p.ssafy.io:9999",
+        rewrite: path => path.replace(/^\/api/, ""),
+        changeOrigin: true,
+      },
     },
   },
 });
