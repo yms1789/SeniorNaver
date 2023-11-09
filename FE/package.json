@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^4.36.1",
+    "@types/aos": "^3.0.7",
     "@types/lodash": "^4.14.200",
     "@types/navermaps": "^3.7.1",
+    "aos": "^2.3.4",
     "axios": "^1.5.1",
     "downshift": "^8.2.2",
     "eslint-plugin-jest-dom": "^5.1.0",
