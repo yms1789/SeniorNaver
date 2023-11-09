@@ -1,50 +1,39 @@
-import { Container as MapDiv, Marker, NaverMap, useNavermaps } from "react-naver-maps";
+import { useEffect, useRef, useState } from "react";
+import { Container as MapDiv, Marker, NaverMap } from "react-naver-maps";
+import { useRecoilState } from "recoil";
+import { styled } from "styled-components";
 import DrawerComponent from "../components/DrawerComponent";
+import Error from "../components/Error";
 import NavigationBar from "../components/NavigationBar";
 import useGeolocation from "../hooks/useGeolocation";
-import { useRecoilState } from "recoil";
 import coordinateState from "../states/coordinates";
-import { useEffect, useRef, useState, Suspense } from "react";
-import { styled } from "styled-components";
+import { ErrorBoundary } from "react-error-boundary";
 export interface ICoordinate {
   mapX: string;
   mapY: string;
 }
-export interface IAddress {
-  jibunAddress: string;
-  roadAddress: string;
-}
+
 const PlacesWrapper = styled.div`
   display: flex;
 `;
 
-function Places() {
-  const navermaps = useNavermaps();
+function Places({ navermaps }: { navermaps: typeof naver.maps }) {
   const location = useGeolocation();
-  const [currentAddr, setCurrentAddr] = useState<IAddress>();
-  // const [mapState, setMapState] = useState(null);s
+  const [currentCoord, setcurrentCoord] = useState<ICoordinate>();
   const map = useRef<naver.maps.Map>(null);
+  const [coordinates, setCoordinates] = useRecoilState<ICoordinate[]>(coordinateState);
 
   const [isWork, setIsWork] = useState(false);
 
   useEffect(() => {
     if (location.loaded) {
       console.log(location.coordinates);
-      naver.maps.Service.reverseGeocode(
-        {
-          coords: new naver.maps.LatLng(location.coordinates!.lat, location.coordinates!.lng),
-        },
-        (status, response) => {
-          if (status !== naver.maps.Service.Status.OK) {
-            return alert("Something wrong!");
-          }
-
-          setCurrentAddr(response.v2.address); // 검색 결과의 컨테이너
-        },
-      );
+      setcurrentCoord({
+        mapX: "" + location.coordinates?.lng,
+        mapY: "" + location.coordinates?.lat,
+      });
     }
   }, [location.loaded]);
-  const [coordinates, setCoordinates] = useRecoilState<ICoordinate[]>(coordinateState);
 
   useEffect(() => {
     if (map.current && isWork && coordinates.length) {
@@ -62,14 +51,14 @@ function Places() {
         new navermaps.LatLng(parseFloat(minLat), parseFloat(minLng)),
         new navermaps.LatLng(parseFloat(maxLat), parseFloat(maxLng)),
       );
-      map.current.fitBounds(boundary);
+      map.current.panToBounds(boundary);
     }
     setIsWork(false);
   }, [isWork]);
 
   return (
     <PlacesWrapper>
-      <Suspense fallback={<div>로딩 중...</div>}>
+      <ErrorBoundary fallbackRender={Error}>
         <MapDiv
           style={{
             position: "absolute",
@@ -86,36 +75,48 @@ function Places() {
               defaultCenter={
                 new navermaps.LatLng(location.coordinates!.lat, location.coordinates!.lng)
               }
-              defaultZoom={10}
+              defaultZoom={18}
               disableKineticPan={false}
               zoomControl
               zoomControlOptions={{
                 position: navermaps.Position.TOP_RIGHT,
               }}
               minZoom={8}
-              maxZoom={13}
+              maxZoom={19}
             >
-              {coordinates.length &&
-                coordinates.map((coordinate, idx) => {
-                  const lat = coordinate.mapY;
-                  const lng = coordinate.mapX;
-                  return (
+              {coordinates.length
+                ? coordinates.map((coordinate, idx) => {
+                    const lat = coordinate.mapY;
+                    const lng = coordinate.mapX;
+                    return (
+                      <Marker
+                        key={`좌표${idx}`}
+                        position={new navermaps.LatLng(parseFloat(lat), parseFloat(lng))}
+                      />
+                    );
+                  })
+                : currentCoord && (
                     <Marker
-                      key={`좌표${idx}`}
-                      position={new navermaps.LatLng(parseFloat(lat), parseFloat(lng))}
+                      position={
+                        new navermaps.LatLng(
+                          parseFloat(currentCoord!.mapY),
+                          parseFloat(currentCoord!.mapX),
+                        )
+                      }
                     />
-                  );
-                })}
+                  )}
             </NaverMap>
           )}
         </MapDiv>
-        <DrawerComponent
-          setCoordinates={setCoordinates}
-          currentAddr={currentAddr}
-          setIsWork={setIsWork}
-        />
+        {currentCoord && (
+          <DrawerComponent
+            setCoordinates={setCoordinates}
+            currentCoord={currentCoord}
+            setIsWork={setIsWork}
+          />
+        )}
         <NavigationBar />
-      </Suspense>
+      </ErrorBoundary>
     </PlacesWrapper>
   );
 }

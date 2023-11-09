@@ -46,13 +46,15 @@ const DropdownItem = styled.li`
 function Combobox({
   placeholder,
   items,
+  workplace,
   setWorkplace,
-  setIsSearch,
+  setInput,
 }: {
   placeholder: string;
   items: string[];
+  workplace: string;
   setWorkplace: React.Dispatch<React.SetStateAction<string>>;
-  setIsSearch: React.Dispatch<React.SetStateAction<boolean>>;
+  setInput: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const {
     isOpen,
@@ -66,7 +68,7 @@ function Combobox({
     onInputValueChange({ inputValue }) {
       if (inputValue) {
         setWorkplace(inputValue);
-        setIsSearch(false);
+        setInput("");
       }
     },
   });
@@ -74,7 +76,7 @@ function Combobox({
   return (
     <>
       <SelectPlace>
-        <SelectText readOnly placeholder={placeholder} {...getInputProps()} />
+        <SelectText readOnly placeholder={placeholder} {...getInputProps()} value={workplace} />
         <SelectButton {...getToggleButtonProps()}>
           {isOpen ? <MdKeyboardArrowUp size={30} /> : <MdKeyboardArrowDown size={30} />}
         </SelectButton>
