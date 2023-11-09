@@ -2,14 +2,15 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useRecoilState,useSetRecoilState } from "recoil";
 import { memeCurrentTapState } from "../states/useMeme";
+import { memeMineCurrentCategoryState, memeMineCurrentPracticeState } from "../states/useMeme";
 
 const MemeNavBarWrapper = styled.div`
   /* position: fixed; */
   position: absolute;
   width: 293px;
   height: 937px;
-  left: -24px;
-  top: 110px;
+  left: 200px;
+  top: 170px;
   background: var(--white);
   border: 1px solid var(--dark01);
   box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.25);
@@ -18,7 +19,18 @@ const MemeNavBarWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  zoom: 75%;
+  @media screen and (max-width: 768px) {
+    zoom: 35%;
+    top: 800px;
+    left: -10 px;
+  }
+  @media screen and (max-width: 391px) {
+    zoom: 20%;
+    top: 1500px;
+  }
   `
+
 const MemeNavMarLogoBox =styled.div`
   width: 170px;
   height: 50px;
@@ -54,6 +66,7 @@ const MemeNavBarTap = styled.div<IbackgroundColor>`
   height: 110px;
   font-size: 32px;
   margin-bottom: 50px;
+  color : ${props => props.clicked ? 'var(--white)' : 'var(--dark01)'};
   cursor: pointer;
   user-select: none;
   transition: all 0.15s ease;
@@ -69,7 +82,6 @@ const MemeNavBarTap = styled.div<IbackgroundColor>`
   }
 ` 
 
-
 const MemeNavBarEmpty = styled.div`
   display: flex;
   width: 170px;
@@ -83,7 +95,10 @@ interface IbackgroundColor{
 
 function MemeNavigationBarforDesktop() {
   const currentTab = useRecoilState(memeCurrentTapState);
-  const setsetCurrentTab = useSetRecoilState(memeCurrentTapState);
+  const setCurrentTab = useSetRecoilState(memeCurrentTapState);
+  const setcurrentCategory = useSetRecoilState(memeMineCurrentCategoryState)
+  const setcurrentPage = useSetRecoilState(memeMineCurrentPracticeState)
+
   const navMenu = [
     { name: "Tab1", content: "오늘의 용어"  },
     { name: "Tab2", content: "상황별 연습" },
@@ -92,7 +107,10 @@ function MemeNavigationBarforDesktop() {
   ];
 
   const selectMenuHandler = (index:number) => {
-    setsetCurrentTab({currentPage : index});
+    setCurrentTab({currentPage : index});
+    setcurrentCategory({currentCategory : 0})
+    setcurrentPage({currentPage : 0, currentYear: 0})
+
   };
 
   return (
@@ -111,3 +129,4 @@ function MemeNavigationBarforDesktop() {
   )
 }
 export default MemeNavigationBarforDesktop;
+
