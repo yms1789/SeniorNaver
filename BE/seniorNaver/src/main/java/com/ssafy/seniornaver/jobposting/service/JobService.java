@@ -7,7 +7,7 @@ import com.ssafy.seniornaver.jobposting.dto.response.JobListResponseDto;
 
 public interface JobService {
     JobDetailResponseDto getDetailService(String jobId) throws JsonProcessingException;
-    JobListResponseDto getWorkList(JobListRequestDto jobRequestDto) throws JsonProcessingException;
-    String getListData(JobListRequestDto jobRequestDto, int searchNum);
+    void saveWorkList() throws JsonProcessingException;
+    String getListData(int pageNo);
     String getDetailData(String jobId);
 }

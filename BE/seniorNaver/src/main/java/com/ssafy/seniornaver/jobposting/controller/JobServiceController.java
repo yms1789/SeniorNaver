@@ -7,6 +7,7 @@ import com.ssafy.seniornaver.jobposting.dto.request.JobListRequestDto;
 import com.ssafy.seniornaver.jobposting.dto.response.JobDetailResponseDto;
 import com.ssafy.seniornaver.jobposting.dto.response.JobListResponseDto;
 import com.ssafy.seniornaver.jobposting.service.JobService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,16 +24,13 @@ public class JobServiceController {
 
     private final JobService jobService;
 
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "OK"),
-        @ApiResponse(responseCode = "400", description = "BAD_REQUEST", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-        })
-    @GetMapping("/search")
-    public ResponseEntity<JobListResponseDto> jobSearch(JobListRequestDto jobRequestDto) throws JsonProcessingException {
+    @Operation(summary = "일자리 데이터 DB 저장 (수동)", description = "안할 경우 오전 8시마다 갱신, (데이터 1일 1회 갱신한대서 한번만 함)")
+    @GetMapping("/resource")
+    public ResponseEntity jobSearch() throws JsonProcessingException {
 
-        JobListResponseDto jobListResponseDto = jobService.getWorkList(jobRequestDto);
+        jobService.saveWorkList();
 
-        return ResponseEntity.ok(jobListResponseDto);
+        return ResponseEntity.ok("DB저장 완료");
     }
 
     @ApiResponses(value = {

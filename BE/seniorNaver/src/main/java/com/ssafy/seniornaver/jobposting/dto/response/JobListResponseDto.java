@@ -2,6 +2,7 @@ package com.ssafy.seniornaver.jobposting.dto.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -9,16 +10,10 @@ import java.util.List;
 @NoArgsConstructor
 public class JobListResponseDto {
 
-    private int pageNo;
-    private int totalCount;
-    private Items items;
+    private List<item> item;
 
     @Getter
-    public static class Items {
-        private List<item> item;
-    }
-
-    @Getter
+    @ToString
     public static class item {
         private String acptMthd;
         private String deadline;
@@ -26,10 +21,7 @@ public class JobListResponseDto {
         private String jobId;
         private String jobclsNm;
         private String recrtTitle;
-        private String workPlaceNm;
-    }
-
-    public void changeTotal(int totalPage) {
-        this.totalCount = totalPage;
+        private String workPlc;
+        private String workPlcNm;
     }
 }
