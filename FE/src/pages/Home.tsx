@@ -1,10 +1,14 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import styled from "styled-components";
 import Carousel from "../components/Carousel";
 import CurationCategoryButton from "../components/CurationCategoryButton";
-import RoundedButton from "../components/RoundedButton";
-import News from "../components/News";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import CurationShows from "../components/CurationShows";
+import CurationNews from "../components/CurationNews";
+import CurationTastes from "../components/CurationTastes";
+import CurationTravels from "../components/CurationTravels";
+import { useRecoilValue } from "recoil";
+import { curationCategoryState } from "../states/curationCategory";
 
 const HomeWrapper = styled.div`
   width: 100vw;
@@ -20,23 +24,22 @@ const HomeWrapper = styled.div`
   overflow-x: hidden;
   color: var(--dark02);
 `;
+const Divider = styled.div`
+  width: inherit;
+  padding: 0.05vw;
+  background-color: var(--gray04);
+`;
+const CurationWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3vw;
+`;
 
 interface caouselData {
   curationImages: string[];
   curationTexts: string[];
   mzWords: string[];
   places: string[][];
-}
-interface ShowData {
-  pfId: string;
-  pfName: string;
-  startDate: string;
-  endDate: string;
-  theater: string;
-  poster: string;
-  genre: string;
-  pfState: string;
-  openRun: string;
 }
 
 function Home() {
@@ -46,11 +49,11 @@ function Home() {
     mzWords: [],
     places: [[]],
   });
-  const [dataShows, setDataShows] = useState<ShowData[]>([]);
-  const [category, setCategory] = useState<string>("뉴스");
+
+  const activeCategory = useRecoilValue(curationCategoryState);
+
   useEffect(() => {
     fetchCarousel();
-    fetchShows();
   }, []);
 
   const fetchCarousel = async () => {
@@ -63,30 +66,17 @@ function Home() {
     }
   };
 
-  const fetchShows = async () => {
-    try {
-      const response = await axios.get("/shows");
-      setDataShows(response.data);
-      console.log("공연 데이터", dataShows);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <HomeWrapper>
       <Carousel {...dataCarousel} />
-      <CurationCategoryButton setCategory={setCategory} />
-      <div>{category}</div>
-      {dataShows.map(show => {
-        return (
-          <div key={show.pfId}>
-            <div>{show.pfName}</div>
-          </div>
-        );
-      })}
-      {/* <News /> */}
-      {/* <RoundedButton /> */}
+      <Divider />
+      <CurationWrapper>
+        <CurationCategoryButton />
+        {activeCategory === "뉴스" && <CurationNews />}
+        {activeCategory === "공연" && <CurationShows />}
+        {activeCategory === "맛집" && <CurationTastes />}
+        {activeCategory === "관광" && <CurationTravels />}
+      </CurationWrapper>
     </HomeWrapper>
   );
 }
