@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { IoIosArrowBack, IoIosArrowForward, IoIosPause, IoIosPlay } from "react-icons/io";
-import { v4 as uuidv4 } from "uuid";
 import React from "react";
 
 const CarouselWrapper = styled.div`
@@ -13,13 +12,13 @@ const FrameContainerWrapper = styled.div`
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 24vw);
+  grid-template-columns: repeat(3, 25vw);
   grid-template-rows: repeat(4, 8vw) repeat(2, 2.25vw);
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 2vw;
-  transition: all 0.5s ease-in-out;
+  /* transition: all 0.5s ease-in-out; */
   user-select: none;
 `;
 const FrameCurationContainerWrapper = styled.div`
@@ -245,7 +244,7 @@ const Dot = styled.div<{ $active: boolean }>`
   height: 0.5vw;
   width: 3vw;
   margin: 0.5vw;
-  background-color: ${props => (props.$active ? "var(--aqua50)" : "var(--gray03)")};
+  background-color: ${props => (props.$active ? "var(--aqua02)" : "var(--gray03)")};
   transition: all 0.7s ease-in-out;
 `;
 
@@ -403,8 +402,9 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
           <FrameCurationWrapper>
             <CurationImageContainerWrapper ref={curationImagesRef}>
               {currentCurationImages?.map(image => {
+                const uuid = self.crypto.randomUUID();
                 return (
-                  <CurationImageWrapper key={uuidv4()}>
+                  <CurationImageWrapper key={uuid}>
                     <CurationImage src={image} />
                   </CurationImageWrapper>
                 );
@@ -415,8 +415,9 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
         <FrameCurationText>
           <CurationTextContainerWrapper ref={curationTextsRef}>
             {currentCurationTexts?.map(text => {
+              const uuid = self.crypto.randomUUID();
               return (
-                <CurationTextWrapper key={uuidv4()}>
+                <CurationTextWrapper key={uuid}>
                   <CurationText>{text}</CurationText>
                 </CurationTextWrapper>
               );
@@ -427,8 +428,10 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
           <FrameOtherColWrapper>
             <OtherContainerWrapper ref={mzRef}>
               {currentMzWords?.map(word => {
+                const uuid = self.crypto.randomUUID();
+
                 return (
-                  <MzWrapper key={uuidv4()}>
+                  <MzWrapper key={uuid}>
                     <MzDictionaryWrapper>
                       <MzDictionaryText>MZ 사전</MzDictionaryText>
                     </MzDictionaryWrapper>
@@ -445,8 +448,9 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
             <OtherContainerWrapper ref={placeRef}>
               <PlaceContainerOuterWrapper>
                 {currentPlaces?.map(place => {
+                  let uuid = self.crypto.randomUUID();
                   return (
-                    <PlaceContainerWrapper key={uuidv4()}>
+                    <PlaceContainerWrapper key={uuid}>
                       <PlaceImage src={place[0]} />
                       <PlaceText>{place[1]}</PlaceText>
                     </PlaceContainerWrapper>
@@ -458,10 +462,11 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
         </FrameOtherWrapper>
         <DotWrapper>
           {curationImages.map((dot, index) => {
+            const uuid = self.crypto.randomUUID();
             return (
               <Dot
                 $active={currentIndex - 1 === index}
-                key={uuidv4() + dot}
+                key={uuid + dot}
                 onClick={() => {
                   setCurrentIndex(index + 1);
                 }}

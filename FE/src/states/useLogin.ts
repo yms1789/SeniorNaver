@@ -1,5 +1,7 @@
 import { atom } from "recoil";
 import axios from "axios";
+import { recoilPersist } from "recoil-persist";
+const { persistAtom } = recoilPersist();
 
 const BaseURL = "/api";
 interface UserInterface {
@@ -23,11 +25,12 @@ export const userState = atom<UserInterface>({
     refreshToken: "",
     refreshTokenExpirationTime: "",
   },
+  effects_UNSTABLE: [persistAtom],
 });
 
 export const isLoggedInState = atom<boolean>({
   key: "isLoggedIn",
-  default: localStorage.getItem("token") ? true : false,
+  default: localStorage.getItem("accessToken") ? true : false,
 });
 
 export const login = async (userFormData: { memberId: string; password: string }) => {
@@ -79,6 +82,7 @@ export const naverLogin = async () => {
 export const logout = async (userLogoutData: { accessToken: string; refreshToken: string }) => {
   try {
     await axios.post("api/auth/logout", userLogoutData);
+    console.log("로그아웃 완료");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
   } catch (error) {

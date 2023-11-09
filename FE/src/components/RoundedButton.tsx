@@ -1,34 +1,35 @@
 import styled from "styled-components";
 
-const Button = styled.div`
-  position: absolute;
-  top: 131.06rem;
-  left: calc(50% - 47.5px);
-  border-radius: var(--br-980xl);
-  border: 2px solid var(--dark02);
-  box-sizing: border-box;
-  height: 2.88rem;
-  overflow: hidden;
+const RoundedButtonWrapper = styled.div`
   display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: center;
-  padding: var(--padding-xs) var(--padding-xl);
-  font-size: var(--font-size-xl);
+  align-items: center;
 `;
-const B16 = styled.b`
-  position: relative;
-  font-size: var(--font-size-xl);
-  font-family: var(--font-nanumsquare-neo);
-  color: var(--dark50);
-  text-align: left;
+const ButtonTextWrapper = styled.div<{ $isActive: boolean }>`
+  padding: 0.2vw 0.8vw;
+  border: solid 0.15vw ${props => (props.$isActive ? "var(--aqua02)" : "var(--gray03)")};
+  border-radius: 99vw;
+  font-size: 1.15vw;
+  white-space: nowrap;
+  color: ${props => (props.$isActive ? "var(--white)" : "var(--dark30)")};
+  background-color: ${props => (props.$isActive ? "var(--aqua)" : "var(--white)")};
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
-function RoundedButton() {
+interface TRoundedButtonProps {
+  buttonText: string;
+  isActive: boolean;
+  onClick: () => void;
+}
+
+function RoundedButton({ buttonText, isActive, onClick }: TRoundedButtonProps) {
   return (
-    <Button>
-      <B16>더보기</B16>
-    </Button>
+    <RoundedButtonWrapper onClick={onClick}>
+      <ButtonTextWrapper $isActive={isActive}>{buttonText}</ButtonTextWrapper>
+    </RoundedButtonWrapper>
   );
 }
 
