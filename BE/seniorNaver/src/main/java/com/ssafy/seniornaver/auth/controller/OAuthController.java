@@ -18,15 +18,14 @@ public class OAuthController {
     @Operation(summary = "네이버 로그인")
     public ResponseEntity<OAuthSignInResponse> redirect(
             @PathVariable("registrationId") String registrationId
-            , @RequestParam("code") String code
-            , @RequestParam("state") String state) {
+            , @RequestBody TokenRequest request) {
         return ResponseEntity.ok(
                 OAuthService.redirect(
-                    TokenRequest.builder()
-                            .registrationId(registrationId)
-                            .code(code)
-                            .state(state)
-                            .build()));
+                        TokenRequest.builder()
+                                .registrationId(registrationId)
+                                .code(request.getCode())
+                                .state(request.getState())
+                                .build()));
     }
     // accessToken 생성 컨트롤러
     @PostMapping("/token")
