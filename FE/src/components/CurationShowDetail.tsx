@@ -1,5 +1,6 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import { styled } from "styled-components";
 
 const ShowDetailWrapper = styled.div`
@@ -125,6 +126,7 @@ const ShowDetailImage = styled.img`
 `;
 
 function CurationShowDetail() {
+  const { showId } = useParams();
   const [dataShowDetail, setDataShowDetail] = useState({
     mt20id: "",
     prfnm: "",
@@ -152,12 +154,14 @@ function CurationShowDetail() {
   }, []);
 
   const fetchShowDetail = async () => {
-    try {
-      const response = await axios.get("/showDetail");
-      setDataShowDetail(response.data);
-      console.log("공연 상세 데이터", dataShowDetail);
-    } catch (error) {
-      console.error(error);
+    if (showId) {
+      try {
+        const response = await axios.get(`/api/curation/v1/performance/${showId}`);
+        setDataShowDetail(response.data);
+        console.log("공연 상세 데이터", dataShowDetail);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
