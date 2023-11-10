@@ -117,12 +117,19 @@ public class ChatbotServiceImpl implements ChatbotService{
                 }
                 br.close();
                 result = response.toString();
+
             } else {
                 log.error("error !!!");
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+            return result;
         }
+        if (result.trim().isEmpty()) {
+            // 공백인 경우 예외 발생
+            throw new BadRequestException(ErrorCode.NOT_TALK_ERROR);
+        }
+
         return result;
     }
 
