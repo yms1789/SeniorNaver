@@ -6,16 +6,19 @@ import { useCallback } from "react";
 export interface IJob {
   pageNo: number;
   totalCount: number;
-  items: { item: IJobItem[] };
+  items: IJobItem[];
 }
 export interface IJobItem {
-  acptMthd: string;
+  acceptMethod: string;
   deadline: string;
-  emplymShpNm: string;
+  employShape: string;
   jobId: string;
-  jobclsNm: string;
-  recrtTitle: string;
-  workPlaceNm: string;
+  jobClass: string;
+  title: string;
+  workPlace: string;
+  thumbnail: string;
+  startDate: string;
+  endDate: string;
 }
 
 const JobWrapper = styled.div`
@@ -47,13 +50,13 @@ function JobList({ workplace }: { workplace: string }) {
   const handleClick = useCallback((item: IJobItem) => {
     navigate("/job-detail", { state: item });
   }, []);
-  return data?.items.item.map((item: IJobItem) => {
+  return data?.items.map((item: IJobItem) => {
     return (
       <JobWrapper key={item.jobId} onClick={() => handleClick(item)} role="button">
-        <JobTitle>{item.recrtTitle}</JobTitle>
-        <JobDescription>{`위치: ${item.workPlaceNm || "미지정"},`}</JobDescription>
+        <JobTitle>{item.title}</JobTitle>
+        <JobDescription>{`위치: ${item.workPlace || "미지정"},`}</JobDescription>
 
-        <JobDescription>{`채용공고: ${item.emplymShpNm}`}</JobDescription>
+        <JobDescription>{`채용공고: ${item.employShape}`}</JobDescription>
       </JobWrapper>
     );
   });
