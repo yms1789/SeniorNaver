@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Tag(name = "PlaceSearch", description = "장소 검색 (맛집, 휴양지, ???)")
 @Slf4j
 @RestController
@@ -47,8 +49,11 @@ public class PlaceSearchController {
     })
     @Operation(summary = "카테고리 검색", description = "자신의 지역기반으로 검색합니다.")
     @GetMapping("/category")
-    public ResponseEntity<ResponseSearchDto> categorySearch(// HttpServletRequest httpServletRequest,
-                                                        RequestCategorySearchDto requestSearchDto) {
+    public ResponseEntity<ResponseSearchDto> categorySearch(HttpServletRequest httpServletRequest,
+                                                            RequestCategorySearchDto requestSearchDto) {
+
+        String token = httpServletRequest.getHeader("Authorization");
+        System.out.println(token);
 
         ResponseSearchDto responseSearchDto = searchService.categorySearch(requestSearchDto);
 

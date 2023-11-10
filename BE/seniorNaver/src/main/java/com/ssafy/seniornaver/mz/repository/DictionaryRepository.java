@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface DictionaryRepository extends JpaRepository<Dictionary, Long> {
     Optional<Dictionary> findByWordId(Long wordId);
+    boolean existsByWord(String word);
 }

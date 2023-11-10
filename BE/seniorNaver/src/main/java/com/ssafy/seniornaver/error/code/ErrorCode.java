@@ -93,7 +93,7 @@ public enum ErrorCode {
 
     NOT_MATCH_CATEGORY(HttpStatus.BAD_REQUEST, "V-001", "요청 목록과 메서드가 상이합니다."),
 
-    DONT_SUCH_PLACE(HttpStatus.BAD_REQUEST, "F-001", "데이터가 부족합니다. 요청 값을 확인해주세요"),
+    DONT_SUCH_PLACE(HttpStatus.BAD_REQUEST, "F-001", "데이터가 부족합니다. 응답 값을 찾을 수 없습니다."),
     DONT_SUCH_JOB_POST(HttpStatus.BAD_REQUEST, "F-002", "존재하지 않는 검색 유형입니다."),
     DONT_PARSE_RESPONSE_DATA(HttpStatus.BAD_GATEWAY, "F-003", "확인할수 없는 데이터입니다.")
     ;
