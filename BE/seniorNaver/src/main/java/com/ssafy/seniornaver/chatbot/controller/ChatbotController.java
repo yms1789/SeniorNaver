@@ -40,8 +40,6 @@ public class ChatbotController {
         // 챗봇의 응답을 음성으로 변환
         byte[] voiceData = chatbotService.convertTextToSpeech(response);
 
-        log.info(Arrays.toString(voiceData));
-
         // 음성 데이터를 HTTP 응답 본문에 담아 반환
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, "audio/mpeg")
