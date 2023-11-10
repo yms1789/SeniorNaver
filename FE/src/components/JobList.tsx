@@ -21,7 +21,13 @@ export interface IJobItem {
   endDate: string;
 }
 
-const JobWrapper = styled.div`
+export const JobWrapper = styled.div`
+  @media screen and (min-width: 780px) and (max-width: 1280px) {
+    width: 260px;
+  }
+  width: 300px;
+  display: flex;
+  flex-direction: column;
   font-family: NanumSquareNeoRegular;
   margin: 5px;
   cursor: pointer;
@@ -33,22 +39,24 @@ const JobWrapper = styled.div`
   padding: 10px 10px;
 `;
 
-const JobTitle = styled.div`
+export const JobTitle = styled.div`
   text-align: start;
   font-family: NanumSquareNeoExtraBold;
-  width: 300px;
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-all;
   white-space: nowrap;
 `;
-const JobDescription = styled.p`
+export const JobDescription = styled.p`
   display: inline;
   text-align: start;
   padding-right: 8px;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  white-space: nowrap;
 `;
 
-const JobEmpty = styled.h1`
+export const JobEmpty = styled.h1`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -80,7 +88,7 @@ function JobList({
       return (
         <JobWrapper key={item.jobId} onClick={() => handleClick(item)} role="button">
           <JobTitle>{item.title}</JobTitle>
-          <JobDescription>{`위치: ${item.workPlace || "미지정"},`}</JobDescription>
+          <JobDescription>{`위치: ${item.workPlace || "미지정"}`}</JobDescription>
 
           <JobDescription>{`채용공고: ${item.employShape}`}</JobDescription>
         </JobWrapper>

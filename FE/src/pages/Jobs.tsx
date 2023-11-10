@@ -6,7 +6,14 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import Combobox from "../components/Combobox";
 import HeadBar from "../components/HeadBar";
-import { IJob, IJobItem } from "../components/JobList";
+import {
+  IJob,
+  IJobItem,
+  JobDescription,
+  JobEmpty,
+  JobTitle,
+  JobWrapper,
+} from "../components/JobList";
 import NavigationBar from "../components/NavigationBar";
 import { fetchSearchJobs } from "../hooks/useJobsQuery";
 import workplaceState from "../states/workplace";
@@ -41,12 +48,16 @@ const RectangleParent = styled.div`
   height: 47px;
 `;
 const FrameGroup = styled.div`
-  @media screen and (max-width: 400px) {
+  @media screen and (max-width: 425px) {
   }
   @media screen and (min-width: 400px) and (max-width: 780px) {
+    width: 250px;
+    margin: 0 auto;
   }
   @media screen and (min-width: 780px) and (max-width: 1280px) {
+    width: 370px;
   }
+  max-height: 48px;
   display: flex;
   gap: 10px;
   width: fit-content;
@@ -59,7 +70,6 @@ const FrameParentRoot = styled.div`
 `;
 const JobCategoryWrapper = styled.div`
   @media screen and (max-width: 400px) {
-    width: 100%;
     padding: 0px 20px;
   }
   @media screen and (min-width: 400px) and (max-width: 780px) {
@@ -78,20 +88,18 @@ const JobCategoryWrapper = styled.div`
 `;
 const JobsWrapper = styled.div`
   @media screen and (max-width: 400px) {
-    width: 100%;
     padding: 0px 20px;
     grid-template-columns: repeat(1, 1fr);
   }
   @media screen and (min-width: 400px) and (max-width: 780px) {
-    width: 100%;
     padding: 0px 20px;
     grid-template-columns: repeat(2, 1fr);
   }
   @media screen and (min-width: 780px) and (max-width: 1280px) {
-    width: 100%;
     padding: 0px 40px;
     grid-template-columns: repeat(3, 1fr);
   }
+  width: 100%;
   position: relative;
   top: 40px;
   max-width: fit-content;
@@ -106,28 +114,6 @@ const JobsWrapper = styled.div`
     justify-content: center;
     align-items: center;
   }
-`;
-const JobWrapper = styled.div`
-  font-family: NanumSquareNeoRegular;
-  cursor: pointer;
-  &:hover {
-    background-color: #c5e3ed;
-  }
-`;
-
-const JobTitle = styled.div`
-  text-align: start;
-  font-family: NanumSquareNeoExtraBold;
-  width: 300px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: break-all;
-  white-space: nowrap;
-`;
-const JobDescription = styled.p`
-  display: inline;
-  text-align: start;
-  padding-right: 8px;
 `;
 
 const places = [
@@ -166,6 +152,9 @@ function Jobs() {
         setIsLoading(true);
         const response = await fetchSearchJobs(input, workplace);
         setSearchData(response);
+        if (response?.items.length! <= 0) {
+          jobsRef.current?.classList.add("data-empty");
+        }
         setIsLoading(false);
       }
     },
@@ -217,7 +206,7 @@ function Jobs() {
             {isSearch ? (
               isLoading ? (
                 <Loading />
-              ) : (
+              ) : searchData?.items.length ? (
                 searchData?.items.map((item: IJobItem) => {
                   return (
                     <JobWrapper
@@ -232,6 +221,8 @@ function Jobs() {
                     </JobWrapper>
                   );
                 })
+              ) : (
+                <JobEmpty>공고가 없습니다.</JobEmpty>
               )
             ) : (
               <JobList workplace={workplace} jobsRef={jobsRef} />
