@@ -79,7 +79,6 @@ public class JobServiceImpl implements JobService {
                             .startDate(changeDate(item.getFrDd()))
                             .endDate(changeDate(item.getToDd()))
                             .title(item.getRecrtTitle())
-                            .thumbnail(imageSearch(item.getWorkPlcNm()))
                             .build()).collect(Collectors.toList());
 
             employRepository.saveAll(employmentList);
@@ -117,7 +116,7 @@ public class JobServiceImpl implements JobService {
                     .collect(Collectors.toList());
 
             jobListResponeDto = JobListResponeDto.builder()
-                    .page(jobListSearchRequestDto.getPageNum())
+                    .page(jobListSearchRequestDto.getPageNum() + 1)
                     .totalPage(getTotalPage(total))
                     .items(items)
                     .build();
@@ -143,7 +142,7 @@ public class JobServiceImpl implements JobService {
                     .collect(Collectors.toList());
 
             jobListResponeDto = JobListResponeDto.builder()
-                    .page(jobListSearchRequestDto.getPageNum())
+                    .page(jobListSearchRequestDto.getPageNum() + 1)
                     .totalPage(getTotalPage(total))
                     .items(items)
                     .build();
@@ -167,7 +166,7 @@ public class JobServiceImpl implements JobService {
                     .collect(Collectors.toList());
 
             jobListResponeDto = JobListResponeDto.builder()
-                    .page(jobListSearchRequestDto.getPageNum())
+                    .page(jobListSearchRequestDto.getPageNum()+1)
                     .totalPage(getTotalPage(total))
                     .items(items)
                     .build();
