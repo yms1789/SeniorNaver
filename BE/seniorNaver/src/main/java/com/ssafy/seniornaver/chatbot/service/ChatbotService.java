@@ -8,4 +8,6 @@ public interface ChatbotService {
     String talkToChatbot(String text);
 
     byte[] convertTextToSpeech(String response);
+
+    String talkToChat(String text);
 }

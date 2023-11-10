@@ -70,9 +70,7 @@ public class ProfileController {
         Member member = getMember(httpServletRequest);
         return ResponseEntity.ok(profileService.updateKeywords(member.getMemberId(),keywordRequestDto.getKeywords()));
     }
-
-
-
+    
     private Member getMember(HttpServletRequest httpServletRequest) {
         String header = httpServletRequest.getHeader("Authorization");
         String bearer = header.substring(7);
