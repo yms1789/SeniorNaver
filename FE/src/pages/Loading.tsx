@@ -17,6 +17,7 @@ export const Background = styled.div`
 export const LoadingText = styled.div`
   font: 1rem NanumSquareNeoBold;
   text-align: center;
+  width: 200px;
 `;
 
 function Loading() {

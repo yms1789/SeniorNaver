@@ -91,12 +91,19 @@ const JobsWrapper = styled.div`
     grid-template-columns: repeat(3, 1fr);
   }
   position: relative;
-  top: 20px;
-  max-width: 1300px;
+  top: 40px;
+  max-width: fit-content;
   display: grid;
   margin: 0 auto;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px 20px;
+  &.data-empty {
+    /* 데이터가 없을 때의 스타일을 정의 */
+    display: block;
+    margin-top: 60px;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 const JobWrapper = styled.div`
   font-family: NanumSquareNeoRegular;
@@ -148,6 +155,7 @@ function Jobs() {
   const [searchData, setSearchData] = useState<IJob>();
   const [isLoading, setIsLoading] = useState(false);
   const searchRef = useRef(null);
+  const jobsRef = useRef<HTMLDivElement>(null);
   const handleSearch = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
@@ -202,29 +210,29 @@ function Jobs() {
             </RectangleParent>
           </FrameGroup>
         </JobCategoryWrapper>
-        <JobsWrapper>
+        <JobsWrapper ref={jobsRef}>
           <Suspense fallback={<Loading />}>
             {isSearch ? (
               isLoading ? (
                 <Loading />
               ) : (
-                searchData?.items.item.map((item: IJobItem) => {
+                searchData?.items.map((item: IJobItem) => {
                   return (
                     <JobWrapper
                       key={item.jobId}
                       onClick={() => handleDetailClick(item)}
                       role="button"
                     >
-                      <JobTitle>{item.recrtTitle}</JobTitle>
-                      <JobDescription>{`위치: ${item.workPlaceNm || "미지정"},`}</JobDescription>
+                      <JobTitle>{item.title}</JobTitle>
+                      <JobDescription>{`위치: ${item.workPlace || "미지정"},`}</JobDescription>
 
-                      <JobDescription>{`채용공고: ${item.jobclsNm}`}</JobDescription>
+                      <JobDescription>{`채용공고: ${item.employShape}`}</JobDescription>
                     </JobWrapper>
                   );
                 })
               )
             ) : (
-              <JobList workplace={workplace} />
+              <JobList workplace={workplace} jobsRef={jobsRef} />
             )}
           </Suspense>
         </JobsWrapper>
