@@ -100,7 +100,7 @@ function ChatButton() {
       // setAudioUrl(blobUrl);
       // const audioElement = new Audio();
       // audioElement.src = blobUrl;
-      // setResponseAudioUrl(blobUrl);
+      setResponseAudioUrl(blobUrl);
       // audioElement.volume = 0.5;
       // audioElement.play();
       // base64ToBlob(response.data, 'mp3');
@@ -110,6 +110,8 @@ function ChatButton() {
     }
   }
   const onRecAudio = () => {
+    setAudioUrl("");
+    setResponseAudioUrl("");
     // 음원정보를 담은 노드를 생성하거나 음원을 실행또는 디코딩 시키는 일을 한다
     const audioCtx = new window.AudioContext();
     // 자바스크립트를 통해 음원의 진행상태에 직접접근에 사용된다.
@@ -229,7 +231,7 @@ function ChatButton() {
           </FloatingButton>
         )}
       </FloatingContainer>
-      {responseAudioUrl && <audio ref={audioRef} src={responseAudioUrl} controls />}
+      {responseAudioUrl ? <audio ref={audioRef} src={responseAudioUrl} controls /> : <>없음</>}
       {audioUrl && <audio src={URL.createObjectURL(audioUrl)} controls></audio>}
     </>
   );
