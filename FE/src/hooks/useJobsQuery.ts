@@ -6,7 +6,7 @@ export async function fetchJobs(place: string) {
   try {
     const response = await axios.get<IJob>("/api/job/v1/list", {
       params: {
-        pageNum: 1,
+        pageNum: 0,
         workPlcNm: place,
         keyword: "",
       },
@@ -24,8 +24,8 @@ export async function fetchSearchJobs(input: string, places: string) {
   try {
     const response = await axios.get<IJob>("/api/job/v1/list", {
       params: {
-        pageNum: 1,
-        workplace: places || "구미",
+        pageNum: 0,
+        workPlcNm: places || "구미",
         keyword: input,
       },
     });

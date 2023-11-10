@@ -167,7 +167,6 @@ function Jobs() {
         const response = await fetchSearchJobs(input, workplace);
         setSearchData(response);
         setIsLoading(false);
-        setIsSearch(false);
       }
     },
     [input],
@@ -178,7 +177,6 @@ function Jobs() {
     const response = await fetchSearchJobs(input, workplace);
     setSearchData(response);
     setIsLoading(false);
-    setIsSearch(false);
   }, [input]);
   const handleDetailClick = useCallback((item: IJobItem) => {
     navigate("/job-detail", { state: item });
@@ -195,6 +193,7 @@ function Jobs() {
             setWorkplace={setWorkplace}
             workplace={workplace}
             setInput={setInput}
+            setIsSearch={setIsSearch}
           />
           <FrameGroup>
             <JobInput
