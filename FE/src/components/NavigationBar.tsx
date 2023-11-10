@@ -10,6 +10,7 @@ const NavigationButtonWrapper = styled.div`
   right: 0px;
   display: flex;
   flex-direction: column;
+  z-index: 100;
   @media screen and (max-width: 500px) {
     display: none;
   }
