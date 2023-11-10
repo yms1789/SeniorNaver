@@ -33,10 +33,10 @@ public class ChatbotController {
 
         // 음성을 텍스트로 변환
         String text = chatbotService.convertSpeechToText(voiceFile);
-        log.info("테스트2" + text);
+        log.info("테스트2 " + text);
         // 변환된 텍스트를 챗봇에 전달하고 챗봇의 응답을 받음
         String response = chatbotService.talkToChat(text);
-
+        log.info("테스트3 " + response);
         // 챗봇의 응답을 음성으로 변환
         byte[] voiceData = chatbotService.convertTextToSpeech(response);
 

@@ -123,11 +123,6 @@ public class ChatbotServiceImpl implements ChatbotService{
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return result;
-        }
-        if (result.trim().isEmpty()) {
-            // 공백인 경우 예외 발생
-            throw new BadRequestException(ErrorCode.NOT_TALK_ERROR);
         }
 
         return result;
