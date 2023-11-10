@@ -1,16 +1,18 @@
-import { Suspense, useCallback, useRef, useState } from "react";
+import React, { Suspense, useCallback, useRef, useState } from "react";
 import { IconContext } from "react-icons";
 import { BiSearch } from "react-icons/bi";
+import { useNavigate } from "react-router";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import Combobox from "../components/Combobox";
 import HeadBar from "../components/HeadBar";
-import JobList, { IJob, IJobItem } from "../components/JobList";
+import { IJob, IJobItem } from "../components/JobList";
 import NavigationBar from "../components/NavigationBar";
 import { fetchSearchJobs } from "../hooks/useJobsQuery";
-import Loading from "./Loading";
-import { useNavigate } from "react-router";
 import workplaceState from "../states/workplace";
-import { useRecoilState } from "recoil";
+import Loading from "./Loading";
+
+const JobList = React.lazy(() => import("../components/JobList"));
 
 const JobInput = styled.input`
   @media screen and (max-width: 400px) {
@@ -156,6 +158,7 @@ function Jobs() {
   const [isLoading, setIsLoading] = useState(false);
   const searchRef = useRef(null);
   const jobsRef = useRef<HTMLDivElement>(null);
+
   const handleSearch = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
