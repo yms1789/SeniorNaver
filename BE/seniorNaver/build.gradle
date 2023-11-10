@@ -55,6 +55,10 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-validation' // 유효성 체크 관련 의존성
 
+	// JAXB
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
+	implementation 'com.sun.xml.bind:jaxb-impl:2.3.3'
+	implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
 }
 
 tasks.named('test') {
