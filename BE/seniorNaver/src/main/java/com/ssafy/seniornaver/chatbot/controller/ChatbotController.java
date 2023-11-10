@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ChatbotController {
     private final ChatbotService chatbotService;
 
-    @PostMapping(value="/v1/talk",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value="/talk",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "음성 텍스트 변형", security = @SecurityRequirement(name = "Bearer"))
     public ResponseEntity<byte[]> convertAndTalk(@RequestPart("voiceFile") MultipartFile voiceFile) {
 
@@ -37,6 +39,8 @@ public class ChatbotController {
 
         // 챗봇의 응답을 음성으로 변환
         byte[] voiceData = chatbotService.convertTextToSpeech(response);
+
+        log.info(Arrays.toString(voiceData));
 
         // 음성 데이터를 HTTP 응답 본문에 담아 반환
         return ResponseEntity.ok()
