@@ -1,18 +1,16 @@
-import React, { Suspense, useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { IconContext } from "react-icons";
 import { BiSearch } from "react-icons/bi";
-import { useNavigate } from "react-router";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import Combobox from "../components/Combobox";
+import Error from "../components/Error";
 import HeadBar from "../components/HeadBar";
-import { IJob, IJobItem } from "../components/JobList";
 import NavigationBar from "../components/NavigationBar";
-import { fetchSearchJobs } from "../hooks/useJobsQuery";
+import RenderJobList, { IJob, JobEmpty } from "../components/RenderJobList";
+import { useJobsQuery } from "../hooks/useJobsQuery";
 import workplaceState from "../states/workplace";
-import Loading from "./Loading";
-
-const JobList = React.lazy(() => import("../components/JobList"));
 
 const JobInput = styled.input`
   @media screen and (max-width: 400px) {
@@ -41,12 +39,16 @@ const RectangleParent = styled.div`
   height: 47px;
 `;
 const FrameGroup = styled.div`
-  @media screen and (max-width: 400px) {
+  @media screen and (max-width: 425px) {
   }
   @media screen and (min-width: 400px) and (max-width: 780px) {
+    width: 250px;
+    margin: 0 auto;
   }
   @media screen and (min-width: 780px) and (max-width: 1280px) {
+    width: 370px;
   }
+  max-height: 48px;
   display: flex;
   gap: 10px;
   width: fit-content;
@@ -59,7 +61,6 @@ const FrameParentRoot = styled.div`
 `;
 const JobCategoryWrapper = styled.div`
   @media screen and (max-width: 400px) {
-    width: 100%;
     padding: 0px 20px;
   }
   @media screen and (min-width: 400px) and (max-width: 780px) {
@@ -78,20 +79,18 @@ const JobCategoryWrapper = styled.div`
 `;
 const JobsWrapper = styled.div`
   @media screen and (max-width: 400px) {
-    width: 100%;
     padding: 0px 20px;
     grid-template-columns: repeat(1, 1fr);
   }
   @media screen and (min-width: 400px) and (max-width: 780px) {
-    width: 100%;
     padding: 0px 20px;
     grid-template-columns: repeat(2, 1fr);
   }
   @media screen and (min-width: 780px) and (max-width: 1280px) {
-    width: 100%;
     padding: 0px 40px;
     grid-template-columns: repeat(3, 1fr);
   }
+  width: 100%;
   position: relative;
   top: 40px;
   max-width: fit-content;
@@ -107,27 +106,28 @@ const JobsWrapper = styled.div`
     align-items: center;
   }
 `;
-const JobWrapper = styled.div`
-  font-family: NanumSquareNeoRegular;
+
+const MoreButtonWrapper = styled.div`
+  position: relative;
+  top: 50px;
+  text-align: center;
+  font-family: NanumSquareNeoExtraBold;
+  bottom: 0px;
+  padding: 40px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const MoreButton = styled.div`
+  width: fit-content;
+  font-size: 20px;
+  border: 1px solid var(--gray04);
+  padding: 10px;
+  border-radius: 10px;
   cursor: pointer;
   &:hover {
-    background-color: #c5e3ed;
+    border: 1px solid var(--emerald);
   }
-`;
-
-const JobTitle = styled.div`
-  text-align: start;
-  font-family: NanumSquareNeoExtraBold;
-  width: 300px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: break-all;
-  white-space: nowrap;
-`;
-const JobDescription = styled.p`
-  display: inline;
-  text-align: start;
-  padding-right: 8px;
 `;
 
 const places = [
@@ -150,96 +150,81 @@ const places = [
 ];
 
 function Jobs() {
-  const navigate = useNavigate();
   const [workplace, setWorkplace] = useRecoilState(workplaceState);
   const [input, setInput] = useState("");
-  const [isSearch, setIsSearch] = useState(false);
-  const [searchData, setSearchData] = useState<IJob>();
-  const [isLoading, setIsLoading] = useState(false);
   const searchRef = useRef(null);
   const jobsRef = useRef<HTMLDivElement>(null);
+
+  const { data, refetch, hasNextPage, fetchNextPage, remove } = useJobsQuery(workplace, input);
 
   const handleSearch = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        setIsSearch(true);
-        setIsLoading(true);
-        const response = await fetchSearchJobs(input, workplace);
-        setSearchData(response);
-        setIsLoading(false);
+        remove();
+        refetch();
       }
     },
     [input],
   );
-  const handleClick = useCallback(async () => {
-    setIsSearch(true);
-    setIsLoading(true);
-    const response = await fetchSearchJobs(input, workplace);
-    setSearchData(response);
-    setIsLoading(false);
-  }, [input]);
-  const handleDetailClick = useCallback((item: IJobItem) => {
-    navigate("/job-detail", { state: item });
-  }, []);
+  useEffect(() => {
+    console.log(data);
+    if (data?.pages[0]?.totalPage! <= 0) {
+      jobsRef.current?.classList.add("data-empty");
+    } else {
+      jobsRef.current?.classList.remove("data-empty");
+    }
+  }, [data]);
 
   return (
     <>
-      <HeadBar />
-      <FrameParentRoot>
-        <JobCategoryWrapper>
-          <Combobox
-            items={places}
-            placeholder="근무지"
-            setWorkplace={setWorkplace}
-            workplace={workplace}
-            setInput={setInput}
-            setIsSearch={setIsSearch}
-          />
-          <FrameGroup>
-            <JobInput
-              ref={searchRef}
-              placeholder="검색어를 입력하세요"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
-              onKeyDown={handleSearch}
-              value={input}
+      <ErrorBoundary fallbackRender={Error}>
+        <HeadBar />
+        <FrameParentRoot>
+          <JobCategoryWrapper>
+            <Combobox
+              items={places}
+              placeholder="근무지"
+              setWorkplace={setWorkplace}
+              workplace={workplace}
+              setInput={setInput}
+              remove={remove}
             />
-            <RectangleParent>
-              <SearchButton onClick={handleClick}>
-                <IconContext.Provider value={{ color: "white" }}>
-                  <BiSearch size={30} />
-                </IconContext.Provider>
-              </SearchButton>
-            </RectangleParent>
-          </FrameGroup>
-        </JobCategoryWrapper>
-        <JobsWrapper ref={jobsRef}>
-          <Suspense fallback={<Loading />}>
-            {isSearch ? (
-              isLoading ? (
-                <Loading />
-              ) : (
-                searchData?.items.map((item: IJobItem) => {
-                  return (
-                    <JobWrapper
-                      key={item.jobId}
-                      onClick={() => handleDetailClick(item)}
-                      role="button"
-                    >
-                      <JobTitle>{item.title}</JobTitle>
-                      <JobDescription>{`위치: ${item.workPlace || "미지정"},`}</JobDescription>
-
-                      <JobDescription>{`채용공고: ${item.employShape}`}</JobDescription>
-                    </JobWrapper>
-                  );
+            <FrameGroup>
+              <JobInput
+                ref={searchRef}
+                placeholder="검색어를 입력하세요"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
+                onKeyDown={handleSearch}
+                value={input}
+              />
+              <RectangleParent>
+                <SearchButton onClick={() => refetch()}>
+                  <IconContext.Provider value={{ color: "white" }}>
+                    <BiSearch size={30} />
+                  </IconContext.Provider>
+                </SearchButton>
+              </RectangleParent>
+            </FrameGroup>
+          </JobCategoryWrapper>
+          <JobsWrapper ref={jobsRef}>
+            {data &&
+              data.pages &&
+              (data.pages[0]?.items.length! > 1 ? (
+                data.pages.map((data: IJob | undefined) => {
+                  return <RenderJobList key={crypto.randomUUID()} jobData={data!} />;
                 })
-              )
-            ) : (
-              <JobList workplace={workplace} jobsRef={jobsRef} />
-            )}
-          </Suspense>
-        </JobsWrapper>
-      </FrameParentRoot>
-      <NavigationBar />
+              ) : (
+                <JobEmpty>공고 목록이 없습니다.</JobEmpty>
+              ))}
+          </JobsWrapper>
+          {hasNextPage && (
+            <MoreButtonWrapper>
+              <MoreButton onClick={() => fetchNextPage()}>더 보기</MoreButton>
+            </MoreButtonWrapper>
+          )}
+        </FrameParentRoot>
+        <NavigationBar />
+      </ErrorBoundary>
     </>
   );
 }
