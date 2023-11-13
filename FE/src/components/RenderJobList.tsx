@@ -1,11 +1,10 @@
-import styled from "styled-components";
-import { useJobsQuery } from "../hooks/useJobsQuery";
+import { useCallback } from "react";
 import { useNavigate } from "react-router";
-import { useCallback, useEffect } from "react";
+import styled from "styled-components";
 
 export interface IJob {
-  pageNo: number;
-  totalCount: number;
+  page: number;
+  totalPage: number;
   items: IJobItem[];
 }
 export interface IJobItem {
@@ -63,40 +62,22 @@ export const JobEmpty = styled.h1`
   font-family: NanumSquareNeoExtraBold;
 `;
 
-function JobList({
-  workplace,
-  jobsRef,
-}: {
-  workplace: string;
-  jobsRef: React.RefObject<HTMLDivElement>;
-}) {
-  const { data } = useJobsQuery(workplace);
+function RenderJobList({ jobData }: { jobData: IJob }) {
   const navigate = useNavigate();
   const handleClick = useCallback((item: IJobItem) => {
     navigate("/job-detail", { state: item });
   }, []);
-  useEffect(() => {
-    if (data?.items.length! <= 0) {
-      console.log("data empty");
-      jobsRef.current?.classList.add("data-empty");
-    } else {
-      jobsRef.current?.classList.remove("data-empty");
-    }
-  }, [data?.items]);
-  return data?.items.length ? (
-    data?.items.map((item: IJobItem) => {
-      return (
-        <JobWrapper key={item.jobId} onClick={() => handleClick(item)} role="button">
-          <JobTitle>{item.title}</JobTitle>
-          <JobDescription>{`위치: ${item.workPlace || "미지정"}`}</JobDescription>
 
-          <JobDescription>{`채용공고: ${item.employShape}`}</JobDescription>
-        </JobWrapper>
-      );
-    })
-  ) : (
-    <JobEmpty>공고가 없습니다.</JobEmpty>
-  );
+  return jobData.items.map((item: IJobItem) => {
+    return (
+      <JobWrapper key={item.jobId} onClick={() => handleClick(item)} role="button">
+        <JobTitle>{item.title}</JobTitle>
+        <JobDescription>{`위치: ${item.workPlace || "미지정"}`}</JobDescription>
+
+        <JobDescription>{`채용공고: ${item.employShape}`}</JobDescription>
+      </JobWrapper>
+    );
+  });
 }
 
-export default JobList;
+export default RenderJobList;
