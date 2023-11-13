@@ -78,7 +78,6 @@ function NavigationBar() {
   return (
     <NavigationButtonWrapper>
       {BUTTON_TEXT.map(text => {
-        console.log(location.pathname.slice(1), text);
         return (
           <NavigationButton
             key={text}
