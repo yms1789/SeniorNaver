@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
+import java.util.Base64;
 
 @Slf4j
 @RestController
@@ -25,7 +26,7 @@ public class ChatbotController {
 
     @PostMapping(value="/v1/talk",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "음성 텍스트 변형", security = @SecurityRequirement(name = "Bearer"))
-    public ResponseEntity<byte[]> convertAndTalk(@RequestPart("voiceFile") MultipartFile voiceFile) {
+    public ResponseEntity<String> convertAndTalk(@RequestPart("voiceFile") MultipartFile voiceFile) {
 
         // 파일 이름 확인
         String originalFilename = voiceFile.getOriginalFilename();
@@ -40,10 +41,16 @@ public class ChatbotController {
         // 챗봇의 응답을 음성으로 변환
         byte[] voiceData = chatbotService.convertTextToSpeech(response);
 
+//        log.info(Arrays.toString(voiceData));
+        // 음성 데이터를 Base64로 인코딩
+        String encodedVoiceData = Base64.getEncoder().encodeToString(voiceData);
+
+//        log.info("Encoded voice data: " + encodedVoiceData);
+
         // 음성 데이터를 HTTP 응답 본문에 담아 반환
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, "audio/mpeg")
-                .body(voiceData);
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .body("{\"voiceData\":\"" + encodedVoiceData + "\"}");
 //        return response;
     }
 
