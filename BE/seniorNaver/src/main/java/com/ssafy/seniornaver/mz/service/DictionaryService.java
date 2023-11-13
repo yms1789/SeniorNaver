@@ -4,7 +4,6 @@ import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.mz.dto.request.WordCreateRequestDto;
 import com.ssafy.seniornaver.mz.dto.response.DictionaryWordListResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.WordDetailResponseDto;
-import com.ssafy.seniornaver.mz.entity.VocabularyList;
 
 import java.util.List;
 
