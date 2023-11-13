@@ -40,7 +40,7 @@ public class DictionaryController {
     @GetMapping("/word/list")
     public ResponseEntity<List<DictionaryWordListResponseDto>> getWordList(DictionaryWordListRequestDto requestDto) {
 
-        List<DictionaryWordListResponseDto> dictionaryWordListResponseDto = dictionaryService.getWordList(requestDto.getPage());
+        List<DictionaryWordListResponseDto> dictionaryWordListResponseDto = dictionaryService.getWordList(requestDto);
 
         return ResponseEntity.ok(dictionaryWordListResponseDto);
     }
@@ -51,7 +51,7 @@ public class DictionaryController {
                                                                                  DictionaryWordListRequestDto requestDto) {
 
         List<DictionaryWordListResponseDto> dictionaryWordListResponseDto =
-                dictionaryService.getMemberWordList(requestDto.getPage(), getMember(httpServletRequest));
+                dictionaryService.getMemberWordList(requestDto, getMember(httpServletRequest));
 
         return ResponseEntity.ok(dictionaryWordListResponseDto);
     }

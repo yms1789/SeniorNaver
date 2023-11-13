@@ -28,7 +28,7 @@ public class TagServiceImpl implements TagService{
         Optional<Tag> tag = tagRepository.findByTag(word);
 
         if (tag.isPresent()) {
-            throw new BadRequestException(ErrorCode.ALREADY_REGISTERED_DATA);
+            return;
         }
 
         tagRepository.saveAndFlush(Tag.builder()
@@ -46,9 +46,9 @@ public class TagServiceImpl implements TagService{
 
     @Override
     public void relationProblemTag(SituationProblem problemId, Tag tag) {
-        tagToProblemRepository.save(TagToProblem.builder()
-                        .tagId(tag)
-                        .problemId(problemId)
-                .build());
+        problemId.getTags().add(tagToProblemRepository.save(TagToProblem.builder()
+                .tagId(tag)
+                .problemId(problemId)
+                .build()));
     }
 }

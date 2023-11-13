@@ -20,7 +20,7 @@ public class Tag {
     private String tag;
 
     @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-    private List<TagToWord> vocaList = new ArrayList<>();
+    private List<TagToProblem> problemList = new ArrayList<>();
 
     @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private List<TagToWord> wordList = new ArrayList<>();

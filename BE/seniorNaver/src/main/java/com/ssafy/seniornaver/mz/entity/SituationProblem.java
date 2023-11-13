@@ -45,6 +45,9 @@ public class SituationProblem {
     @Column(nullable = false)
     private String makeMember;
 
+    @OneToMany(mappedBy = "tagId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    private List<TagToProblem> tags = new ArrayList<>();
+
     @OneToMany(mappedBy = "vocaId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private List<CompleteProblem> completeVocaList = new ArrayList<>();
 
@@ -52,11 +55,13 @@ public class SituationProblem {
     private List<SaveProblem> saveMember = new ArrayList<>();
 
     @Builder
-    public SituationProblem(String title, String image, int answer, String review, String problemExplanation, int useYear) {
+    public SituationProblem(String title, String image, int answer, String review,
+                            String problemExplanation, int useYear, String makeMember) {
         this.title = title;
         this.image = image;
         this.answer = answer;
         this.review = review;
+        this.makeMember = makeMember;
         this.problemExplanation = problemExplanation;
         this.useYear = useYear;
     }

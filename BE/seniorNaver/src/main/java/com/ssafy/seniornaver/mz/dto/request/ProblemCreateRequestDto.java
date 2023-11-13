@@ -3,6 +3,8 @@ package com.ssafy.seniornaver.mz.dto.request;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class ProblemCreateRequestDto{
@@ -11,5 +13,7 @@ public class ProblemCreateRequestDto{
     private int answer;
     private String review;
     private String problemExplanation;
-    private int uesYear;
+    private int useYear;
+    private String word;
+    private List<String> tags;
 }

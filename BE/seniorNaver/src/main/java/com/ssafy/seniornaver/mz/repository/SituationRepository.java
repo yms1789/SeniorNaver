@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface SituationRepository extends JpaRepository<SituationProblem, Long> {
     Optional<SituationProblem> findByTitle(String title);
+    boolean existsByTitle(String title);
 }
