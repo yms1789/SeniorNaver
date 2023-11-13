@@ -28,7 +28,7 @@ interface IJobDetail {
 }
 const JobDetailWrapper = styled.div`
   @media screen and (max-width: 400px) {
-    width: 400px;
+    width: 90%;
   }
   @media screen and (min-width: 400px) and (max-width: 780px) {
     width: 700px;
@@ -45,7 +45,7 @@ const JobDetailWrapper = styled.div`
 const DetailWrapper = styled.div`
   position: relative;
   @media screen and (max-width: 400px) {
-    width: 300px;
+    width: 90%;
   }
   @media screen and (min-width: 400px) and (max-width: 780px) {
     width: 700px;
@@ -92,14 +92,31 @@ const DetailContentWrapper = styled.ul`
   padding: 24px 0 22px;
   border-top: 2px solid #ebebeb;
 `;
+
+const DetailContentTopWrapper = styled.div`
+  @media screen and (min-width: 400px) and (max-width: 780px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  @media screen and (min-width: 780px) and (max-width: 1280px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
 const DetailImage = styled.img`
   @media screen and (max-width: 400px) {
     width: 250px;
   }
   @media screen and (min-width: 400px) and (max-width: 780px) {
-    width: 300px;
   }
   @media screen and (min-width: 780px) and (max-width: 1280px) {
+    margin-top: 50px;
+    margin-left: 80px;
     width: 300px;
   }
   width: 300px;
@@ -119,7 +136,7 @@ const DetailIcon = styled.img`
   color: #2346e4;
 `;
 const DetailTextWrapper = styled.div`
-  margin-top: 28px;
+  margin-top: 30px;
   float: right;
 `;
 const DetailText = styled.li`
@@ -235,7 +252,6 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
   const { state } = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [jobCoord, setJobCoord] = useState<{ mapx: number; mapy: number }>({ mapx: 0, mapy: 0 });
-
   async function fetchJobDetail() {
     try {
       setIsLoading(true);
@@ -246,7 +262,6 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
         if (status !== navermaps.Service.Status.OK) {
           return alert("Something wrong!");
         }
-
         const result = response.v2; // 검색 결과의 컨테이너
         const { x, y } = result.addresses[0]; // 검색 결과의 배열
         setJobCoord({
@@ -280,42 +295,44 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
             <DetailWrapper>
               <DetailTitle>{data.wantedTitle}</DetailTitle>
               <DetailContentWrapper>
-                <DetailImage
-                  src="https://image.alba.kr/job/photo_no.png
+                <DetailContentTopWrapper>
+                  <DetailImage
+                    src="https://image.alba.kr/job/photo_no.png
 "
-                />
-                <DetailTextWrapper>
-                  <DetailText>
-                    <DetailDate>{`${
-                      data.toAcptDd.split("-")[1] + "-" + data.toAcptDd.split("-")[2]
-                    }`}</DetailDate>
-                    {getDateDiff(data.toAcptDd)}
-                  </DetailText>
-                  <DetailText>
-                    <DetailIcon src="https://image.alba.kr/job/JobDetail_period_I03.png" />
-                    {state.jobclsNm || "6개월 ~ 1년"}
-                  </DetailText>
-                  <DetailText>
-                    <DetailDate>
-                      <IconContext.Provider
-                        value={{
-                          style: {
-                            color: "#2346e4",
-                            textAlign: "center",
-                            marginTop: "6px",
-                          },
-                        }}
-                      >
-                        <AiOutlinePhone size={30} />
-                      </IconContext.Provider>
-                    </DetailDate>
-                    {data.clerkContt}
-                  </DetailText>
-                  <DetailText>
-                    <DetailDate>{data.acptMthdCd}</DetailDate>
-                    지원 방식
-                  </DetailText>
-                </DetailTextWrapper>
+                  />
+                  <DetailTextWrapper>
+                    <DetailText>
+                      <DetailDate>{`${
+                        data.toAcptDd.split("-")[1] + "-" + data.toAcptDd.split("-")[2]
+                      }`}</DetailDate>
+                      {getDateDiff(data.toAcptDd)}
+                    </DetailText>
+                    <DetailText>
+                      <DetailIcon src="https://image.alba.kr/job/JobDetail_period_I03.png" />
+                      {state.jobclsNm || "6개월 ~ 1년"}
+                    </DetailText>
+                    <DetailText>
+                      <DetailDate>
+                        <IconContext.Provider
+                          value={{
+                            style: {
+                              color: "#2346e4",
+                              textAlign: "center",
+                              marginTop: "6px",
+                            },
+                          }}
+                        >
+                          <AiOutlinePhone size={30} />
+                        </IconContext.Provider>
+                      </DetailDate>
+                      {data.clerkContt}
+                    </DetailText>
+                    <DetailText>
+                      <DetailDate>{data.acptMthdCd}</DetailDate>
+                      지원 방식
+                    </DetailText>
+                  </DetailTextWrapper>
+                </DetailContentTopWrapper>
                 <DetailConditionWrapper>
                   <DetailConditionTitle>모집 조건</DetailConditionTitle>
                   <DetailConditionList>
