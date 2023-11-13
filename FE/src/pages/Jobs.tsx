@@ -8,7 +8,7 @@ import Combobox from "../components/Combobox";
 import Error from "../components/Error";
 import HeadBar from "../components/HeadBar";
 import NavigationBar from "../components/NavigationBar";
-import RenderJobList, { IJob, JobEmpty } from "../components/RenderJobList";
+import RenderJobList, { IJob } from "../components/RenderJobList";
 import { useJobsQuery } from "../hooks/useJobsQuery";
 import workplaceState from "../states/workplace";
 
@@ -106,6 +106,18 @@ const JobsWrapper = styled.div`
     align-items: center;
   }
 `;
+const JobEmpty = styled.h1`
+  @media screen and (max-width: 680px) {
+    font-size: 36px;
+  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: NanumSquareNeoExtraBold;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  white-space: nowrap;
+`;
 
 const MoreButtonWrapper = styled.div`
   position: relative;
@@ -117,6 +129,7 @@ const MoreButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  white-space: nowrap;
 `;
 const MoreButton = styled.div`
   width: fit-content;
@@ -167,7 +180,6 @@ function Jobs() {
     [input],
   );
   useEffect(() => {
-    console.log(data);
     if (data?.pages[0]?.totalPage! <= 0) {
       jobsRef.current?.classList.add("data-empty");
     } else {
@@ -188,6 +200,7 @@ function Jobs() {
               workplace={workplace}
               setInput={setInput}
               remove={remove}
+              refetch={refetch}
             />
             <FrameGroup>
               <JobInput
@@ -209,7 +222,7 @@ function Jobs() {
           <JobsWrapper ref={jobsRef}>
             {data &&
               data.pages &&
-              (data.pages[0]?.items.length! > 1 ? (
+              (data.pages[0]?.items.length! >= 1 ? (
                 data.pages.map((data: IJob | undefined) => {
                   return <RenderJobList key={crypto.randomUUID()} jobData={data!} />;
                 })
