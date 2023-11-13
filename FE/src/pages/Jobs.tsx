@@ -180,7 +180,6 @@ function Jobs() {
     [input],
   );
   useEffect(() => {
-    console.log(data);
     if (data?.pages[0]?.totalPage! <= 0) {
       jobsRef.current?.classList.add("data-empty");
     } else {
@@ -201,6 +200,7 @@ function Jobs() {
               workplace={workplace}
               setInput={setInput}
               remove={remove}
+              refetch={refetch}
             />
             <FrameGroup>
               <JobInput
@@ -222,7 +222,7 @@ function Jobs() {
           <JobsWrapper ref={jobsRef}>
             {data &&
               data.pages &&
-              (data.pages[0]?.items.length! > 1 ? (
+              (data.pages[0]?.items.length! >= 1 ? (
                 data.pages.map((data: IJob | undefined) => {
                   return <RenderJobList key={crypto.randomUUID()} jobData={data!} />;
                 })
