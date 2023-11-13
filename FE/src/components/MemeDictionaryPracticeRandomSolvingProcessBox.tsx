@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { memeMineCurrentPracticeState } from "../states/useMeme";
-import { useRecoilState,useSetRecoilState } from "recoil";
-import AOS from "aos";
-import "aos/dist/aos.css";
+// import { memeMineCurrentPracticeState } from "../states/useMeme";
+// import { useRecoilState,useSetRecoilState } from "recoil";
 import posefileformbutton from "./../assets/images/posefileformbutton.png"
 
 
@@ -116,14 +114,17 @@ const MemeDictionaryPracticeProblemInput = styled.input`
   padding: 15px;
   margin-bottom: 20px;
 `
-const MemeDictionaryPracticeOptionsInput = styled.input`
+
+const MemeDictionaryPracticeOptionsInput = styled.input<{ isSelected: boolean }>`
   width: 980px;
   font-family: "NanumSquareNeoBold";
   font-size: 28px;
   border: 1px solid var(--dark10);
   border-radius: 20px;
   padding: 15px;
+  background: ${props => props.isSelected ? 'var(--dark01)' : 'white'};
 `
+
 const MemeDictionaryPracticeOptionsWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -135,14 +136,17 @@ const MemeDictionaryPracticeOptionsCircle = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 40px;
   font-family: "NanumSquareNeoHeavy";
   text-align: center;
   font-size: 28px;
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  border: 4px solid var(--red);
+  border: 4px solid var(--dark01);
   margin-right: 10px;
+  user-select: none;
+  cursor: pointer;
 `
 
 //case2
@@ -159,26 +163,9 @@ margin-bottom: 100px;
 `
 
 function MemeDictionaryPracticeRandomSolvingProcessBox() {
-
-  // useEffect(() => {
-  //   AOS.init({
-  //     offset: 0,
-  //     duration: 150,
-  //     easing: "ease-in-out",
-  //     once: false,
-  //     delay: 50,
-  //     anchorPlacement: "bottom-top",
-  //   });
-
-  //   return () => {
-  //     AOS.refresh();
-  //   };
-  // }, []);
-
-  const setcurrentPage = useRecoilState(memeMineCurrentPracticeState);
-  const [clicked, setClicked] = useState(true); 
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [completed, setCompleted] = useState(true); 
-  const [currentStep, setCurrentStep] = useState(0); 
+  const [currentStep, setCurrentStep] = useState(1); 
   const handleNextButtononClick = () => {
   
   };
@@ -188,14 +175,6 @@ function MemeDictionaryPracticeRandomSolvingProcessBox() {
   },[currentStep])
 
   switch (currentStep) {
-    case 0:
-  return (
-    <MemeDictionaryPracticeWraaper>
-        <MemeDictionaryPracticeCompletedProblem>"하이퍼 우짤래미"</MemeDictionaryPracticeCompletedProblem>
-                <MemeDictionaryPracticeHeader>출제 완료!</MemeDictionaryPracticeHeader>
-                <MemeDictionaryPracticeText>출제한 문제는 나의 단어장에서 확인 가능합니다.</MemeDictionaryPracticeText>
-    </MemeDictionaryPracticeWraaper>
-  )
   case 1:
     return (
       <MemeDictionaryPracticeWraaper> 
@@ -207,18 +186,18 @@ function MemeDictionaryPracticeRandomSolvingProcessBox() {
             <MemeDictionaryPracticeProblemInput placeholder="문제를 입력해주세요"/>
 
             <MemeDictionaryPracticeOptionsWrapper>
-            <MemeDictionaryPracticeOptionsCircle >1</MemeDictionaryPracticeOptionsCircle>
-            <MemeDictionaryPracticeOptionsInput placeholder="첫 번째 선지를 입력해주세요"/>
+              <MemeDictionaryPracticeOptionsCircle onClick={() => setSelectedOption(1)}>1</MemeDictionaryPracticeOptionsCircle>
+              <MemeDictionaryPracticeOptionsInput isSelected={selectedOption === 1} placeholder="첫 번째 선지를 입력해주세요"/>
             </MemeDictionaryPracticeOptionsWrapper>
 
             <MemeDictionaryPracticeOptionsWrapper>
-            <MemeDictionaryPracticeOptionsCircle >2</MemeDictionaryPracticeOptionsCircle>
-            <MemeDictionaryPracticeOptionsInput placeholder="두 번째 선지를 입력해주세요"/>
+              <MemeDictionaryPracticeOptionsCircle onClick={() => setSelectedOption(2)}>2</MemeDictionaryPracticeOptionsCircle>
+              <MemeDictionaryPracticeOptionsInput isSelected={selectedOption === 2} placeholder="두 번째 선지를 입력해주세요"/>
             </MemeDictionaryPracticeOptionsWrapper>
 
             <MemeDictionaryPracticeOptionsWrapper>
-            <MemeDictionaryPracticeOptionsCircle>3</MemeDictionaryPracticeOptionsCircle>
-            <MemeDictionaryPracticeOptionsInput placeholder="세 번째 선지를 입력해주세요"/>
+              <MemeDictionaryPracticeOptionsCircle onClick={() => setSelectedOption(3)}>3</MemeDictionaryPracticeOptionsCircle>
+              <MemeDictionaryPracticeOptionsInput isSelected={selectedOption === 3} placeholder="세 번째 선지를 입력해주세요"/>
             </MemeDictionaryPracticeOptionsWrapper>
 
             {completed ? (
@@ -236,7 +215,9 @@ function MemeDictionaryPracticeRandomSolvingProcessBox() {
     case 2:
       return (
         <MemeDictionaryPracticeWraaper>
-              
+            <MemeDictionaryPracticeCompletedProblem>"하이퍼 우짤래미"</MemeDictionaryPracticeCompletedProblem>
+                    <MemeDictionaryPracticeHeader>출제 완료!</MemeDictionaryPracticeHeader>
+                    <MemeDictionaryPracticeText>출제한 문제는 나의 단어장에서 확인 가능합니다.</MemeDictionaryPracticeText>
         </MemeDictionaryPracticeWraaper>
       )
     default:

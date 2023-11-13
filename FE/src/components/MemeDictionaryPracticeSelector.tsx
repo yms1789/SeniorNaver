@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { memeMineCurrentPracticeState } from "../states/useMeme";
 import { useRecoilState,useSetRecoilState } from "recoil";
-import AOS from "aos";
-import "aos/dist/aos.css";
-
+import Swal from 'sweetalert2'
 
 const MemeDictionaryPracticeWraaper = styled.div`
   width: 930px;
@@ -96,37 +94,32 @@ const StartSolvingBoxWrapper = styled.div`
   align-items: center;
   margin-bottom: 100px;
 `
-const StartSolvingBoxLabel = styled.div`
-  width: 100vw;
-  height: 450px;
-  background: var(--aqua);
-  margin-bottom: 80px;
-`
 
-const  StartSolvingBoxDeco = styled.div`
+
+const  StartSolvingBoxDeco = styled.div<IbackgroundColor>`
   position: relative;
   top: -70px;
   width: 180px;
   height: 195px;
-  background: var(--maingradient);
+  background: ${props => props.clicked ? 'var(--maingradient)' : 'var(--dark30)'};
 `
 
-const  StartSolvingBoxDeco2 = styled.div`
+const  StartSolvingBoxDeco2 = styled.div<IbackgroundColor>`
   position: relative;
   top: -70px;
   width: 180px;
   height: 195px;
-  background: linear-gradient(152.33deg, #cc85f5 6.96%, #44F0B2 88.63%);
+  background: ${props => props.clicked ? 'var(--decogradient01)' : 'var(--dark30)'};
   `
 
-const  StartSolvingBoxDeco3 = styled.div`
+const  StartSolvingBoxDeco3 = styled.div<IbackgroundColor>`
   position: relative;
   top: -70px;
   width: 180px;
   height: 195px;
-  background: linear-gradient(152.33deg, #85A4F5 6.96%, #44F0B2 88.63%);
+  background: ${props => props.clicked ? 'var(--decogradient02)' : 'var(--dark30)'};
 `
-const StartSolvingBox = styled.div`
+const StartSolvingBox = styled.div<IbackgroundColor>`
   margin-bottom: 200px;
   display: flex;
   flex-direction: column;
@@ -136,7 +129,8 @@ const StartSolvingBox = styled.div`
   width: 300px;
   margin:10px;
   height: 400px;
-  background: var(--white);
+  color: ${props => props.clicked ? 'var(--dark01)' : 'var(--dark30)'};
+  background: ${props => props.clicked ? 'var(--white)' : 'var(--dark30)'};
   border: 1px solid var(--dark30);
   border-radius: 30px;
   font-family: "NanumSquareNeoBold";
@@ -166,39 +160,49 @@ const yearData = [
   {year: 2020, content:"안녕"}
 ]
 
-function MemeDictionaryPracticeSelector() {
-  useEffect(() => {
-    AOS.init({
-      offset: 0,
-      duration: 200,
-      easing: "ease-in-out",
-      once: true,
-      delay: 0,
-      anchorPlacement: "top-bottom",
-    });
+interface IbackgroundColor{
+  clicked?: boolean;
+  backgroundColor?: string;
+}
 
-    return () => {
-      AOS.refresh();
-    };
-  }, []);
+
+function MemeDictionaryPracticeSelector() {
   const setcurrentPage = useSetRecoilState(memeMineCurrentPracticeState);
   const [selected, setSelected] = useState("풀거나 출제할 연도를 선택하세요"); 
   const [clicked, setClicked] = useState(false); 
   const [year, setYear] = useState(0); 
 
-  const handleSelect = (index:number) => { 
+  const handleSelectYear = (index:number) => { 
     setSelected(yearData[index].content);
-    setClicked(!clicked);
+    setClicked(true);
     setYear(yearData[index].year)
   }
-
+  const handleSelectType = (index:number) => { 
+    if(clicked){
+      setcurrentPage({currentPage : index, currentYear: year})    
+    }
+    else{
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "먼저 연도를 선택하세요.",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+        padding: "30px"
+      });
+      return;
+    }
+  }
   return (
     <MemeDictionaryPracticeWraaper>
       <MemeDictionaryPracticeSelectorHeader>상황별 연습</MemeDictionaryPracticeSelectorHeader>
       <MemeDictionaryHeadline/>
       <SelectBoxWrapper>
             {yearData.map((e, index) => (
-            <SelectBoxWrapper key={index} onClick={() => handleSelect(index)}> 
+            <SelectBoxWrapper key={index} onClick={() => handleSelectYear(index)}> 
               <SelectInnerBoxWrapper>
               <SelectBox/>
               <SelectBoxHeader>{e.year}</SelectBoxHeader>
@@ -209,16 +213,13 @@ function MemeDictionaryPracticeSelector() {
       <SelectBoxContentWrapper>
           {selected && <SelectBoxContent>{selected}</SelectBoxContent>} 
       </SelectBoxContentWrapper>
-      {clicked &&
-// className="content" data-aos="fade-down"
       <StartSolvingBoxArea  >
-      {/* <StartSolvingBoxLabel/> */}
-        <StartSolvingBoxWrapper className="content" data-aos="fade-down">
-          <StartSolvingBox onClick={()=> setcurrentPage({currentPage : 1, currentYear: year})}><StartSolvingBoxDeco/>문제 출제</StartSolvingBox> 
-          <StartSolvingBox onClick={()=> setcurrentPage({currentPage : 2, currentYear: year})}><StartSolvingBoxDeco2/>랜덤 문제풀이</StartSolvingBox>
-          <StartSolvingBox onClick={()=> setcurrentPage({currentPage : 3, currentYear: year})}><StartSolvingBoxDeco3/>선택해서 풀기</StartSolvingBox>
+        <StartSolvingBoxWrapper>
+          <StartSolvingBox clicked={clicked} onClick={()=>handleSelectType(1)}><StartSolvingBoxDeco clicked={clicked}/>문제 출제</StartSolvingBox> 
+          <StartSolvingBox clicked={clicked} onClick={()=>handleSelectType(2)}><StartSolvingBoxDeco2 clicked={clicked}/>랜덤 문제풀이</StartSolvingBox>
+          <StartSolvingBox clicked={clicked} onClick={()=>handleSelectType(3)}><StartSolvingBoxDeco3 clicked={clicked}/>선택해서 풀기</StartSolvingBox>
         </StartSolvingBoxWrapper>
-      </StartSolvingBoxArea>}
+      </StartSolvingBoxArea>
     </MemeDictionaryPracticeWraaper>
   )
 }
