@@ -5,9 +5,10 @@ import { BsArrowUpCircleFill } from "react-icons/bs";
 import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { SetterOrUpdater } from "recoil";
 import { styled } from "styled-components";
-import { fetchSearch, useCategoryQuery } from "../hooks/usePlaceQuery";
+import { useCategoryQuery, useSearchQuery } from "../hooks/usePlaceQuery";
 import Loading from "../pages/Loading";
 import { ICoordinate } from "../pages/Places";
+import RenderPlaces from "./RenderPlaces";
 
 export type IPlaceItem = {
   place_name: string;
@@ -147,47 +148,6 @@ const DrawerButton = styled.button`
   border-radius: 0px 5px 5px 0px;
 `;
 
-const PlaceText = styled.p`
-  font-family: NanumSquareNeoExtraBold;
-  display: inline;
-  text-align: start;
-  color: black;
-  font-size: 20px;
-  width: fit-content;
-`;
-const PlaceDetail = styled.p`
-  display: inline;
-  text-align: end;
-  font-family: NanumSquareNeoRegular;
-  color: var(--gray02);
-  font-size: 16px;
-  width: fit-content;
-  overflow: hidden;
-`;
-const PlaceImage = styled.img`
-  object-fit: fill;
-  width: 100%;
-  height: 200px;
-  border-radius: 10px;
-`;
-const PlaceWrapper = styled.a`
-  border-top: 2px solid var(--gray03);
-  border-bottom: 2px solid var(--gray03);
-  margin-top: -2px;
-  padding: 10px 10px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  word-break: break-all;
-  cursor: pointer;
-  &:hover {
-    background-color: lightblue;
-  }
-`;
 const Observer = styled.div`
   margin-top: 16px;
   width: fit-content;
@@ -199,16 +159,13 @@ const UpButtonWrapper = styled.div`
   cursor: pointer;
 `;
 
+const categoryButtons = ["맛집", "병원", "관광지"];
+
 function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerComponent) {
   const [showDrawer, setShowDrawer] = useState(true);
   const [category, setCategory] = useState("맛집");
   const [inputSearch, setInputSearch] = useState("");
   const [isSearch, setIsSearch] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchMeta, setSearchMeta] = useState<{ totalPage: number; pageable_count: number }>();
-  const [searchData, setSearchData] = useState<IPlaceItem[] | undefined>([]);
-  const [showButton, setShowButton] = useState(false);
-  const [searchPage, setSearchPage] = useState(1);
   const observerElem = useRef<HTMLDivElement>(null);
   const drawer = useRef<HTMLDivElement>(null);
 
@@ -217,8 +174,19 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
     isSuccess,
     hasNextPage,
     fetchNextPage,
-    isFetchingNextPage,
+    isFetchingNextPage: isFetchingNextCategoryPage,
+    refetch: refetchCategory,
+    remove: removeCategory,
   } = useCategoryQuery(category, currentCoord.mapY, currentCoord.mapX);
+
+  const {
+    data: searchData,
+    hasNextPage: hasNextSearch,
+    fetchNextPage: fetchNextSearch,
+    refetch: refetchSearch,
+    isFetchingNextPage: isFetchingNextSearchPage,
+    remove: removeSearch,
+  } = useSearchQuery(inputSearch, currentCoord.mapY, currentCoord.mapX);
 
   const handleDrawer = () => {
     setShowDrawer(!showDrawer);
@@ -227,11 +195,19 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const [target] = entries;
-      if (target.isIntersecting && hasNextPage) {
-        fetchNextPage();
+      console.log("isSearch", isSearch);
+      if (isSearch) {
+        if (target.isIntersecting && hasNextSearch) {
+          fetchNextSearch();
+        }
+      }
+      if (!isSearch) {
+        if (target.isIntersecting && hasNextPage && category) {
+          fetchNextPage();
+        }
       }
     },
-    [fetchNextPage, hasNextPage],
+    [category, hasNextPage, hasNextSearch],
   );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -240,47 +216,45 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
   const fetchSearchData = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
+        setCategory("");
         await handleClick();
       }
     },
     [inputSearch],
   );
   const handleClick = useCallback(async () => {
-    setIsLoading(true);
-    const response = await fetchSearch(
-      searchPage,
-      inputSearch,
-      currentCoord.mapY,
-      currentCoord.mapX,
-    );
-    setSearchData(response?.documents);
-    setSearchMeta(response?.meta);
-    setIsLoading(false);
+    setIsSearch(false);
     setIsSearch(true);
-  }, [inputSearch]);
+    setCategory("");
+    removeCategory();
+    removeSearch();
+    refetchSearch();
+  }, [inputSearch, isSearch]);
   const goTop = () => {
-    console.log("go top");
     drawer.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   useEffect(() => {
     if (isSearch) {
       if (searchData) {
-        setCoordinates!([
-          ...searchData.map((ele: IPlaceItem) => {
-            return { mapX: ele.x, mapY: ele.y };
-          }),
-        ]);
+        setCoordinates!(
+          searchData.pages.flatMap((page: any) =>
+            page!.documents.map((place: IPlaceItem) => {
+              return { mapX: place.x, mapY: place.y };
+            }),
+          ),
+        );
         setIsWork(true);
       }
     } else {
       if (isSuccess && categoryData) {
-        const newCoordinates: ICoordinate[] = categoryData.pages.flatMap((page: any) =>
-          page!.documents.map((place: IPlaceItem) => {
-            return { mapX: place.x, mapY: place.y };
-          }),
+        setCoordinates!(
+          categoryData.pages.flatMap((page: any) =>
+            page!.documents.map((place: IPlaceItem) => {
+              return { mapX: place.x, mapY: place.y };
+            }),
+          ),
         );
-        setCoordinates!(newCoordinates);
         setIsWork(true);
       }
     }
@@ -292,14 +266,15 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
 
     const observer = new IntersectionObserver(handleObserver, option);
     element && observer.observe(element);
+    console.log("observer", element);
     return () => {
       element && observer.unobserve(element);
     };
-  }, [fetchNextPage, hasNextPage, handleObserver]);
+  }, [fetchNextPage, hasNextPage, handleObserver, fetchNextSearch, hasNextSearch]);
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    if (category) refetchCategory();
+  }, [category]);
 
   return (
     <DrawerWrapper $isShow={showDrawer}>
@@ -327,81 +302,49 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
             <b>이순자</b> 님을 위한 추천 스팟이에요
           </Text>
           <CategoryButtonWrapper>
-            <CategoryButton
-              type="button"
-              value="맛집"
-              onClick={() => {
-                setIsSearch(false);
-                setCategory("맛집");
-                setInputSearch("");
-              }}
-              className={category === "맛집" ? "active" : ""}
-            />
-            <CategoryButton
-              type="button"
-              value="병원"
-              onClick={() => {
-                setIsSearch(false);
-                setCategory("병원");
-                setInputSearch("");
-              }}
-              className={category === "병원" ? "active" : ""}
-            />
-            <CategoryButton
-              type="button"
-              value="관광지"
-              onClick={() => {
-                setIsSearch(false);
-                setCategory("관광지");
-              }}
-              className={category === "관광지" ? "active" : ""}
-            />
+            {categoryButtons.map((button: string) => {
+              return (
+                <CategoryButton
+                  type="button"
+                  value={button}
+                  onClick={() => {
+                    setIsSearch(false);
+                    setCategory(button);
+                    setInputSearch("");
+                    removeSearch();
+                  }}
+                  className={category === button ? "active" : ""}
+                />
+              );
+            })}
           </CategoryButtonWrapper>
-          <Suspense fallback={<Loading />}>
-            <PlacesWrapper data-testid="category">
+          <PlacesWrapper data-testid="category">
+            <Suspense fallback={<Loading />}>
               {isSearch
                 ? searchData &&
-                  searchData.map((place: IPlaceItem) => {
-                    return (
-                      <PlaceWrapper key={place.place_name} href={place.place_url} target="_blank">
-                        <PlaceImage src={place.thumbnail} referrerPolicy="no-referrer" />
-                        <PlaceText data-testid="title">{place.place_name}</PlaceText>
-                        <PlaceDetail>{place.address_name}</PlaceDetail>
-                      </PlaceWrapper>
-                    );
-                  })
+                  searchData.pages.map(
+                    page => page && <RenderPlaces key={crypto.randomUUID()} data={page} />,
+                  )
                 : isSuccess &&
                   categoryData &&
                   categoryData.pages.map(
-                    page =>
-                      page?.documents.map((place: IPlaceItem) => {
-                        return (
-                          <PlaceWrapper
-                            key={place.place_name}
-                            href={place.place_url}
-                            target="_blank"
-                          >
-                            <PlaceImage src={place.thumbnail} referrerPolicy="no-referrer" />
-                            <PlaceText data-testid="title">{place.place_name}</PlaceText>
-                            <PlaceDetail>{place.address_name}</PlaceDetail>
-                          </PlaceWrapper>
-                        );
-                      }),
+                    page => page && <RenderPlaces key={crypto.randomUUID()} data={page} />,
                   )}
-              <Observer className="loader" ref={observerElem}>
-                {isFetchingNextPage && hasNextPage ? (
-                  <Loading />
-                ) : (
-                  !hasNextPage &&
-                  categoryData && (
-                    <UpButtonWrapper onClick={goTop}>
-                      <BsArrowUpCircleFill size={35} />
-                    </UpButtonWrapper>
-                  )
-                )}
-              </Observer>
-            </PlacesWrapper>
-          </Suspense>
+            </Suspense>
+            <Observer className="loader" ref={observerElem}>
+              {(isFetchingNextSearchPage || isFetchingNextCategoryPage) &&
+              (hasNextPage || hasNextSearch) ? (
+                <Loading />
+              ) : (
+                (!hasNextPage || !hasNextSearch) &&
+                (searchData || categoryData) && (
+                  <UpButtonWrapper onClick={goTop}>
+                    <BsArrowUpCircleFill size={35} />
+                  </UpButtonWrapper>
+                )
+              )}
+            </Observer>
+          </PlacesWrapper>
         </ContentsWrapper>
       </Drawer>
       <DrawerButton onClick={handleDrawer}>

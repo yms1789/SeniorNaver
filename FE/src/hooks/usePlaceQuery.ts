@@ -34,9 +34,6 @@ const fetchCategory = async (page: number, category: string = "맛집", lat: str
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      if (error.response?.data.errorCode === "SE01") {
-        window.alert("검색어를 입력해주세요");
-      }
       throw new Error(error.response?.data);
     }
   }
@@ -77,6 +74,22 @@ export const useCategoryQuery = (category: string, lat: string, lng: string) => 
 
     suspense: false,
     refetchOnWindowFocus: false,
+    enabled: false,
+  });
+
+  return query;
+};
+
+export const useSearchQuery = (keyword: string, lat: string, lng: string) => {
+  const query = useInfiniteQuery({
+    queryKey: ["search"],
+    queryFn: ({ pageParam = 1 }) => fetchSearch(pageParam, keyword, lat, lng),
+    getNextPageParam: (lastPage, allPages) => {
+      return allPages?.length < lastPage?.meta.totalPage! ? allPages.length + 1 : undefined;
+    },
+    suspense: false,
+    refetchOnWindowFocus: false,
+    enabled: false,
   });
 
   return query;
