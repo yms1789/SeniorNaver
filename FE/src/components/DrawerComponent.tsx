@@ -195,7 +195,6 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const [target] = entries;
-      console.log("isSearch", isSearch);
       if (isSearch) {
         if (target.isIntersecting && hasNextSearch) {
           fetchNextSearch();
@@ -266,7 +265,6 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
 
     const observer = new IntersectionObserver(handleObserver, option);
     element && observer.observe(element);
-    console.log("observer", element);
     return () => {
       element && observer.unobserve(element);
     };
