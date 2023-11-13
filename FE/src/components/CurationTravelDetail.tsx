@@ -1,5 +1,6 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import { styled } from "styled-components";
 import CurationMap from "./CurationMap";
 
@@ -115,7 +116,7 @@ const TravelMapMarkerWrapper = styled.div`
 const TravelMapAreaWrapper = styled.div`
   position: absolute;
   top: 0;
-  right:;
+  right: 0;
   width: 10vw;
   height: 10vw;
   border-radius: 99vw;
@@ -151,6 +152,7 @@ const TravelImage = styled.img`
 `;
 
 function CurationTravelDetail({ navermaps }: { navermaps: typeof naver.maps }) {
+  const { travelId } = useParams();
   const [dataTravelDetail, setDataTravelDetail] = useState({
     contentid: "",
     title: "",
@@ -184,15 +186,17 @@ function CurationTravelDetail({ navermaps }: { navermaps: typeof naver.maps }) {
 
   useEffect(() => {
     fetchTravelDetail();
-  }, []);
+  }, [travelId]);
 
   const fetchTravelDetail = async () => {
-    try {
-      const response = await axios.get("/travelDetail");
-      setDataTravelDetail(response.data);
-      console.log("관광 상세 데이터", dataTravelDetail);
-    } catch (error) {
-      console.error(error);
+    if (travelId) {
+      try {
+        const response = await axios.get(`/api/curation/v1/tourdt/detail/${parseInt(travelId)}`);
+        setDataTravelDetail(response.data);
+        console.log("관광 상세 데이터", dataTravelDetail);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 

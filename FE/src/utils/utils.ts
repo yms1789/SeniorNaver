@@ -68,6 +68,30 @@ export const travelLocation = [
   "제주",
 ];
 
+interface TCityCodes {
+  [key: string]: number;
+}
+
+export const cityCodes: TCityCodes = {
+  서울: 1,
+  인천: 2,
+  대전: 3,
+  대구: 4,
+  광주: 5,
+  부산: 6,
+  울산: 7,
+  세종: 8,
+  경기: 31,
+  강원: 32,
+  충북: 33,
+  충남: 34,
+  경북: 35,
+  경남: 36,
+  전북: 37,
+  전남: 38,
+  제주: 39,
+};
+
 export const initSelectedCategory = <T extends { [key: string]: boolean }>(
   categories: string[],
   defaultCategory: string,
@@ -97,12 +121,21 @@ export const handleSelect: ThandleSelect = (
   initialSelectedCategory,
 ) => {
   setSelectedCategory(prev => {
-    let newCategory;
+    let newCategory: Record<string, boolean> = initialSelectedCategory;
     if (mode === 1) {
-      if (value === "전체") {
-        newCategory = initialSelectedCategory;
-      } else {
-        newCategory = { ...initialSelectedCategory, 전체: false, [value]: !prev[value] };
+      const first = Object.keys(initialSelectedCategory)[0];
+      if (first === "전체") {
+        if (value === "전체") {
+          newCategory = initialSelectedCategory;
+        } else {
+          newCategory = { ...initialSelectedCategory, 전체: false, [value]: !prev[value] };
+        }
+      } else if (first === "속보") {
+        if (value === "속보") {
+          newCategory = initialSelectedCategory;
+        } else {
+          newCategory = { ...initialSelectedCategory, 속보: false, [value]: !prev[value] };
+        }
       }
     } else if (mode === 2) {
       if (value === "전체") {

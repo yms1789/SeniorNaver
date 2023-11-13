@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { styled } from "styled-components";
 import RoundedButton from "./RoundedButton";
-import { handleSelect, initSelectedCategory, travelLocation } from "../utils/utils";
+import { cityCodes, handleSelect, initSelectedCategory, travelLocation } from "../utils/utils";
 import { useNavigate } from "react-router";
 import { travelCategoryState } from "../states/curationCategory";
 import { useRecoilState } from "recoil";
@@ -30,8 +30,8 @@ const TravelGridWrapper = styled.div`
   align-items: center;
   display: grid;
   /* background-color: #35a62b; */
-  grid-template-columns: repeat(3, 25vw);
-  gap: 2vw;
+  grid-template-columns: repeat(3, 23.5vw);
+  gap: 4vw;
 
   @media (max-width: 1280px) {
     grid-template-columns: repeat(2, 40vw);
@@ -57,6 +57,9 @@ const TravelGroupWrapper = styled.div`
   flex-direction: column;
 `;
 const TravelSubAddressWrapper = styled.div`
+  height: 3vw;
+  display: flex;
+  align-items: end;
   font-size: 1.1vw;
   color: var(--dark30);
 `;
@@ -163,66 +166,15 @@ function CurationTravels() {
   }, []);
 
   const fetchTravels = async (code: string) => {
-    let sendBE = 0;
-    console.log(code);
-    if (code === "서울") {
-      sendBE = 1;
-    }
-    if (code === "인천") {
-      sendBE = 2;
-    }
-    if (code === "대전") {
-      sendBE = 3;
-    }
-    if (code === "대구") {
-      sendBE = 4;
-    }
-    if (code === "광주") {
-      sendBE = 5;
-    }
-    if (code === "부산") {
-      sendBE = 6;
-    }
-    if (code === "울산") {
-      sendBE = 7;
-    }
-    if (code === "세종") {
-      sendBE = 8;
-    }
-    if (code === "경기") {
-      sendBE = 31;
-    }
-    if (code === "강원") {
-      sendBE = 32;
-    }
-    if (code === "충북") {
-      sendBE = 33;
-    }
-    if (code === "충남") {
-      sendBE = 34;
-    }
-    if (code === "경북") {
-      sendBE = 35;
-    }
-    if (code === "경남") {
-      sendBE = 36;
-    }
-    if (code === "전북") {
-      sendBE = 37;
-    }
-    if (code === "전남") {
-      sendBE = 38;
-    }
-    if (code === "제주") {
-      sendBE = 39;
-    }
+    const sendBE = cityCodes[code] || 1;
+
     try {
-      const response = await axios.get(`api/curation/v1/tourdt/${sendBE}`);
+      const response = await axios.get(`/api/curation/v1/tourdt/${sendBE}`);
       const data = response.data.map((travel: TTravelData) => ({
         ...travel,
         hovered: false,
       }));
-      setDataTravels(data);
+      setDataTravels(data.slice(1, 30));
       console.log("관광 데이터", dataTravels);
     } catch (error) {
       console.error(error);
@@ -259,7 +211,7 @@ function CurationTravels() {
           return (
             <DataTravelsWrapper
               key={travel.contentid}
-              onClick={() => navigate(`/travel/${travel.contentid}`)}
+              onClick={() => navigate(`/travel/${parseInt(travel.contentid)}`)}
               onMouseEnter={() => handleHover(travel.contentid, true)}
               onMouseLeave={() => handleHover(travel.contentid, false)}
             >
@@ -269,8 +221,7 @@ function CurationTravels() {
               </TravelGroupWrapper>
               <TravelAddressWrapper>{travel.addr1}</TravelAddressWrapper>
               <TravelImageWrapper hovered={travel.hovered ? "true" : "false"}>
-                <TravelImage src={travel.firstimage2} />
-                {travel.hovered && <TravelBackImage src={travel.firstimage} />}
+                <TravelImage src={travel.firstimage} />
               </TravelImageWrapper>
             </DataTravelsWrapper>
           );
