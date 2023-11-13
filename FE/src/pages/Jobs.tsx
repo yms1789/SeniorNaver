@@ -8,7 +8,7 @@ import Combobox from "../components/Combobox";
 import Error from "../components/Error";
 import HeadBar from "../components/HeadBar";
 import NavigationBar from "../components/NavigationBar";
-import RenderJobList, { IJob, JobEmpty } from "../components/RenderJobList";
+import RenderJobList, { IJob } from "../components/RenderJobList";
 import { useJobsQuery } from "../hooks/useJobsQuery";
 import workplaceState from "../states/workplace";
 
@@ -106,6 +106,18 @@ const JobsWrapper = styled.div`
     align-items: center;
   }
 `;
+const JobEmpty = styled.h1`
+  @media screen and (max-width: 680px) {
+    font-size: 36px;
+  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: NanumSquareNeoExtraBold;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  white-space: nowrap;
+`;
 
 const MoreButtonWrapper = styled.div`
   position: relative;
@@ -117,6 +129,7 @@ const MoreButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  white-space: nowrap;
 `;
 const MoreButton = styled.div`
   width: fit-content;
