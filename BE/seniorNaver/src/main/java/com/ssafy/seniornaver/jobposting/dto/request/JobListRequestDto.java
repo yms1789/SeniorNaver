@@ -22,7 +22,7 @@ public class JobListRequestDto {
         private String jobclsNm;
         private String recrtTitle;
         private String workPlcNm;
-        private StringBuffer frDd;
-        private StringBuffer toDd;
+        private StringBuilder frDd;
+        private StringBuilder toDd;
     }
 }
