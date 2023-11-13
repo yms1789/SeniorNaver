@@ -252,7 +252,6 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
   const { state } = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [jobCoord, setJobCoord] = useState<{ mapx: number; mapy: number }>({ mapx: 0, mapy: 0 });
-
   async function fetchJobDetail() {
     try {
       setIsLoading(true);
@@ -263,7 +262,6 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
         if (status !== navermaps.Service.Status.OK) {
           return alert("Something wrong!");
         }
-
         const result = response.v2; // 검색 결과의 컨테이너
         const { x, y } = result.addresses[0]; // 검색 결과의 배열
         setJobCoord({
