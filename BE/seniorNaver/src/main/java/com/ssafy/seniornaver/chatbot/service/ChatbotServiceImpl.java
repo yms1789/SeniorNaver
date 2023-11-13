@@ -13,12 +13,23 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @Slf4j
@@ -33,6 +44,21 @@ public class ChatbotServiceImpl implements ChatbotService{
 
     @Value("${google.service-account.privateKey.json}")
     private String privateKeyJson;
+
+    private static Map<String, String> skyStateMap = new HashMap<>();
+    private static Map<String, String> precipStateMap = new HashMap<>();
+
+    static {
+        skyStateMap.put("1", "맑음");
+        skyStateMap.put("3", "구름많음");
+        skyStateMap.put("4", "흐림");
+
+        precipStateMap.put("0", "강수없음");
+        precipStateMap.put("1", "비");
+        precipStateMap.put("2", "비/눈");
+        precipStateMap.put("3", "눈");
+        precipStateMap.put("4", "소나기");
+    }
 
     public GoogleCredentials getGoogleCredentials() {
         try {
@@ -91,12 +117,14 @@ public class ChatbotServiceImpl implements ChatbotService{
                 }
                 br.close();
                 result = response.toString();
+
             } else {
                 log.error("error !!!");
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+
         return result;
     }
 
@@ -194,6 +222,122 @@ public class ChatbotServiceImpl implements ChatbotService{
         }
 
         return voiceData;
+    }
+
+    @Override
+    public String talkToChat(String text) {
+        try {
+            String response;
+            if (text.contains("오늘") && text.contains("날씨")) {
+                response = getWeatherInfo("오늘");
+            } else if (text.contains("내일") && text.contains("날씨")) {
+                response = getWeatherInfo("내일");
+            } else {
+                response = talkToChatbot(text);
+            }
+
+            return response;
+        } catch (Exception e) {
+            log.error("API연결 에러 발생", e);
+            throw new BadRequestException(ErrorCode.API_NOT_FOUND_ERROR);
+        }
+    }
+
+    public String getWeatherInfo(String day) throws Exception {
+        LocalDate now = LocalDate.now();
+        String baseDate;
+        if ("오늘".equals(day)) {
+            baseDate = now.format(DateTimeFormatter.BASIC_ISO_DATE);
+        } else if ("내일".equals(day)) {
+            baseDate = now.plusDays(1).format(DateTimeFormatter.BASIC_ISO_DATE);
+        } else {
+            throw new IllegalArgumentException("Invalid day: " + day);
+        }
+
+        String apiURL = "https://apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst?pageNo=1&numOfRows=1000&dataType=JSON&base_date=" + now.format(DateTimeFormatter.BASIC_ISO_DATE) + "&base_time=0500&nx=55&ny=127&authKey=td0Jk1t4R_GdCZNbeFfxQw";
+
+        URL url = new URL(apiURL);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+
+        String result = "";
+        String line;
+        while ((line = br.readLine()) != null) {
+            result += line;
+        }
+        br.close();
+
+
+        JsonElement jelement = JsonParser.parseString(result);
+        JsonElement jbody = jelement.getAsJsonObject().get("response").getAsJsonObject().get("body");
+        JsonElement jitems = jbody.getAsJsonObject().get("items").getAsJsonObject().get("item");
+        String pop = "", tmp = "", tmx = "", sky = "", pty = "", tmn = "";
+
+// 현재 시간을 시간 단위로 가져옵니다.
+        LocalTime nowTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS);
+        String targetTime = "0600";
+
+        for (JsonElement je : jitems.getAsJsonArray()) {
+            String fcstDate = je.getAsJsonObject().get("fcstDate").getAsString();
+            if (baseDate.equals(fcstDate)) {
+                String category = je.getAsJsonObject().get("category").getAsString();
+                String fcstValue = je.getAsJsonObject().get("fcstValue").getAsString();
+                String fcstTime = je.getAsJsonObject().get("fcstTime").getAsString();
+
+                if ("오늘".equals(day)) {
+                    if ("TMX".equals(category)) {
+                        tmx = fcstValue;
+                    } else {
+                        if (LocalTime.of(Integer.parseInt(fcstTime.substring(0, 2)), Integer.parseInt(fcstTime.substring(2))).equals(nowTime)) {
+                            switch (category) {
+                                case "POP":
+                                    pop = fcstValue;
+                                    break;
+                                case "TMP":
+                                    tmp = fcstValue;
+                                    break;
+                                case "SKY":
+                                    sky = skyStateMap.get(fcstValue);
+                                    break;
+                                case "PTY":
+                                    pty = precipStateMap.get(fcstValue);
+                                    break;
+                            }
+                        }
+                    }
+                } else if ("내일".equals(day)) {
+                    if ("TMX".equals(category)) {
+                        tmx = fcstValue;
+                    } else {
+                        if (fcstTime.equals(targetTime)) {
+                            switch (category) {
+                                case "POP":
+                                    pop = fcstValue;
+                                    break;
+                                case "TMN":
+                                    tmn = fcstValue;
+                                    break;
+                                case "SKY":
+                                    sky = skyStateMap.get(fcstValue);
+                                    break;
+                                case "PTY":
+                                    pty = precipStateMap.get(fcstValue);
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        String weatherInfo;
+        if ("오늘".equals(day)) {
+            weatherInfo = "강수확률은 " + pop + "%이고, 현재 기온은 " + tmp + "도, 일 최고 기온은 " + tmx + "도입니다. 하늘 상태는 " + sky + "이며, 강수 형태는 " + pty + "입니다.";
+        } else {
+            weatherInfo = "강수확률은 " + pop + "%이고, 최저 기온은 " + tmn + "도, 최고 기온은 " + tmx + "도입니다. 하늘 상태는 " + sky + "이며, 강수 형태는 " + pty + "입니다.";
+        }
+        return weatherInfo;
     }
 
 }
