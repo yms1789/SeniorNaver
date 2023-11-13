@@ -4,7 +4,7 @@ import Spinner from "../assets/images/spinner.gif";
 export const Background = styled.div`
   position: absolute;
   width: 100%;
-  height: 50vh;
+  height: 100vh;
   top: 0;
   left: 0;
   z-index: 999;
@@ -12,6 +12,7 @@ export const Background = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: rgba(0, 0, 0, 0.25);
 `;
 
 export const LoadingText = styled.div`
