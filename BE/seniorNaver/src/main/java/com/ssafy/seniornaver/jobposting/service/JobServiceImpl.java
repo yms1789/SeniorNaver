@@ -264,7 +264,7 @@ public class JobServiceImpl implements JobService {
         return acpt;
     }
 
-    private LocalDate changeDate(StringBuffer Date) {
+    private LocalDate changeDate(StringBuilder Date) {
         LocalDate localDate = LocalDate.parse(Date.insert(4, "-").insert(7,"-"));
         return localDate;
     }
