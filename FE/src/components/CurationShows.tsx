@@ -121,10 +121,10 @@ const ShowDateTextWrapper = styled.div``;
 
 interface TShowData {
   pfId: string;
-  pfName: string;
+  performenceName: string;
   startDate: string;
   endDate: string;
-  theater: string;
+  theaterName: string;
   poster: string;
   genre: string;
   pfState: string;
@@ -158,8 +158,8 @@ function CurationShows() {
 
   const fetchShows = async () => {
     try {
-      const response = await axios.get("/shows");
-      setDataShows(response.data);
+      const response = await axios.get("/api/curation/v1/performance");
+      setDataShows(response.data.slice(1, 30));
       console.log("공연 데이터", dataShows);
     } catch (error) {
       console.error(error);
@@ -212,8 +212,8 @@ function CurationShows() {
                   </ShowStateWrapper>
                 </ShowPosterWrapper>
                 <ShowTextWrapper>
-                  <ShowTitleWrapper>{show.pfName}</ShowTitleWrapper>
-                  <ShowTheater>{show.theater}</ShowTheater>
+                  <ShowTitleWrapper>{show.performenceName}</ShowTitleWrapper>
+                  <ShowTheater>{show.theaterName}</ShowTheater>
                   <ShowDateWrapper>
                     <ShowDateTextWrapper>{show.startDate}</ShowDateTextWrapper>
                     <ShowDateTextWrapper>{show.endDate}</ShowDateTextWrapper>

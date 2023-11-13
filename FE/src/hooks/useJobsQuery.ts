@@ -1,34 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { IJob } from "../components/JobList";
+import { IJob } from "../components/RenderJobList";
 
-export async function fetchJobs(place: string) {
+export async function fetchJobs(pageNum: number, place: string, input: string) {
   try {
-    const response = await axios.get<IJob>("/api/job/v1/search", {
+    const response = await axios.get<IJob>("/api/job/v1/list", {
       params: {
-        pageNum: 1,
+        pageNum: pageNum,
         workPlcNm: place,
-        keyword: "",
-      },
-    });
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data);
-    }
-  }
-}
-
-export async function fetchSearchJobs(input: string, places: string) {
-  console.log("fetch", input);
-  try {
-    const response = await axios.get<IJob>("/api/job/v1/search", {
-      params: {
-        pageNum: 1,
-        workplace: places || "구미",
         keyword: input,
       },
     });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -37,11 +20,15 @@ export async function fetchSearchJobs(input: string, places: string) {
   }
 }
 
-export const useJobsQuery = (place: string) => {
-  const query = useQuery({
+export const useJobsQuery = (place: string, input?: string) => {
+  const query = useInfiniteQuery({
     queryKey: ["jobs", place],
-    queryFn: () => fetchJobs(place),
-    refetchOnMount: false,
+    queryFn: ({ pageParam = 0 }) => fetchJobs(pageParam, place, input || ""),
+    getNextPageParam: lastPage => {
+      // console.log("lastPage", lastPage);
+      // console.log("allPage", allPages);
+      return lastPage?.page! < lastPage?.totalPage! ? lastPage?.page! + 1 : undefined;
+    },
     suspense: true,
     useErrorBoundary: true,
     refetchOnWindowFocus: false,

@@ -49,12 +49,14 @@ function Combobox({
   workplace,
   setWorkplace,
   setInput,
+  remove,
 }: {
   placeholder: string;
   items: string[];
   workplace: string;
   setWorkplace: React.Dispatch<React.SetStateAction<string>>;
   setInput: React.Dispatch<React.SetStateAction<string>>;
+  remove: () => void;
 }) {
   const {
     isOpen,
@@ -69,6 +71,7 @@ function Combobox({
       if (inputValue) {
         setWorkplace(inputValue);
         setInput("");
+        remove();
       }
     },
   });

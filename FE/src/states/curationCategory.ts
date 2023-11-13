@@ -42,3 +42,15 @@ export const travelCategoryState = atom({
     제주: false,
   },
 });
+
+export const newsCategoryState = atom({
+  key: "newsCategoryState",
+  default: {
+    속보: true,
+    정치: false,
+    경제: false,
+    스포츠: false,
+    연예: false,
+    지역: false,
+  },
+});

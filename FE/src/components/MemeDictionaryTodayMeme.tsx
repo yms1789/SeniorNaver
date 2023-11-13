@@ -62,9 +62,9 @@ function MemeDictionaryTodayMeme() {
       <MemeDictionaryTodayMemeInfoBoxHeader>"쫌쫌따리"</MemeDictionaryTodayMemeInfoBoxHeader>
       </MemeDictionaryTodayMemeInfoBox>
       <MemeDictionaryTodayMemeDefinitionHeader>뜻풀이</MemeDictionaryTodayMemeDefinitionHeader>
-      <MemeDictionaryTodayMemeDefinitionContent>MemeDictionaryTodayMemeDefinitionContent</MemeDictionaryTodayMemeDefinitionContent>
+      <MemeDictionaryTodayMemeDefinitionContent>조금씩 매우 적고 하찮은 양을 모으는 모습을 나타내는 신조어. 닭발의 뼈에 붙어있던 아주 적은 양의 살에서 유래하였다</MemeDictionaryTodayMemeDefinitionContent>
       <MemeDictionaryTodayMemeDefinitionHeader>예문</MemeDictionaryTodayMemeDefinitionHeader>
-      <MemeDictionaryTodayMemeDefinitionContent>"MemeDictionaryTodayMemeDefinitionContent"</MemeDictionaryTodayMemeDefinitionContent>
+      <MemeDictionaryTodayMemeDefinitionContent>“쫌쫌따리 모으다보면 나도 언젠간..”</MemeDictionaryTodayMemeDefinitionContent>
       </MemeDictionaryTodayMemeWraaper>
   )
 }

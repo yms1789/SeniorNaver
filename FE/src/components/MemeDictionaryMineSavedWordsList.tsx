@@ -70,8 +70,8 @@ const SavedWordsListBoxHeart = styled.div`
 `
 
 const data = [{
-  year : 2010,
-  content : "우짤래미",
+  year : 2020,
+  content : "쫌쫌따리",
   saved : true
 },
 {
