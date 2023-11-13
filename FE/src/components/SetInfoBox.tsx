@@ -4,6 +4,8 @@ import { useNavigate } from "react-router";
 import { KeywordsData } from "./KeywordsData";
 import useQueryDebounce from "../hooks/useDebounceQuery";
 import axios from "axios";
+import Swal from 'sweetalert2'
+
 import mainscreenpingpingeee from "./../assets/images/mainscreenpingpingeee.png"
 import profileeditor from "./../assets/images/profileeditor.png";
 import styled from "styled-components";
@@ -171,20 +173,14 @@ const ProfileEditorLabel = styled.label`
 `
 const ProfileEditor = styled.img`
   position: absolute;
-  bottom: 0; // 추가
-  right: 0; // 추가
+  bottom: 0; 
+  right: 0; 
   width: 50px;
   height: 50px;
   z-index: 12;
   cursor: pointer;
 `;
 
-const NicknameText = styled.div`
-  font-size: 24px;
-  font-family: "NanumSquareNeoExtraBold";
-  color: #45a2e5;
-  margin-bottom: 20px;
-`
 const NicknameInput = styled.input`
   width: 300px;
   height: 70px;
@@ -252,16 +248,11 @@ interface IKeywordData {
   imagepath: string;
 }
 
-interface ImageObj {
-  url : string;
-  file: File;
-}
 
 function SetInfoBox({meberId}:{meberId : string}) {
   const [keywords,setKeywords] = useState<string[]>([]);
   const [profile, setProfile] = useState<{ url: string; file: File; } | null>(null);
   const [region,setRegion] = useState("");
-  const [images, setImages] = useState<ImageObj[]>([]);
   const [nickname,setNickname] = useState("");
   const [isPassedNickname,setIsPassedNickname] = useState(false);
   const [nicknameWarning,setNicknameWarning] = useState("");
@@ -273,27 +264,56 @@ function SetInfoBox({meberId}:{meberId : string}) {
   const handleChangeProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imageList = e.target.files;
     if (imageList && imageList.length > 0) {
-      const imageObj = {
-        url: URL.createObjectURL(imageList[0]),
-        file: imageList[0],
-      };
-      setProfile(imageObj);
-    } else {
-      setProfile(null);
-    }
+        const imageObj = {
+            url: URL.createObjectURL(imageList[0]),
+            file: imageList[0],
+        };
+        setProfile(imageObj);
+        }
   };
+
 
   const handleNextButtononClick = () => {
     if(!isPassedNickname){
-      alert("닉네임을 확인하세요.");
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "닉네임을 확인하세요.",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+        padding: "30px"
+      });
       return;
     }
     if(!region){
-      alert("지역을 선택하세요.");
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "지역을 선택하세요.",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+        padding: "30px"
+      });
       return;
     }
     if(!keywords){
-      alert("키워드를 선택하세요.");
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "키워드를 선택하세요.",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+        padding: "30px"
+      });
       return;
     }
 
@@ -307,20 +327,19 @@ function SetInfoBox({meberId}:{meberId : string}) {
     const formData = new FormData();
     if (!profile) {
       formData.append("file", "");
+      console.log("없다")
     } else {
         formData.append("file", profile.file);
-   
+        console.log("있다")
     }
-
     formData.append(
       "keywordRequestDto",
       new Blob([JSON.stringify(userDetail)], { type: "application/json" })
     );
- 
+      console.log("폼데이터",formData)
     axios.post(`${BaseURL}/auth/details`,formData).then((res)=>{
-      console.log("전달되나요",formData);
       if(res.data){
-        // navigate("/completed");
+        navigate("/completed");
       }
       else{
         alert("정보전달실패.");
@@ -391,11 +410,11 @@ function SetInfoBox({meberId}:{meberId : string}) {
         <KeywordsInfoText>프로필 사진과 닉네임을 설정하세요!</KeywordsInfoText>
         </KeywordTextWrapper>
         <ProfileWrapper>
-        <ProfileEditorInput id="fileinput" type="file" onChange={handleChangeProfile}/>
+        <ProfileEditorInput id="fileinput" type="file" accept="image/*" onChange={handleChangeProfile}/>
         <ProfileEditorLabel htmlFor="fileinput">
         <ProfileEditor src={profileeditor}/>
         </ProfileEditorLabel>
-        <ProfileImgae src={mainscreenpingpingeee}/>
+        <ProfileImgae src={profile ? profile.url : mainscreenpingpingeee}/>
         </ProfileWrapper>
         <NicknameInput name="nickname" value={nickname} onChange={handleChange}></NicknameInput>
         <NicknameWarningText>{nicknameWarning}</NicknameWarningText>
