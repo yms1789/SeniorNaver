@@ -60,10 +60,13 @@ public class JobServiceImpl implements JobService {
     public void saveWorkList() throws JsonProcessingException {
 
         for (int i = 1; i < 3; i++) {
+            log.info("ob0");
             JSONObject posts = xmlToJson(getListData(i));
 
+            log.info("ob1");
             objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
+            log.info("ob2");
             JobListRequestDto jobListRequestDto = objectMapper.readValue(posts.toString(), JobListRequestDto.class);
 
             List<Employment> employmentList = jobListRequestDto.getItem().stream()
@@ -212,11 +215,14 @@ public class JobServiceImpl implements JobService {
     }
 
     private JSONObject xmlToJson(String xml) {
-
+        log.info("xml, JsonParsing 시작");
         JSONObject jsonObject = XML.toJSONObject(xml);
+        log.info("뭐가");
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        log.info("문제");
         JSONObject body = jsonObject.getJSONObject("response").getJSONObject("body").getJSONObject("items");
 
+        log.info("xml, JsonParsing 끝");
         return body;
     }
     
