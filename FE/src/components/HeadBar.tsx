@@ -4,7 +4,8 @@ import snlogo from "./../assets/images/snlogo.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router";
 import { useRecoilState,useSetRecoilState } from "recoil";
-import { userState, isLoggedInState, logout } from "./../states/useLogin";
+import { userState, isLoggedInState, useLogout } from "../states/useUser";
+import Swal from 'sweetalert2'
 
 const NavBarWrapper = styled.div<IbackgroundColor>`
   position: fixed;
@@ -119,7 +120,6 @@ const NavButton = styled.div`
   align-items: center;
   padding: 12px 20px 12px 20px;
   margin-left: 10px;
-  position: relative;
   width: auto;
   height: 46px;
 
@@ -139,7 +139,7 @@ const NavButton = styled.div`
   }
 `;
 const NavSigninButtonInnerText = styled.div`
-  width: 76px;
+  width: auto;
   height: 22px;
   text-align: center;
   font-family: "NanumSquareNeoBold";
@@ -168,30 +168,40 @@ interface IbackgroundColor{
 
 
 function HeadBar() {
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+  const [isLoggedIn] = useRecoilState(isLoggedInState);  
   const user = useRecoilState(userState);
-  const setUser = useSetRecoilState(userState);
   const userLogoutData = {
     accessToken: user[0].accessToken,
     refreshToken: user[0].refreshToken,
   };
 
+  const logout = useLogout(userLogoutData); 
   const handleLogout = () => {
     try {
-      console.log(userLogoutData)
-      logout(userLogoutData);
-      setUser({ memberId: "",
-      nickname: "",
-      email: "",
-      mobile: "",
-      accessToken: "",
-      refreshToken: "",
-      refreshTokenExpirationTime: "",});
-      setIsLoggedIn(false);
-      alert("성공적으로 로그아웃 되었습니다.");
-      // window.location.reload();
+      logout();
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "성공적으로 로그아웃 되었습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "600px",
+        padding: "40px"        
+      });
     } catch (error) {
-      alert("로그아웃 실패.");
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "로그아웃 실패.",
+        
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+      });
       console.error(error);
     }
   };
