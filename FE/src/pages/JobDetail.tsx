@@ -128,8 +128,8 @@ const DetailImage = styled.img`
 `;
 const DetailIcon = styled.img`
   display: block;
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   margin: 16px auto;
   font-size: 13px;
   font-weight: bold;
@@ -146,18 +146,21 @@ const DetailText = styled.li`
   margin: 0;
   padding: 0;
   text-align: center;
+  font-size: 16px;
 `;
-const DetailDate = styled.p`
+const DetailDate = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1.5px solid #acb2cc;
   border-radius: 8px;
-  line-height: 44px;
-  display: block;
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   font-size: 13px;
   font-weight: bold;
   color: #2346e4;
   margin: 16px auto;
+  word-break: keep-all;
 `;
 
 const DetailConditionWrapper = styled.div`
@@ -197,35 +200,35 @@ const DetailConditionList = styled.dl`
 `;
 const DetailConditionTextTitle = styled.dt`
   @media screen and (max-width: 400px) {
-    font-size: 14px;
+    font-size: 20px;
   }
   @media screen and (min-width: 400px) and (max-width: 780px) {
     font-size: 24px;
   }
   @media screen and (min-width: 780px) and (max-width: 1280px) {
-    font-size: 24px;
+    font-size: 30px;
   }
   display: inline;
   font-family: NanumSquareNeoBold;
   margin: 10px;
   margin: 0;
   padding: 0;
-  font-size: 24px;
+  font-size: 36px;
 `;
 const DetailConditionTextContent = styled.dd`
   @media screen and (max-width: 400px) {
-    font-size: 12px;
+    font-size: 16px;
   }
   @media screen and (min-width: 400px) and (max-width: 780px) {
     font-size: 20px;
   }
   @media screen and (min-width: 780px) and (max-width: 1280px) {
-    font-size: 20px;
+    font-size: 24px;
   }
   margin-right: 10px;
   margin: 2px 0;
   padding: 0;
-  font-size: 20px;
+  font-size: 28px;
 `;
 const DetailConditionHomePage = styled.a`
   text-decoration: none;
@@ -268,7 +271,6 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
           mapx: parseFloat(y),
           mapy: parseFloat(x),
         });
-        // do Something
       });
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -302,10 +304,14 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
                   />
                   <DetailTextWrapper>
                     <DetailText>
-                      <DetailDate>{`${
-                        data.toAcptDd.split("-")[1] + "-" + data.toAcptDd.split("-")[2]
-                      }`}</DetailDate>
-                      {getDateDiff(data.toAcptDd)}
+                      <DetailDate>{getDateDiff(data.toAcptDd)}</DetailDate>
+                      {`${
+                        data.toAcptDd.split("-")[0] +
+                        "-" +
+                        data.toAcptDd.split("-")[1] +
+                        "-" +
+                        data.toAcptDd.split("-")[2]
+                      }`}
                     </DetailText>
                     <DetailText>
                       <DetailIcon src="https://image.alba.kr/job/JobDetail_period_I03.png" />
@@ -325,7 +331,7 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
                           <AiOutlinePhone size={30} />
                         </IconContext.Provider>
                       </DetailDate>
-                      {data.clerkContt}
+                      {data.clerkContt || "없음"}
                     </DetailText>
                     <DetailText>
                       <DetailDate>{data.acptMthdCd}</DetailDate>
