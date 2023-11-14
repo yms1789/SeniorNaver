@@ -244,7 +244,7 @@ public class ChatbotServiceImpl implements ChatbotService{
     public String talkToChat(String text) {
         try {
             String response;
-            if (text.contains("병원정보") || text.contains("병원 정보")) {
+            if (text.contains("병원정보") || text.contains("병원 정보") || text.contains("병원 전화번호") || text.contains("병원전화번호")) {
                 String hospitalName = extractHospitalName(text);
                 response = getHospitalInfo(hospitalName);
             } else if (text.contains("오늘") && text.contains("날씨")) {
@@ -399,9 +399,8 @@ public class ChatbotServiceImpl implements ChatbotService{
                     // 필요한 정보 추출
                     String nameHospital = hospitalElement.getElementsByTagName("dutyName").item(0).getTextContent(); // 병원 이름
                     String phoneNumber = hospitalElement.getElementsByTagName("dutyTel1").item(0).getTextContent(); // 전화번호
-                    String address = hospitalElement.getElementsByTagName("dutyAddr").item(0).getTextContent(); // 주소
 
-                    result.append("병원 이름은 ").append(nameHospital).append("이고, 주소는 ").append(address).append("이며, 전화번호는 ").append(phoneNumber).append("입니다.\n");
+                    result.append("병원 이름은 ").append(nameHospital).append("이고, 전화번호는 ").append(phoneNumber).append("입니다.\n");
                 }
                 return result.toString();
             }
