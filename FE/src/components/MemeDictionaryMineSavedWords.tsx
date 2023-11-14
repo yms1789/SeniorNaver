@@ -48,7 +48,6 @@ const MineBackground = styled.div`
 function MemeDictionaryMineSavedWords() {
   const currentCategory = useRecoilState(memeMineCurrentCategoryState);
   return (
-    // <MineBackground>
     <MemeDictionaryMineWraaper>
       <SavedWordsHeader>저장한 단어</SavedWordsHeader>
       <SavedWordsHeadline/>
@@ -56,7 +55,6 @@ function MemeDictionaryMineSavedWords() {
       <MemeDictionaryMineSavedWordsList/>
       </SavedWordsListArea>
     </MemeDictionaryMineWraaper>
-    // </MineBackground>
   )      
 }
 

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useWordsQuery } from "../hooks/useMemeQuery";
 const MemeDictionaryBookWraaper = styled.div`
   width: 930px;
   height: 100%;
@@ -102,6 +103,8 @@ const data = [{
 ]
 
 function MemeDictionaryBookList({currentPosts}:{currentPosts:any;}) {
+  // const { data, refetch, hasNextPage, fetchNextPage, remove } = useWordsQuery(page, input);
+
   return (
     <MemeDictionaryBookWraaper>
              {currentPosts.map((e:any, index:any) => (

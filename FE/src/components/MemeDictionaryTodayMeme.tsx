@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import {BsFillBookmarksFill} from "react-icons/bs"
 
 const MemeDictionaryTodayMemeWraaper = styled.div`
   margin-top: 100px;
@@ -16,19 +17,35 @@ const MemeDictionaryTodayMemeHeadText = styled.div`
   margin-bottom: 20px;
 `
 const MemeDictionaryTodayMemeInfoBox = styled.div`
-  width: 820px;
-  height: 330px;
+  width: 850px;
+  height: 350px;
   background: #33E47A;
   border-radius: 30px;
-  font-family: "NanumSquareNeoHeavy";
-  font-size: 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-bottom: 50px;
 `
+const MemeDictionaryDetailInfoIcon = styled.div`
+  display: flex;
+  position: relative;
+  top: 30px;
+  left: 330px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  &:hover {
+    top: 36px;
+  }
+  &:active {
+    top: 30px;
+  }
+`
+
 const MemeDictionaryTodayMemeInfoBoxHeader = styled.div`
+  margin-top: 30px;
+  align-items: center;
+  justify-content: center;
   display: flex;
   font-family: "NanumSquareNeoHeavy";
   font-size: 64px;
@@ -60,6 +77,7 @@ function MemeDictionaryTodayMeme() {
       <MemeDictionaryHeadline/>
       <MemeDictionaryTodayMemeInfoBox>
       <MemeDictionaryTodayMemeInfoBoxHeader>"쫌쫌따리"</MemeDictionaryTodayMemeInfoBoxHeader>
+      <MemeDictionaryDetailInfoIcon><BsFillBookmarksFill size="50" color="var(--white)"/></MemeDictionaryDetailInfoIcon>
       </MemeDictionaryTodayMemeInfoBox>
       <MemeDictionaryTodayMemeDefinitionHeader>뜻풀이</MemeDictionaryTodayMemeDefinitionHeader>
       <MemeDictionaryTodayMemeDefinitionContent>조금씩 매우 적고 하찮은 양을 모으는 모습을 나타내는 신조어. 닭발의 뼈에 붙어있던 아주 적은 양의 살에서 유래하였다</MemeDictionaryTodayMemeDefinitionContent>
