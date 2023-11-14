@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { Container as MapDiv, NaverMap, Marker } from "react-naver-maps";
-import { TDataTravelDetail } from "../utils/types";
 import { styled } from "styled-components";
+import { TDataTravelDetail } from "../utils/types";
+import { Container as MapDiv, NaverMap, Marker } from "react-naver-maps";
 
 const CurationMapWrapper = styled.div`
   width: 100%;
@@ -25,9 +25,14 @@ function CurationMap({ navermaps, x, y, dataTravelDetail }: TCurationMapProps) {
 
       const map = new navermaps.Map("map", mapOptions);
 
+      const markerIcon = {
+        content: `<div style="width: 0px; height: 0px;"></div>`,
+      };
+
       new navermaps.Marker({
         position: new navermaps.LatLng(parseFloat(y), parseFloat(x)),
         map: map,
+        icon: markerIcon,
       });
     }
   }, [dataTravelDetail]);
@@ -42,7 +47,12 @@ function CurationMap({ navermaps, x, y, dataTravelDetail }: TCurationMapProps) {
         }}
       >
         <NaverMap defaultCenter={new navermaps.LatLng(parseFloat(y), parseFloat(x))}>
-          <Marker defaultPosition={new navermaps.LatLng(parseFloat(y), parseFloat(x))} />
+          <Marker
+            defaultPosition={new navermaps.LatLng(parseFloat(y), parseFloat(x))}
+            icon={{
+              content: `<div style="width: 0px; height: 0px;"></div>`,
+            }}
+          />
         </NaverMap>
       </MapDiv>
     </CurationMapWrapper>
