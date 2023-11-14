@@ -11,7 +11,7 @@ public enum ErrorCode {
     NOT_VALID_DATA(HttpStatus.BAD_REQUEST, "003", "유효하지 않는 데이터입니다."),
     INVALID_DATA_TYPE(HttpStatus.BAD_REQUEST, "004", "잘못된 데이터 타입입니다."),
     ALREADY_REGISTERED_DATA(HttpStatus.BAD_REQUEST, "005", "이미 존재하는 데이터입니다."),
-//    FORBIDDEN_ROLE(HttpStatus.FORBIDDEN, "006", "해당 Role이 아닙니다."),
+    //    FORBIDDEN_ROLE(HttpStatus.FORBIDDEN, "006", "해당 Role이 아닙니다."),
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "007", "지원하지 않는 미디어 유형입니다."),
 
     // 인증 && 인가
@@ -86,6 +86,7 @@ public enum ErrorCode {
     //포인트 관련
     INSUFFICIENT_POINT(HttpStatus.BAD_REQUEST, "P-001", "포인트가 부족합니다."),
 
+
     // 사전
     ALREADY_REGISTERED_VOCA_LIST(HttpStatus.BAD_REQUEST, "D-001", "이미 단어장을 가지고 있는 유저입니다."),
     NOT_EXIST_VOCA_LIST(HttpStatus.BAD_REQUEST, "D-002", "존재하지 않는 단어장 입니다. 단어장을 생성해주세요."),
@@ -93,12 +94,16 @@ public enum ErrorCode {
 
     NOT_MATCH_CATEGORY(HttpStatus.BAD_REQUEST, "V-001", "요청 목록과 메서드가 상이합니다."),
 
+    // 검색
     DONT_SUCH_PLACE(HttpStatus.BAD_REQUEST, "F-001", "데이터가 부족합니다. 요청 값을 확인해주세요"),
     DONT_SUCH_JOB_POST(HttpStatus.BAD_REQUEST, "F-002", "존재하지 않는 검색 유형입니다."),
     DONT_PARSE_RESPONSE_DATA(HttpStatus.BAD_GATEWAY, "F-003", "확인할수 없는 데이터입니다."),
 
     //google cloud
-    DIALOGFLOW_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G-001", "Dialogflow API 에러 발생")
+    DIALOGFLOW_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G-001", "Dialogflow API 에러 발생"),
+    API_NOT_FOUND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G-002", "API연결 에러 발생"),
+
+    NOT_TALK_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "T-001", "말을 해주세요")
     ;
 
     private HttpStatus httpStatus;

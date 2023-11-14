@@ -33,8 +33,6 @@ public class DictionaryController {
     private final DictionaryService dictionaryService;
     private final JwtProvider jwtProvider;
     private final MemberRepository memberRepository;
-    private final TagService tagService;
-    private final VocabularyListService vocabularyListService;
 
     @Operation(summary = "전체 단어 조회", description = "ㄱㄴㄷ 순으로 단어 목록을 조회한다, page는 0부터 시작")
     @GetMapping("/word/list")
