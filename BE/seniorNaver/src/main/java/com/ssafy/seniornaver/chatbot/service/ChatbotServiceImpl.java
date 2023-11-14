@@ -203,7 +203,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 
             // 요청 본문에 텍스트를 설정
             String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8.toString()); // 텍스트를 URL 인코딩
-            String postParams = "speaker=nnarae&volume=0&speed=-2&pitch=0&format=mp3&text=" + encodedText;
+            String postParams = "speaker=nnarae&volume=0&speed=1.5&pitch=0&format=mp3&text=" + encodedText;
 
             conn.setDoOutput(true);
             DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
@@ -400,7 +400,11 @@ public class ChatbotServiceImpl implements ChatbotService{
                     String nameHospital = hospitalElement.getElementsByTagName("dutyName").item(0).getTextContent(); // 병원 이름
                     String phoneNumber = hospitalElement.getElementsByTagName("dutyTel1").item(0).getTextContent(); // 전화번호
 
-                    result.append("병원 이름은 ").append(nameHospital).append("이고, 전화번호는 ").append(phoneNumber).append("입니다.\n");
+                    // 전화번호를 '-' 기호로 분리하고, 각 부분 사이에 공백 추가
+                    String[] phoneNumberParts = phoneNumber.split("-");
+                    String spacedPhoneNumber = String.join(" ", phoneNumberParts);
+
+                    result.append("병원 이름은 ").append(nameHospital).append("이고, 전화번호는 ").append(spacedPhoneNumber).append("입니다.\n");
                 }
                 return result.toString();
             }
