@@ -88,7 +88,6 @@ function NavigationBar() {
           </NavigationButton>
         );
       })}
-      <ChatButton />
     </NavigationButtonWrapper>
   );
 }
