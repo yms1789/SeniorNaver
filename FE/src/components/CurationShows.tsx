@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { styled } from "styled-components";
-import RoundedButton from "./RoundedButton";
-import { handleSelect, initSelectedCategory, showGenre } from "../utils/utils";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { showCategoryState } from "../states/curationCategory";
+import { styled } from "styled-components";
 import { useRecoilState } from "recoil";
+import { showCategoryState } from "../states/curationCategory";
+import { useCurationShowsQuery } from "../hooks/useCurationQuery";
+import { handleSelect, initSelectedCategory, onErrorImg, showGenre } from "../utils/utils";
+import { TSelectedShowCategory } from "../utils/types";
+import LoadingForCuration from "./LoadingForCuration";
+import RoundedButton from "./RoundedButton";
 
 const CurationShowWrapper = styled.div`
   display: flex;
@@ -25,16 +27,15 @@ const ShowGridWrapper = styled.div`
   justify-content: center;
   align-items: center;
   display: grid;
-  /* background-color: #35a62b; */
   grid-template-columns: repeat(4, 18vw);
   gap: 2vw;
 
   @media (max-width: 1280px) {
-    grid-template-columns: repeat(3, 25vw);
+    grid-template-columns: repeat(3, 30vw);
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 40vw);
+    grid-template-columns: repeat(2, 46vw);
   }
 `;
 const DataShowsWrapper = styled.div`
@@ -57,6 +58,7 @@ const DataShowsWrapper = styled.div`
 `;
 const ShowPosterWrapper = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -76,17 +78,17 @@ const ShowImage = styled.img`
   width: 100%;
   object-fit: cover;
 `;
-const ShowStateWrapper = styled.div<{ state: string }>`
+const ShowStateWrapper = styled.div<{ $state: string }>`
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
   padding: 0.2vw 0.4vw;
-  font-size: 0.85vw;
+  font-size: 1vw;
   white-space: nowrap;
-  color: ${props => (props.state === "공연중" ? "var(--white)" : "var(--aqua)")};
-  background-color: ${props => (props.state === "공연중" ? "var(--aqua)" : "var(--gray04)")};
+  color: ${props => (props.$state === "공연중" ? "var(--white)" : "var(--aqua)")};
+  background-color: ${props => (props.$state === "공연중" ? "var(--aqua)" : "var(--gray04)")};
   font-family: "NanumSquareNeoRegular";
 `;
 const StateWrapper = styled.div`
@@ -96,28 +98,61 @@ const ShowTextWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.2vw;
+  gap: 0.5vw;
 `;
 const ShowTitleWrapper = styled.div`
-  font-size: 0.9vw;
-  font-family: "NanumSquareNeoHeavy";
+  height: 3vw;
+  font-size: 1vw;
+  font-family: "NanumSquareNeoExtraBold";
+  @media (max-width: 1280px) {
+    height: 4vw;
+    font-size: 1.5vw;
+  }
+  @media (max-width: 768px) {
+    height: 7vw;
+    font-size: 2.5vw;
+  }
 `;
 const ShowTheater = styled.div`
   width: 100%;
   display: flex;
   justify-content: end;
-  font-size: 0.8vw;
+  font-size: 0.9vw;
   color: var(--gray01);
-  font-family: "NanumSquareNeoHeavy";
+  font-family: "NanumSquareNeoBold";
+  @media (max-width: 1280px) {
+    font-size: 1.3vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 2vw;
+  }
 `;
 const ShowDateWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  font-size: 0.8vw;
+  font-size: 0.9vw;
   color: var(--gray02);
+  font-family: "NanumSquareNeoRegular";
+
+  @media (max-width: 1280px) {
+    font-size: 1.3vw;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2vw;
+  }
 `;
 const ShowDateTextWrapper = styled.div``;
+const NoDataWrapper = styled.div`
+  width: 100vw;
+  padding: 10vw 10vw 20vw 0vw;
+  font-size: 2vw;
+  text-align: center;
+`;
+const BottomBoundaryRef = styled.div`
+  height: 1px;
+`;
 
 interface TShowData {
   pfId: string;
@@ -131,38 +166,73 @@ interface TShowData {
   openRun: string;
 }
 
-interface TSelectedShowCategory {
-  [key: string]: boolean;
-  전체: boolean;
-  클래식: boolean;
-  뮤지컬: boolean;
-  국악: boolean;
-  대중음악: boolean;
-  연극: boolean;
-  서커스마술: boolean;
-  무용: boolean;
-}
-
 function CurationShows() {
   const navigate = useNavigate();
 
   const initialSelectedCategory = initSelectedCategory<TSelectedShowCategory>(showGenre, "전체");
-
-  const [dataShows, setDataShows] = useState<TShowData[]>([]);
   const [selectedCategory, setSelectedCategory] =
     useRecoilState<TSelectedShowCategory>(showCategoryState);
 
+  const [dataShows, setDataShows] = useState<TShowData[]>([]);
+  const [visibleData, setVisibleData] = useState<TShowData[]>([]);
+  const [noData, setNoData] = useState(false);
+  const [page, setPage] = useState(0);
+  const [changeCategory, setChangeCategory] = useState(false);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const bottomBoundaryRef = useRef<HTMLDivElement | null>(null);
+
+  const { showsData, isLoading } = useCurationShowsQuery();
+
   useEffect(() => {
-    fetchShows();
+    if (showsData) {
+      setDataShows(showsData);
+    }
+  }, [showsData]);
+
+  useEffect(() => {
+    const filteredShows = dataShows.filter(show => {
+      if (selectedCategory["전체"]) {
+        return true;
+      }
+      return selectedCategory[show.genre];
+    });
+    setVisibleData(filteredShows.slice(0, page * 10));
+    if (visibleData.length === 0) {
+      setNoData(true);
+    }
+  }, [dataShows, page]);
+
+  useEffect(() => {
+    setChangeCategory(true);
+    if (changeCategory) {
+      setDataShows([]);
+      setPage(0);
+    }
+    setChangeCategory(false);
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    // Intersection Observer를 초기화합니다.
+    observer.current = new IntersectionObserver(handleObserver, {
+      root: null,
+      rootMargin: "0px",
+      threshold: 1.0,
+    });
+    if (bottomBoundaryRef.current) {
+      observer.current.observe(bottomBoundaryRef.current);
+    }
+    return () => {
+      if (bottomBoundaryRef.current && observer.current) {
+        observer.current.unobserve(bottomBoundaryRef.current);
+      }
+    };
   }, []);
 
-  const fetchShows = async () => {
-    try {
-      const response = await axios.get("/api/curation/v1/performance");
-      setDataShows(response.data.slice(1, 30));
-      console.log("공연 데이터", dataShows);
-    } catch (error) {
-      console.error(error);
+  const handleObserver = (entries: IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage(prevPage => prevPage + 1); // 페이지를 증가시켜 추가 데이터를 화면에 보여줍니다.
     }
   };
 
@@ -170,10 +240,9 @@ function CurationShows() {
     <CurationShowWrapper>
       <ShowCategoryWrapper>
         {showGenre.map(genre => {
-          const uuid = self.crypto.randomUUID();
           return (
             <RoundedButton
-              key={uuid}
+              key={self.crypto.randomUUID()}
               buttonText={genre}
               isActive={selectedCategory[genre]}
               onClick={() =>
@@ -191,23 +260,29 @@ function CurationShows() {
         })}
       </ShowCategoryWrapper>
       <ShowGridWrapper>
-        {dataShows
-          .filter(show => {
-            if (selectedCategory["전체"]) return true;
-            return selectedCategory[show.genre];
-          })
-          .map(show => {
+        {noData && visibleData.length === 0 ? (
+          <NoDataWrapper>해당 결과가 없습니다.</NoDataWrapper>
+        ) : (
+          visibleData.map(show => {
             return (
-              <DataShowsWrapper key={show.pfId} onClick={() => navigate(`/show/${show.pfId}`)}>
+              <DataShowsWrapper
+                key={self.crypto.randomUUID()}
+                onClick={() => navigate(`/show/${show.pfId}`)}
+              >
                 <ShowPosterWrapper>
                   <ShowImageWrapper>
-                    <ShowImage src={show.poster} />
+                    <ShowImage
+                      src={show.poster}
+                      alt="ShowImage"
+                      onError={onErrorImg}
+                      referrerPolicy="no-referrer"
+                    />
                   </ShowImageWrapper>
-                  <ShowStateWrapper state={show.pfState}>
+                  <ShowStateWrapper $state={show.pfState}>
                     {Array(6)
                       .fill(show.pfState)
                       .map(state => {
-                        return <StateWrapper>{state}</StateWrapper>;
+                        return <StateWrapper key={self.crypto.randomUUID()}>{state}</StateWrapper>;
                       })}
                   </ShowStateWrapper>
                 </ShowPosterWrapper>
@@ -221,8 +296,11 @@ function CurationShows() {
                 </ShowTextWrapper>
               </DataShowsWrapper>
             );
-          })}
+          })
+        )}
       </ShowGridWrapper>
+      {((!noData && !visibleData.length) || isLoading) && <LoadingForCuration />}
+      <BottomBoundaryRef ref={bottomBoundaryRef} />
     </CurationShowWrapper>
   );
 }
