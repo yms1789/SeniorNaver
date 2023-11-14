@@ -1,4 +1,4 @@
-package com.ssafy.seniornaver.auth.service;
+package com.ssafy.seniornaver.auth.repository;
 
 import com.ssafy.seniornaver.auth.entity.Keyword;
 import com.ssafy.seniornaver.auth.entity.Member;

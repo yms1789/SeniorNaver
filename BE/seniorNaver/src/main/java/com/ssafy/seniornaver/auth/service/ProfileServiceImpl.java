@@ -3,6 +3,7 @@ package com.ssafy.seniornaver.auth.service;
 import com.ssafy.seniornaver.auth.dto.Request.UpdateProfilePictureDto;
 import com.ssafy.seniornaver.auth.entity.Keyword;
 import com.ssafy.seniornaver.auth.entity.Member;
+import com.ssafy.seniornaver.auth.repository.KeywordRepository;
 import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
