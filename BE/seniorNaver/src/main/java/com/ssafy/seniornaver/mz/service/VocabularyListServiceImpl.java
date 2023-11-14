@@ -52,21 +52,22 @@ public class VocabularyListServiceImpl implements VocabularyListService{
     }
 
     @Override
-    public List<VocaListResponseDto> getScrapWordList(Member member, VocaListRequestDto vocaListRequestDto) {
+    public List<VocaListResponseDto> getVocaList(Member member, VocaListRequestDto vocaListRequestDto) {
 
         if (member.getVocaId() == null) {
             throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
 
         }
 
-        Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 10, Sort.by("word").ascending());
+        Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 5, Sort.by("word").ascending());
 
         // 스크랩 단어 리스트
         if (vocaListRequestDto.getCategory() == 1) {
             List<VocaListResponseDto> wordList = scrapWordRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
                     .map(scrapWord -> VocaListResponseDto.builder()
-                            .wordId(scrapWord.getWordId().getWordId())
-                            .word(scrapWord.getWordId().getWord())
+                            .id(scrapWord.getWordId().getWordId())
+                            .title(scrapWord.getWordId().getWord())
+                            .content(scrapWord.getWordId().getMean())
                             .year(scrapWord.getWordId().getUseYear())
                             .build())
                     .collect(Collectors.toList());
@@ -77,10 +78,11 @@ public class VocabularyListServiceImpl implements VocabularyListService{
         // 저장 문제 리스트
         if (vocaListRequestDto.getCategory() == 2) {
             List<VocaListResponseDto> problemList = saveProblemRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
-                    .map(scrapWord -> VocaListResponseDto.builder()
-                            .wordId(scrapWord.getWordId().getWordId())
-                            .word(scrapWord.getWordId().getWord())
-                            .year(scrapWord.getWordId().getUseYear())
+                    .map(saveProblem -> VocaListResponseDto.builder()
+                            .id(saveProblem.getProblemId().getProblemId())
+                            .title(saveProblem.getProblemId().getTitle())
+                            .content(saveProblem.getProblemId().getProblemExplanation())
+                            .year(saveProblem.getProblemId().getUseYear())
                             .build())
                     .collect(Collectors.toList());
 
@@ -91,10 +93,11 @@ public class VocabularyListServiceImpl implements VocabularyListService{
         // 만든 문제 리스트
         if (vocaListRequestDto.getCategory() == 3) {
             List<VocaListResponseDto> problemList = makeProblemRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
-                    .map(scrapWord -> VocaListResponseDto.builder()
-                            .wordId(scrapWord.getWordId().getWordId())
-                            .word(scrapWord.getWordId().getWord())
-                            .year(scrapWord.getWordId().getUseYear())
+                    .map(makeProblem -> VocaListResponseDto.builder()
+                            .id(makeProblem.getProblemId().getProblemId())
+                            .title(makeProblem.getProblemId().getTitle())
+                            .content(makeProblem.getProblemId().getProblemExplanation())
+                            .year(makeProblem.getProblemId().getUseYear())
                             .build())
                     .collect(Collectors.toList());
 

@@ -48,7 +48,7 @@ public class DictionaryServiceImpl implements DictionaryService {
         });
 
 
-        Pageable pageable = PageRequest.of(requestDto.getPage(), 10, Sort.by("word").ascending());
+        Pageable pageable = PageRequest.of(requestDto.getPage(), 5, Sort.by("word").ascending());
 
         if (!requestDto.getKeyword().equals("")) {
             // 키워드 검색시
@@ -97,9 +97,8 @@ public class DictionaryServiceImpl implements DictionaryService {
     @Override
     @Transactional(readOnly = true)
     public List<DictionaryWordListResponseDto> getWordList(DictionaryWordListRequestDto requestDto) {
-        Pageable pageable = PageRequest.of(requestDto.getPage(), 10, Sort.by("word").ascending());
+        Pageable pageable = PageRequest.of(requestDto.getPage(), 5, Sort.by("word").ascending());
 
-        List<DictionaryWordListResponseDto> wordList;
         if (!requestDto.getKeyword().equals("")) {
             // 키워드 검색시
             Set<DictionaryWordListResponseDto> words = dictionaryRepository.findAllByWordContaining(requestDto.getKeyword(), pageable).stream()
@@ -128,7 +127,7 @@ public class DictionaryServiceImpl implements DictionaryService {
             return List.copyOf(words);
 
         } else {
-            wordList = dictionaryRepository.findAll(pageable).stream()
+            List<DictionaryWordListResponseDto> wordList = dictionaryRepository.findAll(pageable).stream()
                     .map(word -> DictionaryWordListResponseDto.builder()
                             .wordId(word.getWordId())
                             .word(word.getWord())

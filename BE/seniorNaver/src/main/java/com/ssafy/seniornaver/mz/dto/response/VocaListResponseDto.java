@@ -7,14 +7,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class VocaListResponseDto {
-    private Long wordId;
-    private String word;
+    private Long id;
+    private String title;
+    private String content;
     private int year;
 
     @Builder
-    public VocaListResponseDto(Long wordId, String word, int year) {
-        this.wordId = wordId;
-        this.word = word;
+    public VocaListResponseDto(Long id, String title, String content, int year) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
         this.year = year;
     }
 }
