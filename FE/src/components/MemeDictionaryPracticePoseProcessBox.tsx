@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { memeMineCurrentPracticeState } from "../states/useMeme";
-import { useRecoilState,useSetRecoilState } from "recoil";
-import { postProblem } from "../hooks/useMemeQuery";
+import { postProblem, validWord} from "../hooks/useMemeQuery";
 import posefileformbutton from "./../assets/images/posefileformbutton.png"
+import Swal from 'sweetalert2'
 
 
 const MemeDictionaryPracticeWraaper = styled.div`
@@ -102,6 +101,17 @@ const MemeDictionaryPracticeFileFormImage = styled.img`
 const MemeDictionaryPracticeFileFormInput = styled.input`
   display: none;
 `
+const MemeDictionaryPracticeValidWordInput = styled.input`
+  width: 800px;
+  text-align: center;
+  font-family: "NanumSquareNeoHeavy";
+  font-size: 50px;
+  border: 1px solid var(--dark50);
+  border-radius: 20px;
+  padding: 15px;
+  margin-bottom: 20px;
+`
+
 const MemeDictionaryPracticeProblemInput = styled.input`
   width: 1100px;
   text-align: center;
@@ -197,10 +207,8 @@ margin-bottom: 100px;
 
 
 function MemeDictionaryPracticePoseProcessBox({useYear}:{useYear:number}) {
-  const setcurrentPage = useRecoilState(memeMineCurrentPracticeState);
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [problemFile, setProblemFile] = useState<{ url: string; file: File; } | null>(null);
-  const [clicked, setClicked] = useState(true); 
+  const [valid, setValid] = useState(false); 
   const [completed, setCompleted] = useState(false); 
   const [currentStep, setCurrentStep] = useState(0); 
   const [newProblem, setProblem] = useState({
@@ -210,7 +218,7 @@ function MemeDictionaryPracticePoseProcessBox({useYear}:{useYear:number}) {
     review: "",
     problemExplanation: "",
     useYear: useYear,
-    word: "우짤래미",
+    word: "",
     tags: [""],
     choices: [
       {
@@ -246,13 +254,10 @@ function MemeDictionaryPracticePoseProcessBox({useYear}:{useYear:number}) {
     window.scrollTo(0, 0);
   },[currentStep])
 
-  const handleNextButtononClick = () => {
-  
-  };
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-  
+    
     if (name === "tags") {
       const tags = value.replace(/#/g, '').split(',').map(tag => '#' + tag.trim());
       setProblem({
@@ -288,24 +293,70 @@ function MemeDictionaryPracticePoseProcessBox({useYear}:{useYear:number}) {
   const handleSubmit= (e:any)=>{
     e.preventDefault();
     postProblem(newProblem);
-    // setCurrentStep(2);
+    setCurrentStep(2);
   }
+
+
+  const handleWordSearch = async ()=>{  
+    const response = await validWord(newProblem.word); 
+    if(response === true){
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "출제 가능한 단어입니다!",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+        padding: "30px"
+      });
+      setValid(response);
+    }
+    else{
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "존재하지 않는 단어입니다.",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+        padding: "30px"
+      });
+      setValid(response);
+      return;
+    }
+}
+
+  
 
   switch (currentStep) {
     case 0:
   return (
     <MemeDictionaryPracticeWraaper>
-      <MemeDictionaryPracticeText>문제를 출제할 단어를 선정해주세요</MemeDictionaryPracticeText>
-      <MemeDictionaryPracticeHeader>우짤래미</MemeDictionaryPracticeHeader>
-      {clicked ? (
+
+
+      {valid ? (
+         <> 
+        <MemeDictionaryPracticeText>아래 단어로 문제를 출제합니다.</MemeDictionaryPracticeText>
+        <MemeDictionaryPracticeHeader>{newProblem.word}</MemeDictionaryPracticeHeader>
         <NextButton onClick={()=> setCurrentStep(1)}>
           <NextButtonText>다음</NextButtonText>
         </NextButton>
+        </>
+
       ) : (
-        <LockedNextButton >
-          <NextButtonText >다음</NextButtonText>
-        </LockedNextButton>
+        <>
+        <MemeDictionaryPracticeText>문제를 출제할 단어를 적어주세요</MemeDictionaryPracticeText>
+        <MemeDictionaryPracticeValidWordInput placeholder="단어 입력" name="word" value={newProblem.word} onChange={handleChange}/>
+        <NextButton onClick={handleWordSearch}>
+          <NextButtonText>단어 결정완료</NextButtonText>
+        </NextButton>
+        </>
       )}
+
     </MemeDictionaryPracticeWraaper>
   )
   case 1:
@@ -362,7 +413,7 @@ function MemeDictionaryPracticePoseProcessBox({useYear}:{useYear:number}) {
     case 2:
       return (
         <MemeDictionaryPracticeWraaper>
-                <MemeDictionaryPracticeCompletedProblem>"하이퍼 우짤래미"</MemeDictionaryPracticeCompletedProblem>
+                <MemeDictionaryPracticeCompletedProblem>"{newProblem.title}"</MemeDictionaryPracticeCompletedProblem>
                 <MemeDictionaryPracticeHeader>출제 완료!</MemeDictionaryPracticeHeader>
                 <MemeDictionaryPracticeText>출제한 문제는 나의 단어장에서 확인 가능합니다.</MemeDictionaryPracticeText>
         </MemeDictionaryPracticeWraaper>

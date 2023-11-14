@@ -7,6 +7,7 @@ export interface IWords {
   totalPage: number;
 }
 
+// 전체 단어 조회 (페이지네이션)
 export async function fetchWords(pageNum: number, input: string) {
   try {
     const response = await axios.get<IWords>("/api/dictionary/v1/word/list", {
@@ -24,8 +25,23 @@ export async function fetchWords(pageNum: number, input: string) {
   }
 }
 
+// 출제가 가능한 단어인지 검사
+export async function validWord(word: string) {
+  try {
+    const response = await fetchApi.post(`/api/problem/valid/${word}`);
+    console.log("단어 사용 가능!", response.data);
+    return true;
+  } catch (error) {
+    console.log("단어 검사 실패");
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data);
+    }
+    return false;
+  }
+}
+
+// 문제 출제
 export async function postProblem(newProblem: object) {
-  console.log("헤더헤더헤더: ", fetchApi.defaults.headers.common); // 요청 전 토큰 출력
   try {
     const response = await fetchApi.post("/api/problem/register", newProblem);
     console.log("문제등록 성공", response.data);
