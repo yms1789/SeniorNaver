@@ -2,7 +2,7 @@ import { atom } from "recoil";
 
 export const curationCategoryState = atom({
   key: "curationCategoryState",
-  default: "뉴스",
+  default: "공연",
 });
 
 export const showCategoryState = atom({
@@ -22,8 +22,7 @@ export const showCategoryState = atom({
 export const travelCategoryState = atom({
   key: "travelCategoryState",
   default: {
-    전체: true,
-    서울: false,
+    서울: true,
     경기: false,
     강원: false,
     인천: false,

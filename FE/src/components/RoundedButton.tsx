@@ -17,6 +17,13 @@ const ButtonTextWrapper = styled.div<{ $isActive: boolean }>`
   &:hover {
     transform: scale(1.1);
   }
+  @media (max-width: 1280px) {
+    font-size: 1.5vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 2vw;
+    padding: 0.3vw 1vw;
+  }
 `;
 
 interface TRoundedButtonProps {

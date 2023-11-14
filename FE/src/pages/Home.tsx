@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
 import styled from "styled-components";
-import Carousel from "../components/Carousel";
-import CurationCategoryButton from "../components/CurationCategoryButton";
-import CurationShows from "../components/CurationShows";
-import CurationNews from "../components/CurationNews";
-import CurationTastes from "../components/CurationTastes";
-import CurationTravels from "../components/CurationTravels";
 import { useRecoilValue } from "recoil";
 import { curationCategoryState } from "../states/curationCategory";
+import { useCurationCarouselQuery } from "../hooks/useCurationQuery";
+import CurationCategoryButton from "../components/CurationCategoryButton";
+import LoadingForCuration from "../components/LoadingForCuration";
+import CurationTravels from "../components/CurationTravels";
+import CurationTastes from "../components/CurationTastes";
+import CurationShows from "../components/CurationShows";
+import CurationNews from "../components/CurationNews";
+import Carousel from "../components/Carousel";
+import HeadBar from "../components/HeadBar";
+import NavigationBar from "../components/NavigationBar";
 
 const HomeWrapper = styled.div`
   width: 100vw;
@@ -17,12 +19,15 @@ const HomeWrapper = styled.div`
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  padding: 4vh 4vw;
+  padding: 11vh 2vh 4vw;
   gap: 6vw;
   font-size: var(--font-size-base);
   font-family: "NanumSquare Neo ExtraBold";
   overflow-x: hidden;
   color: var(--dark02);
+  /* @media (max-width: 1280px) {
+    padding: 11vh 4vw;
+  } */
 `;
 const Divider = styled.div`
   width: inherit;
@@ -35,47 +40,37 @@ const CurationWrapper = styled.div`
   gap: 3vw;
 `;
 
-interface caouselData {
-  curationImages: string[];
-  curationTexts: string[];
-  mzWords: string[];
-  places: string[][];
-}
-
 function Home() {
-  const [dataCarousel, setDataCarousel] = useState<caouselData>({
-    curationImages: [],
-    curationTexts: [],
-    mzWords: [],
-    places: [[]],
-  });
-
   const activeCategory = useRecoilValue(curationCategoryState);
 
-  useEffect(() => {
-    fetchCarousel();
-  }, []);
+  const { data: dataCarousel, isLoading } = useCurationCarouselQuery();
 
-  const fetchCarousel = async () => {
-    try {
-      const response = await axios.get("/carousel");
-      setDataCarousel(response.data);
-      console.log("캐러셀 데이터", dataCarousel);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  if (isLoading) {
+    return (
+      <HomeWrapper>
+        <LoadingForCuration />
+      </HomeWrapper>
+    );
+  }
 
   return (
     <HomeWrapper>
-      <Carousel {...dataCarousel} />
+      <HeadBar />
+      <NavigationBar />
+      {dataCarousel && (
+        <Carousel
+          curations={dataCarousel.curations}
+          mzWords={dataCarousel.mzWords}
+          places={dataCarousel.places}
+        />
+      )}
       <Divider />
       <CurationWrapper>
         <CurationCategoryButton />
-        {activeCategory === "뉴스" && <CurationNews />}
         {activeCategory === "공연" && <CurationShows />}
-        {activeCategory === "맛집" && <CurationTastes />}
         {activeCategory === "관광" && <CurationTravels />}
+        {activeCategory === "맛집" && <CurationTastes />}
+        {activeCategory === "뉴스" && <CurationNews />}
       </CurationWrapper>
     </HomeWrapper>
   );
