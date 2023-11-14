@@ -82,7 +82,7 @@ const MemeDictionaryPracticeForm = styled.form`
 
 const MemeDictionaryPracticeFileFormArea = styled.div`
   margin-top: 20px;
-  width: 770px;
+  width: 1280px;
   height: 500px;
   border-radius: 30px;
   display: flex;
@@ -90,20 +90,18 @@ const MemeDictionaryPracticeFileFormArea = styled.div`
   justify-content: center;
   background: var(--gray03);
   margin-bottom: 150px;
+  overflow: hidden;
+
 `
 
 const MemeDictionaryPracticeFileFormImage = styled.img`
-  width: 440px;
-  height: 366px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `
 
 const MemeDictionaryPracticeFileFormInput = styled.input`
-  width: 980px;
-  font-family: "NanumSquareNeoExtraBold";
-  font-size: 32px;
-  border: 1px solid var(--dark10);
-  border-radius: 20px;
-  padding: 15px;
+  display: none;
 `
 
 const MemeDictionaryPracticeProblemInput = styled.input`
@@ -116,13 +114,14 @@ const MemeDictionaryPracticeProblemInput = styled.input`
   padding: 15px;
   margin-bottom: 20px;
 `
-const MemeDictionaryPracticeOptionsInput = styled.input`
+const MemeDictionaryPracticeOptionsInput = styled.input<{ isSelected: boolean }>`
   width: 980px;
   font-family: "NanumSquareNeoBold";
   font-size: 28px;
   border: 1px solid var(--dark10);
   border-radius: 20px;
   padding: 15px;
+  background: ${props => props.isSelected ? 'var(--maingradient)' : 'white'};
 `
 const MemeDictionaryPracticeOptionsWrapper = styled.div`
   display: flex;
@@ -130,8 +129,10 @@ const MemeDictionaryPracticeOptionsWrapper = styled.div`
   justify-content: center;
   margin-bottom: 10px;
 `
+const ProblemEditorLabel = styled.label`
+`
 
-const MemeDictionaryPracticeOptionsCircle = styled.div`
+const MemeDictionaryPracticeOptionsCircle = styled.div<{ isSelected: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -141,8 +142,10 @@ const MemeDictionaryPracticeOptionsCircle = styled.div`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  border: 4px solid var(--red);
+  padding: 10px;
+  border: ${props => props.isSelected ? '4px solid var(--aqua)' : '4px solid red;'};
   margin-right: 10px;
+  cursor: pointer;
 `
 
 //case2
@@ -159,33 +162,32 @@ margin-bottom: 100px;
 `
 
 function MemeDictionaryPracticePoseProcessBox() {
-
-  // useEffect(() => {
-  //   AOS.init({
-  //     offset: 0,
-  //     duration: 150,
-  //     easing: "ease-in-out",
-  //     once: false,
-  //     delay: 50,
-  //     anchorPlacement: "bottom-top",
-  //   });
-
-  //   return () => {
-  //     AOS.refresh();
-  //   };
-  // }, []);
-
   const setcurrentPage = useRecoilState(memeMineCurrentPracticeState);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [problemFile, setProblemFile] = useState<{ url: string; file: File; } | null>(null);
   const [clicked, setClicked] = useState(true); 
-  const [completed, setCompleted] = useState(true); 
+  const [completed, setCompleted] = useState(false); 
   const [currentStep, setCurrentStep] = useState(0); 
   const handleNextButtononClick = () => {
   
   };
   
+  
   useEffect(()=>{
     window.scrollTo(0, 0);
   },[currentStep])
+
+  const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const imageList = e.target.files;
+    if (imageList && imageList.length > 0) {
+        const imageObj = {
+            url: URL.createObjectURL(imageList[0]),
+            file: imageList[0],
+        };
+        setProblemFile(imageObj);
+        }
+  };
+
 
   switch (currentStep) {
     case 0:
@@ -209,24 +211,29 @@ function MemeDictionaryPracticePoseProcessBox() {
       <MemeDictionaryPracticeWraaper> 
         <MemeDictionaryPracticeForm>
           <MemeDictionaryPracticeFileFormArea>
-          <MemeDictionaryPracticeFileFormImage src={posefileformbutton}/>
+
+          <MemeDictionaryPracticeFileFormInput id="fileinput" type="file" accept="image/*" onChange={handleChangeImage}>
+          </MemeDictionaryPracticeFileFormInput>
+          <ProblemEditorLabel htmlFor="fileinput">
+          <MemeDictionaryPracticeFileFormImage src={problemFile ? problemFile.url : posefileformbutton}/>
+          </ProblemEditorLabel>
           </MemeDictionaryPracticeFileFormArea>
             
             <MemeDictionaryPracticeProblemInput placeholder="문제를 입력해주세요"/>
 
             <MemeDictionaryPracticeOptionsWrapper>
-            <MemeDictionaryPracticeOptionsCircle >1</MemeDictionaryPracticeOptionsCircle>
-            <MemeDictionaryPracticeOptionsInput placeholder="첫 번째 선지를 입력해주세요"/>
+              <MemeDictionaryPracticeOptionsCircle isSelected={selectedOption === 1} onClick={() => setSelectedOption(1)}>1</MemeDictionaryPracticeOptionsCircle>
+              <MemeDictionaryPracticeOptionsInput isSelected={selectedOption === 1} placeholder="첫 번째 선지를 입력해주세요"/>
             </MemeDictionaryPracticeOptionsWrapper>
 
             <MemeDictionaryPracticeOptionsWrapper>
-            <MemeDictionaryPracticeOptionsCircle >2</MemeDictionaryPracticeOptionsCircle>
-            <MemeDictionaryPracticeOptionsInput placeholder="두 번째 선지를 입력해주세요"/>
+              <MemeDictionaryPracticeOptionsCircle isSelected={selectedOption === 2} onClick={() => setSelectedOption(2)}>2</MemeDictionaryPracticeOptionsCircle>
+              <MemeDictionaryPracticeOptionsInput isSelected={selectedOption === 2} placeholder="두 번째 선지를 입력해주세요"/>
             </MemeDictionaryPracticeOptionsWrapper>
 
             <MemeDictionaryPracticeOptionsWrapper>
-            <MemeDictionaryPracticeOptionsCircle>3</MemeDictionaryPracticeOptionsCircle>
-            <MemeDictionaryPracticeOptionsInput placeholder="세 번째 선지를 입력해주세요"/>
+              <MemeDictionaryPracticeOptionsCircle isSelected={selectedOption === 3} onClick={() => setSelectedOption(3)}>3</MemeDictionaryPracticeOptionsCircle>
+              <MemeDictionaryPracticeOptionsInput isSelected={selectedOption === 3} placeholder="세 번째 선지를 입력해주세요"/>
             </MemeDictionaryPracticeOptionsWrapper>
 
             {completed ? (

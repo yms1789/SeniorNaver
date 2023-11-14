@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-
+import Swal from 'sweetalert2'
 import SetInfoBox from "./SetInfoBox";
 import styled from "styled-components";
 const JoinBoxWrapper = styled.div`
@@ -160,7 +160,6 @@ function JoinProcessBox() {
     gender : string;
     error?: { code: number; message: string };
   }
-
   const BaseURL = "/api"
   const signupMutation = useMutation((newUser: INewUserType) =>
     axios.post(`${BaseURL}/auth/signup`, newUser)
@@ -200,17 +199,47 @@ function JoinProcessBox() {
 
   const handleValidCheckId= ()=>{
     if (!newUser.memberId) {
-      alert("아이디를 입력하세요");
+      Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "아이디를 입력하세요.",
+          showConfirmButton: false,
+          timer: 1500,
+          background: "var(--white)",
+          color: "var(--dark01)",
+          width: "500px",
+          padding: "30px"
+        });
       return;
     }
     axios.post(`${BaseURL}/auth/valid/memberId?memberId=${newUser.memberId}`).then((res)=>{
       console.log(newUser.memberId);
       if(res.data){
-        alert("사용 가능한 아이디입니다.");
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "사용 가능한 아이디 입니다.",
+          
+          showConfirmButton: false,
+          timer: 1500,
+          background: "var(--white)",
+          color: "var(--dark01)",
+          width: "500px",
+        });
         SetIdPassed(true);
       }
       else{
-        alert("이미 사용중인 아이디입니다.");
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "이미 사용 중인 아이디 입니다.",
+          showConfirmButton: false,
+          timer: 1500,
+          background: "var(--white)",
+          color: "var(--dark01)",
+          width: "500px",
+          padding: "30px"
+        });
         SetIdPassed(false);
       }
     })
@@ -219,15 +248,45 @@ function JoinProcessBox() {
   const handleSubmit= (e:any)=>{
     e.preventDefault();
     if (!newUser.memberId || !newUser.password || !newUser.email || !newUser.name || !newUser.birth || !newUser.gender) {
-      alert("모든 항목을 작성하세요");
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "모든 항목을 작성하세요.",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+        padding: "30px"
+      });
       return;
     }
     if (newUser.password !== newUser.passwordConfirm) {
-      alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "비밀번호가 일치하지 않습니다.",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+        padding: "30px"
+      });
       return;
     }
     if (!isIdPassed) {
-      alert("아이디 중복체크를 해주세요.");
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "아이디 중복체크를 해주세요.",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+        padding: "30px"
+      });
       return;
     }
       signupMutation.mutate(newUser, {
@@ -235,8 +294,17 @@ function JoinProcessBox() {
           SetStep(1);
         },
         onError: (error: any) => {
-          console.log(error);
-          alert("회원가입에 실패했습니다.");
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "회원가입에 실패했습니다.",
+            showConfirmButton: false,
+            timer: 1500,
+            background: "var(--white)",
+            color: "var(--dark01)",
+            width: "500px",
+            padding: "30px"
+          });
         }
       });
   }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from "recoil";
-import { userState, isLoggedInState, login } from "./../states/useLogin";
+import { userState, isLoggedInState, useLogin } from "../states/useUser";
 
 import styled from "styled-components";
 import NaverLogin from "./NaverLogin";
@@ -59,6 +59,7 @@ const LoginSubmit = styled.input`
   border-radius: 30px;
   background: #2e2e2e;
   color: white;
+  cursor: pointer;
 `;
 
 const LoginSubmitWrapper = styled.div`
@@ -71,9 +72,9 @@ function LocalLogin() {
     memberId : "",
     password : "" 
   });
-  const setUser = useSetRecoilState(userState);
-  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
   const navigate = useNavigate();
+  const login = useLogin(userFormData); 
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -84,9 +85,7 @@ function LocalLogin() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const loggedInUser = await login(userFormData);
-      setUser(loggedInUser);
-      setIsLoggedIn(true);
+      await login();
       navigate("/")
     } catch (error) {
       alert

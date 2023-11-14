@@ -1,6 +1,13 @@
+import {
+  InfiniteData,
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from "@tanstack/react-query";
 import { useCombobox } from "downshift";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { styled } from "styled-components";
+import { IJob } from "./RenderJobList";
 const SelectPlace = styled.div`
   @media screen and (max-width: 400px) {
     display: none;
@@ -50,6 +57,7 @@ function Combobox({
   setWorkplace,
   setInput,
   remove,
+  refetch,
 }: {
   placeholder: string;
   items: string[];
@@ -57,6 +65,9 @@ function Combobox({
   setWorkplace: React.Dispatch<React.SetStateAction<string>>;
   setInput: React.Dispatch<React.SetStateAction<string>>;
   remove: () => void;
+  refetch: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined,
+  ) => Promise<QueryObserverResult<InfiniteData<IJob | undefined>, unknown>>;
 }) {
   const {
     isOpen,
@@ -72,6 +83,7 @@ function Combobox({
         setWorkplace(inputValue);
         setInput("");
         remove();
+        refetch();
       }
     },
   });

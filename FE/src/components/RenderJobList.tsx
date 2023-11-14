@@ -55,13 +55,6 @@ export const JobDescription = styled.p`
   white-space: nowrap;
 `;
 
-export const JobEmpty = styled.h1`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: NanumSquareNeoExtraBold;
-`;
-
 function RenderJobList({ jobData }: { jobData: IJob }) {
   const navigate = useNavigate();
   const handleClick = useCallback((item: IJobItem) => {

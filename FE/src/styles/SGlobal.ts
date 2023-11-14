@@ -11,7 +11,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: "Helvetica", "Arial", sans-serif;
+    font-family: "NanumSquareNeoBold", "NanumSquareNeoRegular", sans-serif;
     line-height: 1.5;
   }
 
@@ -97,6 +97,8 @@ export const GlobalStyle = createGlobalStyle`
 --aqua02: #98E3E8;
 --emerald: #2deea8;
 --maingradient: linear-gradient(100deg, #3fd5de, #2deea8);
+--decogradient01: linear-gradient(152.33deg, #cc85f5 6.96%, #ff7171 88.63%);
+--decogradient02: linear-gradient(152.33deg, #d46fff 6.96%, #ecff21 88.63%);
   }
   
 `;
