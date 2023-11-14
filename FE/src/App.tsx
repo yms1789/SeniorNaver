@@ -62,7 +62,11 @@ function App() {
           <Route path="/Meme" element={<MemeDictionary />} />
         </Routes>
       </AppWrapper>
-      {isRecord && <Recording />}
+      {isRecord && (
+        <Suspense>
+          <Recording />
+        </Suspense>
+      )}
       <ChatButton />
     </>
   );
