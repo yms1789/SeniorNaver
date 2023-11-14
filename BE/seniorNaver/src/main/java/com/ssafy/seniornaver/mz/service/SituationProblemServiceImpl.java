@@ -98,7 +98,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
         Pageable pageable = PageRequest.of(problemListRequestDto.getPage(), 5, Sort.by("title").ascending());
 
         // 키워드 검색시
-        if (!problemListRequestDto.getKeyword().equals("")) {
+        if (problemListRequestDto.getKeyword() != null) {
             Set<ProblemListResponseDto> problems = situationRepository.findAllByTitleContaining(problemListRequestDto.getKeyword(), pageable).stream()
                     .map(problem -> ProblemListResponseDto.builder()
                             .problemId(problem.getProblemId())
@@ -151,7 +151,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
         Pageable pageable = PageRequest.of(problemListRequestDto.getPage(), 5, Sort.by("title").ascending());
 
         // 키워드 검색시
-        if (!problemListRequestDto.getKeyword().equals("")) {
+        if (problemListRequestDto.getKeyword() != null) {
             Set<ProblemListResponseDto> problems = situationRepository.findAllByTitleContaining(problemListRequestDto.getKeyword(), pageable).stream()
                     .map(problem -> ProblemListResponseDto.builder()
                             .problemId(problem.getProblemId())

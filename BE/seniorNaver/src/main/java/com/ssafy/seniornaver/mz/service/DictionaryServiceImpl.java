@@ -50,7 +50,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
         Pageable pageable = PageRequest.of(requestDto.getPage(), 5, Sort.by("word").ascending());
 
-        if (!requestDto.getKeyword().equals("")) {
+        if (requestDto.getKeyword() != null) {
             // 키워드 검색시
             Set<DictionaryWordListResponseDto> words = dictionaryRepository.findAllByWordContaining(requestDto.getKeyword(), pageable).stream()
                     .map(word -> DictionaryWordListResponseDto.builder()
@@ -99,7 +99,7 @@ public class DictionaryServiceImpl implements DictionaryService {
     public List<DictionaryWordListResponseDto> getWordList(DictionaryWordListRequestDto requestDto) {
         Pageable pageable = PageRequest.of(requestDto.getPage(), 5, Sort.by("word").ascending());
 
-        if (!requestDto.getKeyword().equals("")) {
+        if (requestDto.getKeyword() != null) {
             // 키워드 검색시
             Set<DictionaryWordListResponseDto> words = dictionaryRepository.findAllByWordContaining(requestDto.getKeyword(), pageable).stream()
                     .map(word -> DictionaryWordListResponseDto.builder()
