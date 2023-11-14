@@ -1,5 +1,8 @@
 package com.ssafy.seniornaver.curation.service;
 
+import com.ssafy.seniornaver.auth.entity.Keyword;
+import com.ssafy.seniornaver.auth.entity.Member;
+import com.ssafy.seniornaver.auth.repository.KeywordRepository;
 import com.ssafy.seniornaver.curation.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,9 +30,10 @@ public class NewsServiceImpl implements NewsService{
     private String kakaoApi;
 
     private final WebClient webClient;
+    private final KeywordRepository keywordRepository;
 
-    public List<NewsDto> getNewsList(String keyword) {
-        String searchUrl = "https://openapi.naver.com/v1/search/news.json?query=" + keyword + "&display=50";
+    public List<NewsDto> getNewsList(String keyword, int display) {
+        String searchUrl = "https://openapi.naver.com/v1/search/news.json?query=" + keyword + "&display=" + display;
 
         SimpleDateFormat newsInputFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
         SimpleDateFormat newsOutputFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -90,13 +95,44 @@ public class NewsServiceImpl implements NewsService{
                     .filter(news -> news.getImageUrl() != null)
                     .collect(Collectors.toList());
 
-//            // Log the size of newsList
-//            System.out.println("Size of newsList after removing null imageUrl: " + newsList.size());
-
         }
 
         return newsList;
     }
 
+    // display값을 받지않았을때의 기본값을
+    // 메소드 오버로딩으로 처리합니다.
+    public List<NewsDto> getNewsList(String keyword) {
+        return getNewsList(keyword, 40);
+    }
+
+    public List<CurationDto> getCarouselNews(Member member) {
+        String keyword;
+
+        if (member == null) {
+            keyword = "건강";  // 로그인하지 않은 사용자, 기본 키워드 사용
+        } else {
+            List<Keyword> keywordList = keywordRepository.findByMember(member);
+
+            if (keywordList.isEmpty()) {
+                keyword = "건강";  // 사용자가 가진 키워드가 없는 경우, 기본 키워드 사용
+            } else {
+                Random random = new Random();
+                int index = random.nextInt(keywordList.size());
+                keyword = keywordList.get(index).getKeyword();  // 랜덤으로 키워드 선택
+            }
+        }
+
+        List<NewsDto> newsList = getNewsList(keyword, 20);
+
+        if (newsList.size() > 10) {
+            newsList = newsList.subList(0, 10);  // 캐러셀에 보여줄 뉴스의 수를 제한
+        }
+
+        // NewsDto를 CurationDto로 변환
+        return newsList.stream()
+                .map(CurationDto::new)
+                .collect(Collectors.toList());
+    }
 
 }

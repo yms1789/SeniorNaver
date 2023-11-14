@@ -14,7 +14,7 @@ public class Keyword {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "memberId", referencedColumnName = "memberId")
+    @JoinColumn(name = "member_id", referencedColumnName = "memberId")
     private Member member;
 
     @Column
