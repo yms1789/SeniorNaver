@@ -59,9 +59,16 @@ const ContentsWrapper = styled.div`
 const Text = styled.p`
   color: black;
   padding: 5px 10px;
-  font-family: NanumSquareNeoReuglar;
+  font-family: NanumSquareNeoBold;
 `;
 
+const NickName = styled.b`
+  background: linear-gradient(90deg, #3fd5de, #2deea8); /* 가로 그라데이션 */
+  color: transparent; /* 텍스트 색상을 투명하게 만듦 */
+  -webkit-background-clip: text; /* 텍스트에만 적용 */
+  font-size: 20px;
+  font-family: NanumSquareNeoExtraBold;
+`;
 const CategoryButtonWrapper = styled.div`
   width: fit-content;
   margin: 0 auto;
@@ -289,6 +296,7 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
             onClick={() => {
               handleClick();
             }}
+            disabled={!inputSearch}
           >
             <IconContext.Provider value={{ color: "white" }}>
               <BiSearch size={30} />
@@ -297,7 +305,7 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
         </SearchWrapper>
         <ContentsWrapper>
           <Text>
-            <b>이순자</b> 님을 위한 추천 스팟이에요
+            <NickName>이순자</NickName> 님을 위한 추천 스팟이에요!
           </Text>
           <CategoryButtonWrapper>
             {categoryButtons.map((button: string) => {
