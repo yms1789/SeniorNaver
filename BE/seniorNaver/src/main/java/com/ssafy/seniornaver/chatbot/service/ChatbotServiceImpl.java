@@ -3,6 +3,7 @@ package com.ssafy.seniornaver.chatbot.service;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.dialogflow.v2.*;
+import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
@@ -145,7 +146,7 @@ public class ChatbotServiceImpl implements ChatbotService{
     }
 
     @Override
-    public String talkToChatbot(String text) {
+    public String talkToChatbot(String text, Member member) {
         try {
             log.info("Dialogflow API 요청: {}", text);
 
@@ -158,8 +159,13 @@ public class ChatbotServiceImpl implements ChatbotService{
             // GoogleCredentials 객체를 사용하여 SessionsClient를 생성합니다.
             SessionsClient sessionsClient = SessionsClient.create(sessionsSettings);
 
-            // 세션 ID를 생성합니다. 일반적으로 UUID를 사용합니다.
-            String sessionId = UUID.randomUUID().toString();
+            // 세션 ID를 생성합니다. 로그인한 사용자는 memberId를 사용하고, 로그인하지 않은 사용자는 랜덤 값을 사용합니다.
+            String sessionId;
+            if (member != null) {
+                sessionId = member.getMemberId();
+            } else {
+                sessionId = UUID.randomUUID().toString();
+            }
 
             // Dialogflow에서 사용하는 프로젝트 ID를 입력합니다.
             String projectId = "seniornaver-qysk";
@@ -187,6 +193,7 @@ public class ChatbotServiceImpl implements ChatbotService{
             throw new BadRequestException(ErrorCode.DIALOGFLOW_API_ERROR);
         }
     }
+
 
     @Override
     public byte[] convertTextToSpeech(String text) {
@@ -241,7 +248,7 @@ public class ChatbotServiceImpl implements ChatbotService{
     }
 
     @Override
-    public String talkToChat(String text) {
+    public String talkToChat(String text,Member member) {
         try {
             String response;
             if (text.contains("병원정보") || text.contains("병원 정보") || text.contains("병원 전화번호") || text.contains("병원전화번호")) {
@@ -252,7 +259,7 @@ public class ChatbotServiceImpl implements ChatbotService{
             } else if (text.contains("내일") && text.contains("날씨")) {
                 response = getWeatherInfo("내일");
             } else {
-                response = talkToChatbot(text);
+                response = talkToChatbot(text,member);
             }
 
             return response;
