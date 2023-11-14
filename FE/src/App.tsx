@@ -1,5 +1,5 @@
 // import React, { useState, useEffect } from "react";
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import { useNavermaps } from "react-naver-maps";
 import { Route, Routes } from "react-router-dom";
 import { useRecoilValue } from "recoil";
@@ -18,10 +18,11 @@ import Login from "./pages/Login";
 import MemeDictionary from "./pages/MemeDictionary";
 import Mypage from "./pages/Mypage";
 import Places from "./pages/Places";
-import Recording from "./pages/Recording";
 import SignUp from "./pages/SignUp";
 import Wait from "./pages/Wait";
 import records from "./states/records";
+
+const Recording = React.lazy(() => import("./pages/Recording"));
 
 const AppWrapper = styled.div<{ $isRecord: boolean }>`
   display: ${props => (props.$isRecord ? "none" : "block")};
