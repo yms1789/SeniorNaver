@@ -35,7 +35,7 @@ public class ChatbotController {
     private final JwtProvider jwtProvider;
 
     @PostMapping(value="/v1/talk",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "음성 텍스트 변형")
+    @Operation(summary = "음성 텍스트 변형", security = @SecurityRequirement(name = "Bearer"))
     public ResponseEntity<byte[]> convertAndTalk(@RequestPart("voiceFile") MultipartFile voiceFile, HttpServletRequest request) {
 
         // 파일 이름 확인

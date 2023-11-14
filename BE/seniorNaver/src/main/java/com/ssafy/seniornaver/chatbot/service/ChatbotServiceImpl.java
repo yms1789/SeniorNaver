@@ -3,6 +3,7 @@ package com.ssafy.seniornaver.chatbot.service;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.dialogflow.v2.*;
+import com.google.gson.JsonObject;
 import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
@@ -131,10 +132,7 @@ public class ChatbotServiceImpl implements ChatbotService{
                     response.append(inputLine);
                 }
                 br.close();
-                // JSON 문자열에서 "text" 키에 대한 값을 추출
-                JSONObject jsonObject = new JSONObject(response.toString());
-                result = jsonObject.getString("text");
-
+                result = response.toString();
             } else {
                 log.error("error !!!");
             }
@@ -166,6 +164,8 @@ public class ChatbotServiceImpl implements ChatbotService{
             } else {
                 sessionId = UUID.randomUUID().toString();
             }
+
+            log.info("현재 사용하는 세션ID: " + sessionId);
 
             // Dialogflow에서 사용하는 프로젝트 ID를 입력합니다.
             String projectId = "seniornaver-qysk";
@@ -421,16 +421,22 @@ public class ChatbotServiceImpl implements ChatbotService{
     }
 
     public String extractHospitalName(String text) {
+        // 입력 문자열을 JSON으로 파싱합니다.
+        JSONObject jsonObject = new JSONObject(text);
+
+        // "text" 키에 해당하는 값을 추출합니다.
+        String inputText = jsonObject.getString("text");
+
         String hospitalName = "";
         String trigger1 = "병원 정보";
         String trigger2 = "병원정보";
         int startIndex = 0;
-        if (text.contains(trigger1)) {
-            startIndex = text.indexOf(trigger1) + trigger1.length();
-        } else if (text.contains(trigger2)) {
-            startIndex = text.indexOf(trigger2) + trigger2.length();
+        if (inputText.contains(trigger1)) {
+            startIndex = inputText.indexOf(trigger1) + trigger1.length();
+        } else if (inputText.contains(trigger2)) {
+            startIndex = inputText.indexOf(trigger2) + trigger2.length();
         }
-        hospitalName = text.substring(startIndex).trim();
+        hospitalName = inputText.substring(startIndex).trim();
         hospitalName = hospitalName.replace(" ", "");
         hospitalName = hospitalName.replace("병원", "");
 
@@ -438,5 +444,6 @@ public class ChatbotServiceImpl implements ChatbotService{
 
         return hospitalName;
     }
+
 
 }
