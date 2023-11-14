@@ -9,11 +9,6 @@ import "./assets/fonts/Font.css";
 import { BrowserRouter } from "react-router-dom";
 import { GlobalStyle } from "./styles/SGlobal";
 import { NavermapsProvider } from "react-naver-maps";
-import { worker } from "./mocks/workers";
-
-if (process.env.NODE_ENV === "development") {
-  worker.start();
-}
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
