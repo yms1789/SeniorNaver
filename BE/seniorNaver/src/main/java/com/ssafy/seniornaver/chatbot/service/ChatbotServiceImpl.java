@@ -203,7 +203,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 
             // 요청 본문에 텍스트를 설정
             String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8.toString()); // 텍스트를 URL 인코딩
-            String postParams = "speaker=nnarae&volume=0&speed=-2&pitch=0&format=mp3&text=" + encodedText;
+            String postParams = "speaker=nnarae&volume=0&speed=5&pitch=0&format=mp3&text=" + encodedText;
 
             conn.setDoOutput(true);
             DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
