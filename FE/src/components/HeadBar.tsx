@@ -18,18 +18,21 @@ const NavBarWrapper = styled.div<IbackgroundColor>`
   width: 100vw;
   height: 110px;
   top: 0px;
-  z-index: 990;
+  z-index: 1000;
   background: ${(props) => props.$backgroundColor};
+
 `;
 
-const NavBar = styled.div`
+const NavBar = styled.div<IbackgroundColor>`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   min-width: 600px;
-  max-width: 1440px;
+  width: 100vw;
+  zoom: 85%;
   height: 110px;
+  background: ${(props) => props.$backgroundColor};
 `;
 
 const NavLogo = styled.img`
@@ -91,11 +94,11 @@ const NavLoginButton = styled.div`
     border: 3px solid rgba(0, 0, 0, 0.3);
   }
 `;
+
 const NavLoginButtonInnerText = styled.div`
   width: 57px;
   height: 22px;
   text-align: center;
-
   font-family: "NanumSquareNeoBold";
   font-style: normal;
   font-weight: 700;
@@ -108,7 +111,7 @@ const NavLoginButtonInnerText = styled.div`
   transition: color 0.5s ease;
 
   ${NavLoginButton}:hover & {
-    color: #ffffff;
+    color: var(--white);
   }
 `;
 
@@ -122,7 +125,6 @@ const NavButton = styled.div`
   margin-left: 10px;
   width: auto;
   height: 46px;
-
   border: 2px solid #202020;
   border-radius: 999px;
   cursor: pointer;
@@ -138,6 +140,7 @@ const NavButton = styled.div`
     border: 3px solid rgba(0, 0, 0, 0.3);
   }
 `;
+
 const NavSigninButtonInnerText = styled.div`
   width: auto;
   height: 22px;
@@ -165,6 +168,7 @@ const NavEmpty = styled.div`
 interface IbackgroundColor{
   $backgroundColor?: string;
 }
+
 
 
 function HeadBar() {
@@ -209,22 +213,24 @@ function HeadBar() {
     const location = useLocation();
     let backgroundColor;
     if (location.pathname === '/signup') {
-      backgroundColor = ' var(--gray03);'; 
+      backgroundColor = 'var(--gray03);'; 
     } else if (location.pathname === '/join') {
-      backgroundColor = ' var(--gray03);'; 
+      backgroundColor = 'var(--gray03);'; 
     } else if (location.pathname === '/login') {
-      backgroundColor = ' var(--white);'; 
+      backgroundColor = 'var(--white);'; 
     } else if (location.pathname === '/') {
-      backgroundColor = ' var(--white);'; 
+      backgroundColor = 'var(--white);'; 
     } else if (location.pathname === '/meme') {
-      backgroundColor = ' var(--gray04);'; 
+      backgroundColor = 'var(--gray04);'; 
+    } else if (location.pathname === '/mypage') {
+      backgroundColor = 'var(--white);'; 
     }
-
+    
   switch (isLoggedIn) {
     case true:
     return (
-      <NavBarWrapper $backgroundColor={backgroundColor}>
-          <NavBar>
+      <NavBarWrapper $backgroundColor={backgroundColor} >
+       <NavBar $backgroundColor={backgroundColor}>
             <NavLink to="/">
               <NavLogo src={snlogo} />
             </NavLink>
@@ -244,7 +250,7 @@ function HeadBar() {
         case false:
           return (
             <NavBarWrapper $backgroundColor={backgroundColor}>
-          <NavBar>
+          <NavBar $backgroundColor={backgroundColor}>
             <NavLink to="/">
               <NavLogo src={snlogo} />
             </NavLink>
