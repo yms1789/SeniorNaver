@@ -2,6 +2,7 @@ package com.ssafy.seniornaver.mz.service;
 
 import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.error.code.ErrorCode;
+import com.ssafy.seniornaver.error.exception.AuthenticationException;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import com.ssafy.seniornaver.mz.dto.request.DictionaryWordListRequestDto;
 import com.ssafy.seniornaver.mz.dto.request.WordCreateRequestDto;
@@ -42,7 +43,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DictionaryWordListResponseDto> getMemberWordList(DictionaryWordListRequestDto requestDto, Member member) {
+    public DictionaryWordListResponseDto getMemberWordList(DictionaryWordListRequestDto requestDto, Member member) {
         VocabularyList vocabularyList = vocabularyListRepository.findByVocaId(member.getVocaId()).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
         });
@@ -50,38 +51,28 @@ public class DictionaryServiceImpl implements DictionaryService {
 
         Pageable pageable = PageRequest.of(requestDto.getPage(), 5, Sort.by("word").ascending());
 
-        if (!requestDto.getKeyword().equals("")) {
+        if (requestDto.getKeyword() != null) {
             // 키워드 검색시
-            Set<DictionaryWordListResponseDto> words = dictionaryRepository.findAllByWordContaining(requestDto.getKeyword(), pageable).stream()
-                    .map(word -> DictionaryWordListResponseDto.builder()
-                            .wordId(word.getWordId())
-                            .word(word.getWord())
-                            .mean(word.getMean())
-                            .year(word.getUseYear())
-                            .scrap(scrapWordRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
-                                    .anyMatch(scrapWord -> scrapWord.getWordId().getWordId() == word.getWordId()))
-                            .build())
-                    .collect(Collectors.toSet());
+            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllByWordContaining(requestDto.getKeyword(), pageable).stream()
+            .map(word -> DictionaryWordListResponseDto.Item.builder()
+                    .wordId(word.getWordId())
+                    .word(word.getWord())
+                    .mean(word.getMean())
+                    .year(word.getUseYear())
+                    .scrap(scrapWordRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
+                            .anyMatch(scrapWord -> scrapWord.getWordId().getWordId() == word.getWordId()))
+                    .build())
+            .collect(Collectors.toList());
 
-
-            List<Tag> tags = tagRepository.findAllByTagContaining(requestDto.getKeyword());
-            for (int i = 0; i < tags.size(); i++) {
-                tagToWordRepository.findAllByTagId(tags.get(i)).stream()
-                        .map(tagToWord -> words.add(DictionaryWordListResponseDto.builder()
-                                        .wordId(tagToWord.getWordId().getWordId())
-                                        .year(tagToWord.getWordId().getUseYear())
-                                        .mean(tagToWord.getWordId().getMean())
-                                        .word(tagToWord.getWordId().getWord())
-                                        .scrap(scrapWordRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
-                                                .anyMatch(scrapWord -> scrapWord.getWordId().getWordId() == tagToWord.getWordId().getWordId()))
-                                .build()));
-            }
-            
-            return List.copyOf(words);
+            return DictionaryWordListResponseDto.builder()
+                    .page(requestDto.getPage() + 1)
+                    .totalPage(getTotalPage(dictionaryRepository.findAllByWordContaining(requestDto.getKeyword()).size()))
+                    .items(words)
+                    .build();
 
         } else {
-            List<DictionaryWordListResponseDto> wordList = dictionaryRepository.findAll(pageable).stream()
-                    .map(word -> DictionaryWordListResponseDto.builder()
+            List<DictionaryWordListResponseDto.Item> wordList = dictionaryRepository.findAll(pageable).stream()
+                    .map(word -> DictionaryWordListResponseDto.Item.builder()
                             .wordId(word.getWordId())
                             .word(word.getWord())
                             .mean(word.getMean())
@@ -90,45 +81,40 @@ public class DictionaryServiceImpl implements DictionaryService {
                             .build())
                     .collect(Collectors.toList());
 
-            return wordList;
+            return DictionaryWordListResponseDto.builder()
+                    .page(requestDto.getPage() + 1)
+                    .totalPage(getTotalPage(dictionaryRepository.findAll().size()))
+                    .items(wordList)
+                    .build();
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<DictionaryWordListResponseDto> getWordList(DictionaryWordListRequestDto requestDto) {
+    public DictionaryWordListResponseDto getWordList(DictionaryWordListRequestDto requestDto) {
         Pageable pageable = PageRequest.of(requestDto.getPage(), 5, Sort.by("word").ascending());
 
-        if (!requestDto.getKeyword().equals("")) {
+        if (requestDto.getKeyword() != null) {
             // 키워드 검색시
-            Set<DictionaryWordListResponseDto> words = dictionaryRepository.findAllByWordContaining(requestDto.getKeyword(), pageable).stream()
-                    .map(word -> DictionaryWordListResponseDto.builder()
+            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllByWordContaining(requestDto.getKeyword(), pageable).stream()
+                    .map(word -> DictionaryWordListResponseDto.Item.builder()
                             .wordId(word.getWordId())
                             .word(word.getWord())
                             .mean(word.getMean())
                             .year(word.getUseYear())
                             .scrap(false)
                             .build())
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
 
-
-            List<Tag> tags = tagRepository.findAllByTagContaining(requestDto.getKeyword());
-            for (int i = 0; i < tags.size(); i++) {
-                tagToWordRepository.findAllByTagId(tags.get(i)).stream()
-                        .map(tagToWord -> words.add(DictionaryWordListResponseDto.builder()
-                                .wordId(tagToWord.getWordId().getWordId())
-                                .year(tagToWord.getWordId().getUseYear())
-                                .mean(tagToWord.getWordId().getMean())
-                                .word(tagToWord.getWordId().getWord())
-                                .scrap(false)
-                                .build()));
-            }
-
-            return List.copyOf(words);
+            return DictionaryWordListResponseDto.builder()
+                    .page(requestDto.getPage() + 1)
+                    .totalPage(getTotalPage(dictionaryRepository.findAllByWordContaining(requestDto.getKeyword()).size()))
+                    .items(words)
+                    .build();
 
         } else {
-            List<DictionaryWordListResponseDto> wordList = dictionaryRepository.findAll(pageable).stream()
-                    .map(word -> DictionaryWordListResponseDto.builder()
+            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAll(pageable).stream()
+                    .map(word -> DictionaryWordListResponseDto.Item.builder()
                             .wordId(word.getWordId())
                             .word(word.getWord())
                             .mean(word.getMean())
@@ -136,8 +122,22 @@ public class DictionaryServiceImpl implements DictionaryService {
                             .build())
                     .collect(Collectors.toList());
 
-            return wordList;
+            return DictionaryWordListResponseDto.builder()
+                    .page(requestDto.getPage() + 1)
+                    .totalPage(getTotalPage(dictionaryRepository.findAll().size()))
+                    .items(words)
+                    .build();
         }
+    }
+
+    @Override
+    public DictionaryWordListResponseDto getTagMemberWordList(DictionaryWordListRequestDto requestDto, Member member) {
+        return null;
+    }
+
+    @Override
+    public DictionaryWordListResponseDto getTagWordList(DictionaryWordListRequestDto requestDto) {
+        return null;
     }
 
     @Override
@@ -257,12 +257,25 @@ public class DictionaryServiceImpl implements DictionaryService {
 
     @Override
     @Transactional
-    public void wordDelete(Long wordId) {
+    public void wordDelete(Long wordId, Member member) {
+        if (!member.getMemberId().equals("test1234")) {
+            throw new AuthenticationException(ErrorCode.DONT_AUTHENTICATION_ROLE);
+        }
 
         Dictionary word = dictionaryRepository.findById(wordId).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXIST_WORD);
         });
 
         dictionaryRepository.delete(word);
+    }
+
+    // 전체 페이지 수 구하기
+    private int getTotalPage(long totalCount) {
+        int totalPage = 0;
+        totalPage = (int) (totalCount / 5);
+        if (totalCount % 5 != 0) {
+            totalPage++;
+        }
+        return totalPage;
     }
 }

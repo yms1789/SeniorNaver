@@ -40,10 +40,10 @@ public class VocaListController {
     @Operation(summary = "단어장 목록 불러오기", description = "category | 1 = 스크랩 단어,  2 = 저장 문제 , 3 = 만든 문제 " +
             " | 페이지는 0부터 시작")
     @GetMapping("/list")
-    public ResponseEntity<List<VocaListResponseDto>> getScrapWordList(HttpServletRequest httpServletRequest,
+    public ResponseEntity<VocaListResponseDto> getScrapWordList(HttpServletRequest httpServletRequest,
                                                                       VocaListRequestDto vocaListRequestDto) {
 
-        List<VocaListResponseDto> scrapWordResponseDto = vocabularyListService.getVocaList(getMember(httpServletRequest), vocaListRequestDto);
+        VocaListResponseDto scrapWordResponseDto = vocabularyListService.getVocaList(getMember(httpServletRequest), vocaListRequestDto);
 
         return ResponseEntity.ok(scrapWordResponseDto);
     }

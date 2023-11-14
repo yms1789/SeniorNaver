@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ProblemListResponseDto {
+
     private Long problemId;
     private String title;
     private String problemExplanation;

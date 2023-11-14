@@ -51,4 +51,31 @@ public class TagServiceImpl implements TagService{
                 .problemId(problemId)
                 .build()));
     }
+
+    // 태그 검색
+//            List<Tag> tags = tagRepository.findAllByTagContaining(requestDto.getKeyword());
+//            for (int i = 0; i < tags.size(); i++) {
+//                tagToWordRepository.findAllByTagId(tags.get(i)).stream()
+//                        .map(tagToWord -> words.add(DictionaryWordListResponseDto.Item.builder()
+//                                        .wordId(tagToWord.getWordId().getWordId())
+//                                        .year(tagToWord.getWordId().getUseYear())
+//                                        .mean(tagToWord.getWordId().getMean())
+//                                        .word(tagToWord.getWordId().getWord())
+//                                        .scrap(scrapWordRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
+//                                                .anyMatch(scrapWord -> scrapWord.getWordId().getWordId() == tagToWord.getWordId().getWordId()))
+//                                .build()));
+//            }
+
+
+//            List<Tag> tags = tagRepository.findAllByTagContaining(requestDto.getKeyword());
+//            for (int i = 0; i < tags.size(); i++) {
+//                tagToWordRepository.findAllByTagId(tags.get(i)).stream()
+//                        .map(tagToWord -> words.add(DictionaryWordListResponseDto.Item.builder()
+//                                .wordId(tagToWord.getWordId().getWordId())
+//                                .year(tagToWord.getWordId().getUseYear())
+//                                .mean(tagToWord.getWordId().getMean())
+//                                .word(tagToWord.getWordId().getWord())
+//                                .scrap(false)
+//                                .build()));
+//            }
 }

@@ -91,6 +91,7 @@ public enum ErrorCode {
     ALREADY_REGISTERED_VOCA_LIST(HttpStatus.BAD_REQUEST, "D-001", "이미 단어장을 가지고 있는 유저입니다."),
     NOT_EXIST_VOCA_LIST(HttpStatus.BAD_REQUEST, "D-002", "존재하지 않는 단어장 입니다. 단어장을 생성해주세요."),
     NOT_EXIST_WORD(HttpStatus.BAD_REQUEST, "D-003", "존재하지 않는 단어입니다."),
+    DONT_AUTHENTICATION_ROLE(HttpStatus.FORBIDDEN, "D-004", "당신 따위에겐 없는 권한입니다. 썩 물러가십쇼"),
 
     ALREADY_REGISTERED_PROBLEM(HttpStatus.BAD_REQUEST, "SP-001", "이미 등록된 문제 제목입니다."),
 
