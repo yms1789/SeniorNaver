@@ -133,7 +133,7 @@ function CurationTravels() {
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomBoundaryRef = useRef<HTMLDivElement | null>(null);
 
-  const { travelsData, isLoading } = useCurationTravelsQuery();
+  const { data: travelsData, isLoading } = useCurationTravelsQuery();
 
   const handleHover = (contentid: string, isHovered: boolean) => {
     setDataTravels(prevDataTravels => {
@@ -154,7 +154,7 @@ function CurationTravels() {
   }, [travelsData]);
 
   useEffect(() => {
-    setVisibleData(dataTravels.slice(0, page * 10));
+    setVisibleData(dataTravels.slice(0, (page === 0 ? 1 : page) * 10));
   }, [dataTravels, page]);
 
   useEffect(() => {

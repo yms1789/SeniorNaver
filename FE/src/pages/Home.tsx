@@ -43,7 +43,7 @@ const CurationWrapper = styled.div`
 function Home() {
   const activeCategory = useRecoilValue(curationCategoryState);
 
-  const { dataCarousel, isLoading } = useCurationCarouselQuery();
+  const { data: dataCarousel, isLoading } = useCurationCarouselQuery();
 
   if (isLoading) {
     return (

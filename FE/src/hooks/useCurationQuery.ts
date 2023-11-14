@@ -25,15 +25,11 @@ export const useCurationCarouselQuery = () => {
     }
   };
 
-  const { data: dataCarousel, isLoading } = useQuery<TCarouselData, Error>(
-    ["carousel"],
-    fetchData,
-    {
-      staleTime: 300000, // 5분 동안 캐시 유지
-    },
-  );
+  const curationCarouselQuery = useQuery<TCarouselData, Error>(["carousel"], fetchData, {
+    staleTime: 300000, // 5분 동안 캐시 유지
+  });
 
-  return { dataCarousel, isLoading };
+  return curationCarouselQuery;
 };
 
 export const useCurationNewsQuery = () => {
@@ -47,11 +43,11 @@ export const useCurationNewsQuery = () => {
     return response.data;
   };
 
-  const { data: newsData, isLoading } = useQuery(["news", selectedCategory], () =>
+  const curationNewsQuery = useQuery(["news", selectedCategory], () =>
     fetchNews(Object.keys(selectedCategory).filter(key => selectedCategory[key])[0]),
   );
 
-  return { newsData, isLoading };
+  return curationNewsQuery;
 };
 
 export const useCurationShowsQuery = () => {
@@ -62,9 +58,9 @@ export const useCurationShowsQuery = () => {
     return response.data;
   };
 
-  const { data: showsData, isLoading } = useQuery(["shows", selectedCategory], () => fetchShows());
+  const curationShowsQuery = useQuery(["shows", selectedCategory], () => fetchShows());
 
-  return { showsData, isLoading };
+  return curationShowsQuery;
 };
 
 export const useCurationTravelsQuery = () => {
@@ -80,8 +76,8 @@ export const useCurationTravelsQuery = () => {
     return data;
   };
 
-  const { data: travelsData, isLoading } = useQuery(["travels", selectedCategory], () =>
+  const curationTravelsQuery = useQuery(["travels", selectedCategory], () =>
     fetchTravels(Object.keys(selectedCategory).filter(key => selectedCategory[key])[0]),
   );
-  return { travelsData, isLoading };
+  return curationTravelsQuery;
 };

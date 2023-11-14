@@ -182,7 +182,7 @@ function CurationShows() {
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomBoundaryRef = useRef<HTMLDivElement | null>(null);
 
-  const { showsData, isLoading } = useCurationShowsQuery();
+  const { data: showsData, isLoading } = useCurationShowsQuery();
 
   useEffect(() => {
     if (showsData) {
@@ -197,7 +197,7 @@ function CurationShows() {
       }
       return selectedCategory[show.genre];
     });
-    setVisibleData(filteredShows.slice(0, page * 10));
+    setVisibleData(filteredShows.slice(0, (page === 0 ? 1 : page) * 10));
     if (visibleData.length === 0) {
       setNoData(true);
     }

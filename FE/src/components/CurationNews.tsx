@@ -114,7 +114,7 @@ function CurationNews() {
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomBoundaryRef = useRef<HTMLDivElement | null>(null);
 
-  const { newsData, isLoading } = useCurationNewsQuery();
+  const { data: newsData, isLoading } = useCurationNewsQuery();
 
   useEffect(() => {
     if (newsData) {
@@ -124,7 +124,7 @@ function CurationNews() {
   }, [newsData]);
 
   useEffect(() => {
-    setVisibleData(dataNews.slice(0, page * 10));
+    setVisibleData(dataNews.slice(0, (page === 0 ? 1 : page) * 10));
   }, [dataNews, page]);
 
   useEffect(() => {
