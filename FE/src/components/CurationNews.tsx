@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { handleSelect, initSelectedCategory } from "../utils/utils";
+import { useEffect, useRef, useState } from "react";
+import { styled } from "styled-components";
 import { useRecoilState } from "recoil";
 import { newsCategoryState } from "../states/curationCategory";
+import { useCurationNewsQuery } from "../hooks/useCurationQuery";
+import { TSelectedNewsCategory } from "../utils/types";
+import { handleSelect, initSelectedCategory, onErrorImg } from "../utils/utils";
+import LoadingForCuration from "./LoadingForCuration";
 import RoundedButton from "./RoundedButton";
-import { styled } from "styled-components";
 
 const CurationNewsWrapper = styled.div`
   display: flex;
@@ -24,19 +26,13 @@ const NewsGridWrapper = styled.div`
   justify-content: center;
   align-items: center;
   display: grid;
-  /* background-color: #35a62b; */
   grid-template-columns: repeat(2, 38vw);
   gap: 2vw;
-
   @media (max-width: 1280px) {
-    grid-template-columns: repeat(3, 25vw);
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 40vw);
+    grid-template-columns: repeat(2, 46vw);
   }
 `;
-const DataNewsWrapper = styled.div`
+const DataNewsWrapper = styled.a`
   position: relative;
   width: 100%;
   height: 100%;
@@ -47,6 +43,7 @@ const DataNewsWrapper = styled.div`
   justify-content: center;
   padding: 1.1vw;
   gap: 0.7vw;
+  color: var(--dark02);
   background-color: var(--aqua01);
   transition: all 0.2s ease-in-out;
   &:hover {
@@ -56,11 +53,21 @@ const DataNewsWrapper = styled.div`
 `;
 const NewsTitleWrapper = styled.div`
   height: 5vw;
-  font-size: 1.7vw;
+  font-size: 1.6vw;
+
+  @media (max-width: 1280px) {
+    height: 6vw;
+    font-size: 2vw;
+  }
+
+  @media (max-width: 768px) {
+    height: 8vw;
+    font-size: 2.5vw;
+  }
 `;
 const NewsImageWrapper = styled.div`
   width: 100%;
-  height: 100%;
+  height: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -69,9 +76,18 @@ const NewsImageWrapper = styled.div`
 `;
 const NewsImage = styled.img`
   flex-shrink: 0;
-  height: 20vw;
+  height: 22vw;
   width: 100%;
   object-fit: cover;
+`;
+const NewsDateWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  font-size: 1vw;
+`;
+const BottomBoundaryRef = styled.div`
+  height: 1px;
 `;
 
 interface TNewsData {
@@ -83,40 +99,64 @@ interface TNewsData {
   imageUrl: string;
 }
 
-interface TSelectedNewsCategory {
-  [key: string]: boolean;
-  속보: boolean;
-  정치: boolean;
-  경제: boolean;
-  스포츠: boolean;
-  연예: boolean;
-  지역: boolean;
-}
-
 function CurationNews() {
-  const [keywords, setKeywords] = useState(["속보", "정치", "경제", "스포츠", "연예", "지역"]);
+  const [keywords, _] = useState(["속보", "정치", "경제", "스포츠", "연예", "지역"]);
 
   const initialSelectedCategory = initSelectedCategory<TSelectedNewsCategory>(keywords, "속보");
-
-  const [dataNews, setDataNews] = useState<TNewsData[]>([]);
   const [selectedCategory, setSelectedCategory] =
     useRecoilState<TSelectedNewsCategory>(newsCategoryState);
 
+  const [dataNews, setDataNews] = useState<TNewsData[]>([]);
+  const [visibleData, setVisibleData] = useState<TNewsData[]>([]); // 화면에 보여줄 데이터를 저장할 상태
+  const [page, setPage] = useState(0); // 현재 페이지를 저장할 상태
+  const [changeCategory, setChangeCategory] = useState(false);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const bottomBoundaryRef = useRef<HTMLDivElement | null>(null);
+
+  const { newsData, isLoading } = useCurationNewsQuery();
+
   useEffect(() => {
-    fetchNews();
+    if (newsData) {
+      setDataNews(newsData);
+    }
+    console.log(newsData, selectedCategory);
+  }, [newsData]);
+
+  useEffect(() => {
+    setVisibleData(dataNews.slice(0, page * 10));
+  }, [dataNews, page]);
+
+  useEffect(() => {
+    setChangeCategory(true);
+    if (changeCategory) {
+      setDataNews([]);
+      setPage(0);
+    }
+    setChangeCategory(false);
   }, [selectedCategory]);
 
-  const fetchNews = async () => {
-    const sendBE = Object.keys(selectedCategory).filter(key => selectedCategory[key] === true);
-    try {
-      if (sendBE[0] === "속보") {
-        sendBE[0] = "뉴스";
+  useEffect(() => {
+    // Intersection Observer를 초기화합니다.
+    observer.current = new IntersectionObserver(handleObserver, {
+      root: null,
+      rootMargin: "0px",
+      threshold: 1.0,
+    });
+    if (bottomBoundaryRef.current) {
+      observer.current.observe(bottomBoundaryRef.current);
+    }
+    return () => {
+      if (bottomBoundaryRef.current && observer.current) {
+        observer.current.unobserve(bottomBoundaryRef.current);
       }
-      const response = await axios.get(`/api/curation/v1/news/${sendBE[0]}`);
-      setDataNews(response.data);
-      console.log("뉴스 데이터", dataNews);
-    } catch (error) {
-      console.error(error);
+    };
+  }, []);
+
+  const handleObserver = (entries: IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage(prevPage => prevPage + 1); // 페이지를 증가시켜 추가 데이터를 화면에 보여줍니다.
     }
   };
 
@@ -124,10 +164,9 @@ function CurationNews() {
     <CurationNewsWrapper>
       <NewsCategoryWrapper>
         {keywords.map(keyword => {
-          const uuid = self.crypto.randomUUID();
           return (
             <RoundedButton
-              key={uuid}
+              key={self.crypto.randomUUID()}
               buttonText={keyword}
               isActive={selectedCategory[keyword]}
               onClick={() =>
@@ -145,18 +184,30 @@ function CurationNews() {
         })}
       </NewsCategoryWrapper>
       <NewsGridWrapper>
-        {dataNews.map(news => {
+        {visibleData.map(news => {
           return (
-            <DataNewsWrapper key={news.title} onClick={() => window.open(news.link, "_blank")}>
+            <DataNewsWrapper
+              key={self.crypto.randomUUID()}
+              href={news.link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <NewsTitleWrapper>{news.title}</NewsTitleWrapper>
               <NewsImageWrapper>
-                <NewsImage src={news.imageUrl} />
+                <NewsImage
+                  src={news.imageUrl}
+                  alt="NewsImage"
+                  onError={onErrorImg}
+                  referrerPolicy="no-referrer"
+                />
               </NewsImageWrapper>
-              <div>{news.pubDate.slice(0, 16)}</div>
+              <NewsDateWrapper>{news.pubDate.slice(0, 16)}</NewsDateWrapper>
             </DataNewsWrapper>
           );
         })}
       </NewsGridWrapper>
+      {(!visibleData.length || isLoading) && <LoadingForCuration />}
+      <BottomBoundaryRef ref={bottomBoundaryRef} />
     </CurationNewsWrapper>
   );
 }
