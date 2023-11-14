@@ -15,8 +15,8 @@ interface Ierror {
 export const fetchApi: AxiosInstance = axios.create();
 fetchApi.interceptors.request.use(
   async (config): Promise<AdaptAxiosRequestConfig> => {
-    const user = useRecoilValue(userState); // 현재 토큰 액세스
-    console.log(user);
+    const persistData = JSON.parse(sessionStorage.getItem("recoil-persist") || "{}"); // 세션 저장소에서 토큰 액세스
+    const user = persistData.userInfo;
     if (user.accessToken) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${user.accessToken}`; // 현재 토큰을 헤더에 설정
@@ -33,7 +33,7 @@ fetchApi.interceptors.response.use(
   response => response,
   async (error: AxiosError<Ierror>) => {
     const originalRequest = error.config as AdaptAxiosRequestConfig;
-    const user = useRecoilValue(userState);
+    const user = JSON.parse(sessionStorage.getItem("userInfo") || "{}"); // 세션 저장소에서 토큰 액세스
     const refreshTokenData = {
       accessToken: user.accessToken,
       refreshToken: user.refreshToken,
@@ -74,3 +74,37 @@ fetchApi.interceptors.response.use(
 );
 
 export default fetchApi;
+// import axios, { AxiosInstance } from "axios";
+// import { fetchToken, useLogout, userState } from "./useUser";
+
+// const fetchApi = (): AxiosInstance => {
+//   const user = JSON.parse(sessionStorage.getItem("userInfo") || "{}"); // 로컬 저장소에서 토큰 액세스
+//   const refreshTokenData = {
+//     accessToken: user.accessToken,
+//     refreshToken: user.refreshToken,
+//   };
+//   const logout = useLogout(refreshTokenData);
+//   const axiosInstance = axios.create({
+//     // baseURL: "http://127.0.0.1:8000/",
+//     headers: {
+//       Authorization: `Bearer ${refreshTokenData.accessToken}`,
+//     },
+//   });
+
+//   axiosInstance.interceptors.response.use(
+//     response => response,
+//     error => {
+//       const statusCode = error.response?.status;
+//       if (statusCode === 401) {
+//         error.response.statusText = "Unauthorized";
+//         error.response.status = 401;
+//         logout();
+//       }
+//       return Promise.reject(error);
+//     },
+//   );
+
+//   return axiosInstance;
+// };
+
+// export default fetchApi;
