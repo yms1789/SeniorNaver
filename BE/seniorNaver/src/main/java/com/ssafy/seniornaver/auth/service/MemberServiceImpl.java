@@ -97,17 +97,6 @@ public class MemberServiceImpl implements MemberService{
 			.build();
 	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	@Scheduled(cron = "0 0 0 * * ?")
-	public void resetIsChecked() {
-		List<Member> allMembers = memberRepository.findAll();
-		for (Member member : allMembers) {
-			System.out.println(member.getMemberId());
-		}
-		memberRepository.saveAllAndFlush(allMembers);
-	}
-
-
 	/*
 	 ** 로그아웃 -> DB에 저장된 리프레쉬 토큰 최신화
 	 */
@@ -176,7 +165,7 @@ public class MemberServiceImpl implements MemberService{
 		if (!memberRepository.existsByMemberIdAndAuthProvider(memberId, AuthProvider.findByCode(provider.toLowerCase()))) {
 			throw new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID);
 		} else if (jwtProvider.isExpiration(refreshToken)) {
-			throw new BadRequestException(ErrorCode.TOKEN_EXPIRED);
+			throw new BadRequestException(ErrorCode.REFRESH_TOKEN_EXPIRED);
 		}
 
 		return jwtProvider.createAccessToken(memberId, AuthProvider.findByCode(provider));

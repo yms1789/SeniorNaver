@@ -7,6 +7,7 @@ import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -129,7 +130,9 @@ public class ChatbotServiceImpl implements ChatbotService{
                     response.append(inputLine);
                 }
                 br.close();
-                result = response.toString();
+                // JSON 문자열에서 "text" 키에 대한 값을 추출
+                JSONObject jsonObject = new JSONObject(response.toString());
+                result = jsonObject.getString("text");
 
             } else {
                 log.error("error !!!");
@@ -241,7 +244,7 @@ public class ChatbotServiceImpl implements ChatbotService{
     public String talkToChat(String text) {
         try {
             String response;
-            if (text.contains("병원") || text.contains("의원")) {
+            if (text.contains("병원정보") || text.contains("병원 정보")) {
                 String hospitalName = extractHospitalName(text);
                 response = getHospitalInfo(hospitalName);
             } else if (text.contains("오늘") && text.contains("날씨")) {
@@ -361,8 +364,8 @@ public class ChatbotServiceImpl implements ChatbotService{
     }
 
     public String getHospitalInfo(String hospitalName) throws IOException, ParserConfigurationException, SAXException {
-        String decodedKey = URLDecoder.decode(encodeKey, "UTF-8");
-        String urlString = "https://apis.data.go.kr/B552657/HsptlAsembySearchService/getHsptlMdcncListInfoInqire?serviceKey=" + decodedKey + "&Q0=" + URLEncoder.encode("경상북도", "UTF-8") + "&Q1=" + URLEncoder.encode("구미", "UTF-8") + "&QN=" + URLEncoder.encode(hospitalName, "UTF-8");
+
+        String urlString = "https://apis.data.go.kr/B552657/HsptlAsembySearchService/getHsptlMdcncListInfoInqire?serviceKey=" + encodeKey + "&Q0=" + URLEncoder.encode("경상북도", "UTF-8") + "&Q1=" + URLEncoder.encode("구미", "UTF-8") + "&QN=" + URLEncoder.encode(hospitalName, "UTF-8");
 
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -408,14 +411,22 @@ public class ChatbotServiceImpl implements ChatbotService{
     }
 
     public String extractHospitalName(String text) {
-        String hospitalName;
-        if (text.contains("병원")) {
-            int endIndex = text.indexOf("병원"); // '병원'의 시작 인덱스
-            hospitalName = text.substring(0, endIndex).trim(); // 텍스트의 시작부터 '병원'까지의 부분을 추출하고 공백을 제거하여 병원 이름으로 사용
-        } else {
-            int endIndex = text.indexOf("의원"); // '의원'의 시작 인덱스
-            hospitalName = text.substring(0, endIndex).trim(); // 텍스트의 시작부터 '의원'까지의 부분을 추출하고 공백을 제거하여 병원 이름으로 사용
+        String hospitalName = "";
+        String trigger1 = "병원 정보";
+        String trigger2 = "병원정보";
+        int startIndex = 0;
+        if (text.contains(trigger1)) {
+            startIndex = text.indexOf(trigger1) + trigger1.length();
+        } else if (text.contains(trigger2)) {
+            startIndex = text.indexOf(trigger2) + trigger2.length();
         }
+        hospitalName = text.substring(startIndex).trim();
+        hospitalName = hospitalName.replace(" ", "");
+        hospitalName = hospitalName.replace("병원", "");
+
+        log.info(hospitalName);
+
         return hospitalName;
     }
+
 }
