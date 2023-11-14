@@ -2,7 +2,6 @@ import { useCallback } from "react";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { css, styled } from "styled-components";
-import ChatButton from "./ChatButton";
 
 const NavigationButtonWrapper = styled.div`
   position: fixed;
@@ -88,7 +87,6 @@ function NavigationBar() {
           </NavigationButton>
         );
       })}
-      <ChatButton />
     </NavigationButtonWrapper>
   );
 }

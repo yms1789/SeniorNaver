@@ -2,7 +2,9 @@ import axios from "axios";
 import { useState } from "react";
 import { IconContext } from "react-icons";
 import { BsFillMicFill, BsRecordCircle } from "react-icons/bs";
+import { useSetRecoilState } from "recoil";
 import { styled } from "styled-components";
+import records from "../states/records";
 
 const FloatingContainer = styled.div`
   position: fixed;
@@ -52,7 +54,7 @@ function ChatButton() {
   const [onRec, setOnRec] = useState(true);
   const [source, setSource] = useState<MediaStreamAudioSourceNode>();
   const [analyser, setAnalyser] = useState<ScriptProcessorNode>();
-
+  const setIsRecording = useSetRecoilState(records);
   async function sendAudio(file: File) {
     try {
       const formData = new FormData();
@@ -64,13 +66,17 @@ function ChatButton() {
         },
         responseType: "blob",
       });
+      setIsRecording(false);
       const blobUrl = URL.createObjectURL(response.data);
       const audioElement = new Audio();
       audioElement.src = blobUrl;
       audioElement.volume = 0.5;
       audioElement.play();
     } catch (error) {
-      console.log(error);
+      setIsRecording(false);
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data);
+      }
     }
   }
   const onRecAudio = () => {
@@ -107,9 +113,11 @@ function ChatButton() {
           audioCtx.createMediaStreamSource(stream).disconnect();
 
           mediaRecorder.ondataavailable = function (e) {
+            setIsRecording(true);
             setOnRec(true);
           };
         } else {
+          setIsRecording(false);
           setOnRec(false);
         }
       };
@@ -121,6 +129,7 @@ function ChatButton() {
 
     media!.ondataavailable = function (e: any) {
       setOnRec(true);
+      setIsRecording(true);
       const sound = new File([e.data], "sample.mp3", {
         lastModified: new Date().getTime(),
         type: "audio/mpeg",
