@@ -92,12 +92,14 @@ public enum ErrorCode {
     NOT_EXIST_VOCA_LIST(HttpStatus.BAD_REQUEST, "D-002", "존재하지 않는 단어장 입니다. 단어장을 생성해주세요."),
     NOT_EXIST_WORD(HttpStatus.BAD_REQUEST, "D-003", "존재하지 않는 단어입니다."),
 
+    ALREADY_REGISTERED_PROBLEM(HttpStatus.BAD_REQUEST, "SP-001", "이미 등록된 문제 제목입니다."),
+
     NOT_MATCH_CATEGORY(HttpStatus.BAD_REQUEST, "V-001", "요청 목록과 메서드가 상이합니다."),
 
-    // 검색
-    DONT_SUCH_PLACE(HttpStatus.BAD_REQUEST, "F-001", "데이터가 부족합니다. 요청 값을 확인해주세요"),
-    DONT_SUCH_JOB_POST(HttpStatus.BAD_REQUEST, "F-002", "존재하지 않는 검색 유형입니다."),
-    DONT_PARSE_RESPONSE_DATA(HttpStatus.BAD_GATEWAY, "F-003", "확인할수 없는 데이터입니다."),
+    // 장소
+    DONT_SUCH_PLACE(HttpStatus.BAD_REQUEST, "P-001", "데이터가 부족합니다. 응답 값을 찾을 수 없습니다."),
+    DONT_SUCH_JOB_POST(HttpStatus.BAD_REQUEST, "J-001", "존재하지 않는 검색 유형입니다."),
+    DONT_PARSE_RESPONSE_DATA(HttpStatus.BAD_GATEWAY, "J-002", "확인할수 없는 데이터입니다."),
 
     //google cloud
     DIALOGFLOW_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G-001", "Dialogflow API 에러 발생"),

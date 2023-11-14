@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class DictionaryWordListRequestDto {
-    private int page;
-    private String keyword;
+public class ProblemListRequestDto {
+    int page;
+    String keyword;
 }

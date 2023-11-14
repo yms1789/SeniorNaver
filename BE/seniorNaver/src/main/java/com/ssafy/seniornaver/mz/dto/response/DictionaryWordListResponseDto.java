@@ -12,16 +12,16 @@ public class DictionaryWordListResponseDto {
     private Long wordId;
     private String word;
     private String mean;
-    private List<String> tags;
+    private int year;
     private boolean scrap;
 
     @Builder
     public DictionaryWordListResponseDto(Long wordId, String word, String mean,
-                                         List<String> tags, boolean scrap) {
+                                         int year, boolean scrap) {
         this.wordId = wordId;
         this.word = word;
         this.mean = mean;
-        this.tags = tags;
+        this.year = year;
         this.scrap = scrap;
     }
 }

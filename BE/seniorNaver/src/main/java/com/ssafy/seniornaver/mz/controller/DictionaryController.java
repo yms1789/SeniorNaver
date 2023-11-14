@@ -38,7 +38,7 @@ public class DictionaryController {
     @GetMapping("/word/list")
     public ResponseEntity<List<DictionaryWordListResponseDto>> getWordList(DictionaryWordListRequestDto requestDto) {
 
-        List<DictionaryWordListResponseDto> dictionaryWordListResponseDto = dictionaryService.getWordList(requestDto.getPage());
+        List<DictionaryWordListResponseDto> dictionaryWordListResponseDto = dictionaryService.getWordList(requestDto);
 
         return ResponseEntity.ok(dictionaryWordListResponseDto);
     }
@@ -49,18 +49,18 @@ public class DictionaryController {
                                                                                  DictionaryWordListRequestDto requestDto) {
 
         List<DictionaryWordListResponseDto> dictionaryWordListResponseDto =
-                dictionaryService.getMemberWordList(requestDto.getPage(), getMember(httpServletRequest));
+                dictionaryService.getMemberWordList(requestDto, getMember(httpServletRequest));
 
         return ResponseEntity.ok(dictionaryWordListResponseDto);
     }
 
     @Operation(summary = "사전에 단어 등록", description = "Admin 계정 전용, 추후 Admin 계정이 아닐 시 에러 반환 예정")
     @PostMapping("word/register")
-    public ResponseEntity<WordDetailResponseDto> createWord(@RequestBody WordCreateRequestDto wordCreateRequestDto) {
+    public ResponseEntity createWord(@RequestBody WordCreateRequestDto wordCreateRequestDto) {
 
-        WordDetailResponseDto wordDetailResponseDto = dictionaryService.wordCreate(wordCreateRequestDto);
+        dictionaryService.wordCreate(wordCreateRequestDto);
 
-        return ResponseEntity.ok(wordDetailResponseDto);
+        return ResponseEntity.ok("단어 저장, 태깅 성공");
     }
 
     @Operation(summary = "단어 상세", description = "id -> wordId")

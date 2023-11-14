@@ -43,7 +43,7 @@ public class VocaListController {
     public ResponseEntity<List<VocaListResponseDto>> getScrapWordList(HttpServletRequest httpServletRequest,
                                                                       VocaListRequestDto vocaListRequestDto) {
 
-        List<VocaListResponseDto> scrapWordResponseDto = vocabularyListService.getScrapWordList(getMember(httpServletRequest), vocaListRequestDto);
+        List<VocaListResponseDto> scrapWordResponseDto = vocabularyListService.getVocaList(getMember(httpServletRequest), vocaListRequestDto);
 
         return ResponseEntity.ok(scrapWordResponseDto);
     }

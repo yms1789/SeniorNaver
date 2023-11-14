@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class SituationProblem {
+public class SituationProblem implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,13 +38,16 @@ public class SituationProblem {
     private String review;
 
     @Column(nullable = false)
-    private String problem_explanation;
+    private String problemExplanation;
 
     @Column(nullable = false)
-    private Integer useYear;
+    private int useYear;
 
     @Column(nullable = false)
     private String makeMember;
+
+    @OneToMany(mappedBy = "tagId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    private List<TagToProblem> tags = new ArrayList<>();
 
     @OneToMany(mappedBy = "vocaId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private List<CompleteProblem> completeVocaList = new ArrayList<>();
@@ -51,13 +55,18 @@ public class SituationProblem {
     @OneToMany(mappedBy = "vocaId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private List<SaveProblem> saveMember = new ArrayList<>();
 
+    @OneToMany(mappedBy = "choiceId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    private List<Choice> choiceList = new ArrayList<>();
+
     @Builder
-    public SituationProblem(String title, String image, int answer, String review, String problem_explanation, Integer useYear) {
+    public SituationProblem(String title, String image, int answer, String review,
+                            String problemExplanation, int useYear, String makeMember) {
         this.title = title;
         this.image = image;
         this.answer = answer;
         this.review = review;
-        this.problem_explanation = problem_explanation;
+        this.makeMember = makeMember;
+        this.problemExplanation = problemExplanation;
         this.useYear = useYear;
     }
 
@@ -66,11 +75,11 @@ public class SituationProblem {
         this.createAt = LocalDateTime.now().withNano(0);
     }
 
-    public void updateProblem(String title, int answer, String review, String problem_explanation, int useYear) {
+    public void updateProblem(String title, int answer, String review, String problemExplanation, int useYear) {
         this.title = title;
         this.answer = answer;
         this.review = review;
-        this.problem_explanation = problem_explanation;
+        this.problemExplanation = problemExplanation;
         this.useYear = useYear;
         this.updateAt = LocalDateTime.now().withNano(0);
     }

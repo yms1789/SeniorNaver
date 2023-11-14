@@ -3,11 +3,13 @@ package com.ssafy.seniornaver.mz.service;
 import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
+import com.ssafy.seniornaver.mz.dto.request.DictionaryWordListRequestDto;
 import com.ssafy.seniornaver.mz.dto.request.WordCreateRequestDto;
 import com.ssafy.seniornaver.mz.dto.response.DictionaryWordListResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.WordDetailResponseDto;
 import com.ssafy.seniornaver.mz.entity.Dictionary;
 import com.ssafy.seniornaver.mz.entity.ScrapWord;
+import com.ssafy.seniornaver.mz.entity.Tag;
 import com.ssafy.seniornaver.mz.entity.VocabularyList;
 import com.ssafy.seniornaver.mz.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,43 +42,102 @@ public class DictionaryServiceImpl implements DictionaryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DictionaryWordListResponseDto> getMemberWordList(int page, Member member) {
+    public List<DictionaryWordListResponseDto> getMemberWordList(DictionaryWordListRequestDto requestDto, Member member) {
         VocabularyList vocabularyList = vocabularyListRepository.findByVocaId(member.getVocaId()).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
         });
 
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("word").ascending());
-        List<DictionaryWordListResponseDto> wordList = dictionaryRepository.findAll(pageable).stream()
-                .map(word -> DictionaryWordListResponseDto.builder()
-                        .wordId(word.getWordId())
-                        .word(word.getWord())
-                        .mean(word.getMean())
-                        .tags(tagToWordRepository.findAllByWordId(word).stream().map(tagToWord -> tagToWord.getTagId().getTag())
-                            .collect(Collectors.toList()))
-                        .scrap(scrapWordRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
-                                .anyMatch(scrapWord -> scrapWord.getWordId().getWordId() == word.getWordId()))
-                        .build())
-                .collect(Collectors.toList());
 
-        return wordList;
+        Pageable pageable = PageRequest.of(requestDto.getPage(), 5, Sort.by("word").ascending());
+
+        if (!requestDto.getKeyword().equals("")) {
+            // 키워드 검색시
+            Set<DictionaryWordListResponseDto> words = dictionaryRepository.findAllByWordContaining(requestDto.getKeyword(), pageable).stream()
+                    .map(word -> DictionaryWordListResponseDto.builder()
+                            .wordId(word.getWordId())
+                            .word(word.getWord())
+                            .mean(word.getMean())
+                            .year(word.getUseYear())
+                            .scrap(scrapWordRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
+                                    .anyMatch(scrapWord -> scrapWord.getWordId().getWordId() == word.getWordId()))
+                            .build())
+                    .collect(Collectors.toSet());
+
+
+            List<Tag> tags = tagRepository.findAllByTagContaining(requestDto.getKeyword());
+            for (int i = 0; i < tags.size(); i++) {
+                tagToWordRepository.findAllByTagId(tags.get(i)).stream()
+                        .map(tagToWord -> words.add(DictionaryWordListResponseDto.builder()
+                                        .wordId(tagToWord.getWordId().getWordId())
+                                        .year(tagToWord.getWordId().getUseYear())
+                                        .mean(tagToWord.getWordId().getMean())
+                                        .word(tagToWord.getWordId().getWord())
+                                        .scrap(scrapWordRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
+                                                .anyMatch(scrapWord -> scrapWord.getWordId().getWordId() == tagToWord.getWordId().getWordId()))
+                                .build()));
+            }
+            
+            return List.copyOf(words);
+
+        } else {
+            List<DictionaryWordListResponseDto> wordList = dictionaryRepository.findAll(pageable).stream()
+                    .map(word -> DictionaryWordListResponseDto.builder()
+                            .wordId(word.getWordId())
+                            .word(word.getWord())
+                            .mean(word.getMean())
+                            .scrap(scrapWordRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
+                                    .anyMatch(scrapWord -> scrapWord.getWordId().getWordId() == word.getWordId()))
+                            .build())
+                    .collect(Collectors.toList());
+
+            return wordList;
+        }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<DictionaryWordListResponseDto> getWordList(int page) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("word").ascending());
-        List<DictionaryWordListResponseDto> wordList = dictionaryRepository.findAll(pageable).stream()
-                .map(word -> DictionaryWordListResponseDto.builder()
-                        .wordId(word.getWordId())
-                        .word(word.getWord())
-                        .mean(word.getMean())
-                        .tags(tagToWordRepository.findAllByWordId(word).stream().map(tagToWord -> tagToWord.getTagId().getTag())
-                                .collect(Collectors.toList()))
-                        .scrap(false)
-                        .build())
-                .collect(Collectors.toList());
+    public List<DictionaryWordListResponseDto> getWordList(DictionaryWordListRequestDto requestDto) {
+        Pageable pageable = PageRequest.of(requestDto.getPage(), 5, Sort.by("word").ascending());
 
-        return wordList;
+        if (!requestDto.getKeyword().equals("")) {
+            // 키워드 검색시
+            Set<DictionaryWordListResponseDto> words = dictionaryRepository.findAllByWordContaining(requestDto.getKeyword(), pageable).stream()
+                    .map(word -> DictionaryWordListResponseDto.builder()
+                            .wordId(word.getWordId())
+                            .word(word.getWord())
+                            .mean(word.getMean())
+                            .year(word.getUseYear())
+                            .scrap(false)
+                            .build())
+                    .collect(Collectors.toSet());
+
+
+            List<Tag> tags = tagRepository.findAllByTagContaining(requestDto.getKeyword());
+            for (int i = 0; i < tags.size(); i++) {
+                tagToWordRepository.findAllByTagId(tags.get(i)).stream()
+                        .map(tagToWord -> words.add(DictionaryWordListResponseDto.builder()
+                                .wordId(tagToWord.getWordId().getWordId())
+                                .year(tagToWord.getWordId().getUseYear())
+                                .mean(tagToWord.getWordId().getMean())
+                                .word(tagToWord.getWordId().getWord())
+                                .scrap(false)
+                                .build()));
+            }
+
+            return List.copyOf(words);
+
+        } else {
+            List<DictionaryWordListResponseDto> wordList = dictionaryRepository.findAll(pageable).stream()
+                    .map(word -> DictionaryWordListResponseDto.builder()
+                            .wordId(word.getWordId())
+                            .word(word.getWord())
+                            .mean(word.getMean())
+                            .scrap(false)
+                            .build())
+                    .collect(Collectors.toList());
+
+            return wordList;
+        }
     }
 
     @Override

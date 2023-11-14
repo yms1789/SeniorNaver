@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MakeProblemRepository extends JpaRepository<MakeProblem, Long> {
-    List<ScrapWord> findAllByVocaId(Pageable pageable, Long vocaId);
+    List<MakeProblem> findAllByVocaId(Long vocaId);
+    List<MakeProblem> findAllByVocaId(Pageable pageable, Long vocaId);
 }
