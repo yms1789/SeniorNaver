@@ -131,15 +131,15 @@ function SignUpProcessBox() {
   const [nowCheckSecond, setCheckSecond] = useState(false);
   const navigate = useNavigate();
   const handleButtonClick = () => {
-    setCheckAll(!nowCheckAll); // 현재 상태의 반대 값을 설정
+    setCheckAll(!nowCheckAll); 
     setCheckFirst(true);
     setCheckSecond(true);
   };
   const handleFirstButtonClick = () => {
-    setCheckFirst(!nowCheckFirst); // 현재 상태의 반대 값을 설정
+    setCheckFirst(!nowCheckFirst); 
   };
   const handleSecondButtonClick = () => {
-    setCheckSecond(!nowCheckSecond); // 현재 상태의 반대 값을 설정
+    setCheckSecond(!nowCheckSecond); 
   };
   const handleNextButtononClick = () => {
     navigate("/join");
@@ -148,7 +148,7 @@ function SignUpProcessBox() {
     <ProcessBoxWrapper>
       <ProcessButtonWrapper>
         <ProcessCheckButton
-          src={nowCheckAll ? checkedbutton : checkbutton} // 상태에 따라 이미지 변경
+          src={nowCheckAll ? checkedbutton : checkbutton} 
           onClick={handleButtonClick}
         />
         <ProcessCheckText>전체 동의하기</ProcessCheckText>
@@ -156,7 +156,7 @@ function SignUpProcessBox() {
       <ProcessEmpty />
       <ProcessButtonWrapper>
         <ProcessCheckButton
-          src={nowCheckFirst ? checkedbutton : checkbutton} // 상태에 따라 이미지 변경
+          src={nowCheckFirst ? checkedbutton : checkbutton} 
           onClick={handleFirstButtonClick}
         />
         <ProcessUniqueText>[필수]</ProcessUniqueText>
@@ -173,7 +173,7 @@ function SignUpProcessBox() {
       <ProcessEmpty />
       <ProcessButtonWrapper>
         <ProcessCheckButton
-          src={nowCheckSecond ? checkedbutton : checkbutton} // 상태에 따라 이미지 변경
+          src={nowCheckSecond ? checkedbutton : checkbutton} 
           onClick={handleSecondButtonClick}
         />
         <ProcessUniqueText>[필수]</ProcessUniqueText>
