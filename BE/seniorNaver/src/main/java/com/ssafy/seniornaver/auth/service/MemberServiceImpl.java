@@ -10,6 +10,7 @@ import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.auth.entity.enumType.AuthProvider;
 import com.ssafy.seniornaver.auth.entity.enumType.Role;
 import com.ssafy.seniornaver.auth.jwt.JwtProvider;
+import com.ssafy.seniornaver.auth.repository.KeywordRepository;
 import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;

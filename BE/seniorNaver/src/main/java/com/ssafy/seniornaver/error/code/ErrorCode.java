@@ -103,7 +103,9 @@ public enum ErrorCode {
     DIALOGFLOW_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G-001", "Dialogflow API 에러 발생"),
     API_NOT_FOUND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G-002", "API연결 에러 발생"),
 
-    NOT_TALK_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "T-001", "말을 해주세요")
+    //스크랩
+    DUPLICATED_SCRAP(HttpStatus.BAD_REQUEST, "SC-001", "이미 스크랩한 내용입니다.")
+
     ;
 
     private HttpStatus httpStatus;

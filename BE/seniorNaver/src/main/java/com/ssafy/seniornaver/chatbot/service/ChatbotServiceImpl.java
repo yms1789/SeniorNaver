@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
@@ -24,6 +25,15 @@ import java.util.UUID;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -44,6 +54,9 @@ public class ChatbotServiceImpl implements ChatbotService{
 
     @Value("${google.service-account.privateKey.json}")
     private String privateKeyJson;
+
+    @Value("${data.hospital.api-key}")
+    private String encodeKey;
 
     private static Map<String, String> skyStateMap = new HashMap<>();
     private static Map<String, String> precipStateMap = new HashMap<>();
@@ -228,7 +241,10 @@ public class ChatbotServiceImpl implements ChatbotService{
     public String talkToChat(String text) {
         try {
             String response;
-            if (text.contains("오늘") && text.contains("날씨")) {
+            if (text.contains("병원") || text.contains("의원")) {
+                String hospitalName = extractHospitalName(text);
+                response = getHospitalInfo(hospitalName);
+            } else if (text.contains("오늘") && text.contains("날씨")) {
                 response = getWeatherInfo("오늘");
             } else if (text.contains("내일") && text.contains("날씨")) {
                 response = getWeatherInfo("내일");
@@ -254,7 +270,7 @@ public class ChatbotServiceImpl implements ChatbotService{
             throw new IllegalArgumentException("Invalid day: " + day);
         }
 
-        String apiURL = "https://apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst?pageNo=1&numOfRows=1000&dataType=JSON&base_date=" + now.format(DateTimeFormatter.BASIC_ISO_DATE) + "&base_time=0500&nx=55&ny=127&authKey=td0Jk1t4R_GdCZNbeFfxQw";
+        String apiURL = "https://apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst?pageNo=1&numOfRows=1000&dataType=JSON&base_date=" + now.format(DateTimeFormatter.BASIC_ISO_DATE) + "&base_time=0500&nx=102&ny=83&authKey=td0Jk1t4R_GdCZNbeFfxQw";
 
         URL url = new URL(apiURL);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -276,8 +292,9 @@ public class ChatbotServiceImpl implements ChatbotService{
 
 // 현재 시간을 시간 단위로 가져옵니다.
         LocalTime nowTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS);
-        String targetTime = "0600";
+        String targetFcstTime = nowTime.getMinute() < 30 ? String.format("%02d00", nowTime.getHour()) : String.format("%02d00", nowTime.getHour() + 1);
 
+        String targetTime = "0600";
         for (JsonElement je : jitems.getAsJsonArray()) {
             String fcstDate = je.getAsJsonObject().get("fcstDate").getAsString();
             if (baseDate.equals(fcstDate)) {
@@ -289,7 +306,10 @@ public class ChatbotServiceImpl implements ChatbotService{
                     if ("TMX".equals(category)) {
                         tmx = fcstValue;
                     } else {
-                        if (LocalTime.of(Integer.parseInt(fcstTime.substring(0, 2)), Integer.parseInt(fcstTime.substring(2))).equals(nowTime)) {
+                        LocalTime currentFcstTime = LocalTime.of(Integer.parseInt(fcstTime.substring(0, 2)), Integer.parseInt(fcstTime.substring(2)));
+
+                        // 현재 시간과 가장 가까운 예보 시간을 찾습니다.
+                        if (fcstTime.equals(targetFcstTime)) {
                             switch (category) {
                                 case "POP":
                                     pop = fcstValue;
@@ -340,4 +360,62 @@ public class ChatbotServiceImpl implements ChatbotService{
         return weatherInfo;
     }
 
+    public String getHospitalInfo(String hospitalName) throws IOException, ParserConfigurationException, SAXException {
+        String decodedKey = URLDecoder.decode(encodeKey, "UTF-8");
+        String urlString = "https://apis.data.go.kr/B552657/HsptlAsembySearchService/getHsptlMdcncListInfoInqire?serviceKey=" + decodedKey + "&Q0=" + URLEncoder.encode("경상북도", "UTF-8") + "&Q1=" + URLEncoder.encode("구미", "UTF-8") + "&QN=" + URLEncoder.encode(hospitalName, "UTF-8");
+
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) { // 정상 응답이 온 경우
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = reader.readLine()) != null) {
+                response.append(inputLine);
+            }
+            reader.close();
+
+            // XML 응답 파싱
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(new InputSource(new StringReader(response.toString())));
+
+            // 병원 정보가 복수인 경우 모든 병원 정보를 순회
+            NodeList hospitalNodes = doc.getElementsByTagName("item");
+            StringBuilder result = new StringBuilder();
+
+            if(hospitalNodes.getLength() == 0) {
+                return "검색하신 병원을 찾을 수 없습니다.";
+            } else {
+                for (int i = 0; i < hospitalNodes.getLength(); i++) {
+                    Element hospitalElement = (Element) hospitalNodes.item(i);
+                    // 필요한 정보 추출
+                    String nameHospital = hospitalElement.getElementsByTagName("dutyName").item(0).getTextContent(); // 병원 이름
+                    String phoneNumber = hospitalElement.getElementsByTagName("dutyTel1").item(0).getTextContent(); // 전화번호
+                    String address = hospitalElement.getElementsByTagName("dutyAddr").item(0).getTextContent(); // 주소
+
+                    result.append("병원 이름은 ").append(nameHospital).append("이고, 주소는 ").append(address).append("이며, 전화번호는 ").append(phoneNumber).append("입니다.\n");
+                }
+                return result.toString();
+            }
+        } else { // 에러가 발생한 경우
+            throw new BadRequestException(ErrorCode.API_NOT_FOUND_ERROR);
+        }
+    }
+
+    public String extractHospitalName(String text) {
+        String hospitalName;
+        if (text.contains("병원")) {
+            int endIndex = text.indexOf("병원"); // '병원'의 시작 인덱스
+            hospitalName = text.substring(0, endIndex).trim(); // 텍스트의 시작부터 '병원'까지의 부분을 추출하고 공백을 제거하여 병원 이름으로 사용
+        } else {
+            int endIndex = text.indexOf("의원"); // '의원'의 시작 인덱스
+            hospitalName = text.substring(0, endIndex).trim(); // 텍스트의 시작부터 '의원'까지의 부분을 추출하고 공백을 제거하여 병원 이름으로 사용
+        }
+        return hospitalName;
+    }
 }
