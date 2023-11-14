@@ -317,24 +317,22 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
             })}
           </CategoryButtonWrapper>
           <PlacesWrapper data-testid="category">
-            <Suspense fallback={<Loading />}>
-              {isSearch
-                ? searchData &&
-                  searchData.pages.map(
-                    page => page && <RenderPlaces key={crypto.randomUUID()} data={page} />,
-                  )
-                : isSuccess &&
-                  categoryData &&
-                  categoryData.pages.map(
-                    page => page && <RenderPlaces key={crypto.randomUUID()} data={page} />,
-                  )}
-            </Suspense>
+            {isSearch
+              ? searchData &&
+                searchData.pages.map(
+                  page => page && <RenderPlaces key={crypto.randomUUID()} data={page} />,
+                )
+              : isSuccess &&
+                categoryData &&
+                categoryData.pages.map(
+                  page => page && <RenderPlaces key={crypto.randomUUID()} data={page} />,
+                )}
             <Observer className="loader" ref={observerElem}>
               {(isFetchingNextSearchPage || isFetchingNextCategoryPage) &&
               (hasNextPage || hasNextSearch) ? (
                 <Loading />
               ) : (
-                (!hasNextPage || !hasNextSearch) &&
+                !(hasNextPage || hasNextSearch) &&
                 (searchData || categoryData) && (
                   <UpButtonWrapper onClick={goTop}>
                     <BsArrowUpCircleFill size={35} />
