@@ -49,6 +49,9 @@ export const useLogin = (userFormData: { memberId: string; password: string }) =
     const response = await axios.post("api/auth/login", userFormData);
     const { memberId, nickname, email, mobile, accessToken, refreshToken } = response.data;
     axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    console.log("Current token: ", `Bearer ${accessToken}`); // 토큰 출력
+    console.log("Current token when posting: ", axios.defaults.headers.common); // 요청 전 토큰 출력
+
     setUser({
       memberId,
       nickname,
@@ -111,6 +114,8 @@ export const naverLogin = async () => {
 };
 
 export const fetchToken = async (refreshTokenData: { refreshToken: string }) => {
+  console.log("패치토큰요청?");
+
   try {
     const response = await axios.post("api/token/reissue", {
       headers: {
@@ -118,6 +123,7 @@ export const fetchToken = async (refreshTokenData: { refreshToken: string }) => 
       },
     });
     const { accessToken } = response.data;
+    console.log("패치토큰성공?");
     return {
       accessToken,
     };
