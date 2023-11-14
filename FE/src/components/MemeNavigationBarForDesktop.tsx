@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useRecoilState,useSetRecoilState } from "recoil";
 import { isLoggedInState } from "../states/useUser";
 import { memeCurrentTapState, memeMineCurrentCategoryState, memeMineCurrentPracticeState,  } from "../states/useMeme";
-
+import {SoundEffectButton} from "../utils/effectsound";
 import Swal from 'sweetalert2'
 
 const MemeNavBarWrapper = styled.div`
@@ -57,7 +57,7 @@ const MemeNavBarLogoMiniText = styled.div`
   margin-bottom: 50px;
 ` 
 
-const MemeNavBarTap = styled.div<IbackgroundColor>`
+const MemeNavBarTap = styled(SoundEffectButton)<IbackgroundColor>`
   background: ${props => props.clicked ? 'var(--maingradient)' : 'var(--white)'};
   display: flex;
   flex-direction: column;
