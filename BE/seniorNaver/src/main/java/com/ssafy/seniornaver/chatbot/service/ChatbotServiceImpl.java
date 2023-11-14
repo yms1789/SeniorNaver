@@ -400,6 +400,9 @@ public class ChatbotServiceImpl implements ChatbotService{
                     String nameHospital = hospitalElement.getElementsByTagName("dutyName").item(0).getTextContent(); // 병원 이름
                     String phoneNumber = hospitalElement.getElementsByTagName("dutyTel1").item(0).getTextContent(); // 전화번호
 
+                    // 전화번호 각 자리 사이에 공백 추가
+                    String spacedPhoneNumber = phoneNumber.replaceAll("\\d", "$0 ").trim();
+
                     result.append("병원 이름은 ").append(nameHospital).append("이고, 전화번호는 ").append(phoneNumber).append("입니다.\n");
                 }
                 return result.toString();
