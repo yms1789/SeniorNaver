@@ -86,7 +86,6 @@ public enum ErrorCode {
     //포인트 관련
     INSUFFICIENT_POINT(HttpStatus.BAD_REQUEST, "P-001", "포인트가 부족합니다."),
 
-
     // 사전
     ALREADY_REGISTERED_VOCA_LIST(HttpStatus.BAD_REQUEST, "D-001", "이미 단어장을 가지고 있는 유저입니다."),
     NOT_EXIST_VOCA_LIST(HttpStatus.BAD_REQUEST, "D-002", "존재하지 않는 단어장 입니다. 단어장을 생성해주세요."),
@@ -105,7 +104,9 @@ public enum ErrorCode {
     DIALOGFLOW_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G-001", "Dialogflow API 에러 발생"),
     API_NOT_FOUND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G-002", "API연결 에러 발생"),
 
-    NOT_TALK_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "T-001", "말을 해주세요")
+    //스크랩
+    DUPLICATED_SCRAP(HttpStatus.BAD_REQUEST, "SC-001", "이미 스크랩한 내용입니다.")
+
     ;
 
     private HttpStatus httpStatus;
