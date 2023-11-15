@@ -60,9 +60,9 @@ function MyPageNavigationBar() {
       <MyPageNavigationBarCategory onClick={()=> setcurrentCategory({ currentCategory: 0 })}>
         프로필
       </MyPageNavigationBarCategory>
-      <MyPageNavigationBarCategory onClick={()=> setcurrentCategory({ currentCategory: 1 })}>
+      {/* <MyPageNavigationBarCategory onClick={()=> setcurrentCategory({ currentCategory: 1 })}>
         스크랩
-      </MyPageNavigationBarCategory>
+      </MyPageNavigationBarCategory> */}
       <MyPageNavigationBarCategory onClick={()=> setcurrentCategory({ currentCategory: 2 })}>
         문의하기
       </MyPageNavigationBarCategory>
