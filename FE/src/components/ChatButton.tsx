@@ -5,6 +5,7 @@ import { BsFillMicFill, BsRecordCircle } from "react-icons/bs";
 import { useSetRecoilState } from "recoil";
 import { styled } from "styled-components";
 import records from "../states/records";
+import fetchApi from "../states/fetchApi";
 
 const FloatingContainer = styled.div`
   @media screen and (max-width: 450px) {
@@ -63,7 +64,7 @@ function ChatButton() {
       const formData = new FormData();
 
       formData.append("voiceFile", file);
-      const response = await axios.post("/api/chatbot/v1/talk", formData, {
+      const response = await fetchApi.post("/api/chatbot/v1/talk", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
