@@ -189,10 +189,12 @@ public class DictionaryServiceImpl implements DictionaryService {
             throw new BadRequestException(ErrorCode.NOT_EXIST_WORD);
         });
 
-        scrapWordRepository.save(ScrapWord.builder()
-                        .vocaId(vocabularyList)
-                        .wordId(word)
-                .build());
+        if (!scrapWordRepository.existsByWordIdAndVocaId(word, vocabularyList)) {
+            scrapWordRepository.save(ScrapWord.builder()
+                    .vocaId(vocabularyList)
+                    .wordId(word)
+                    .build());
+        }
     }
 
     @Override
@@ -206,9 +208,9 @@ public class DictionaryServiceImpl implements DictionaryService {
             throw new BadRequestException(ErrorCode.NOT_EXIST_WORD);
         });
 
-        ScrapWord scrapId = scrapWordRepository.findByWordIdAndVocaId(word, vocabularyList).get();
-
-        scrapWordRepository.delete(scrapId);
+        if (scrapWordRepository.existsByWordIdAndVocaId(word, vocabularyList)) {
+            scrapWordRepository.delete(scrapWordRepository.findByWordIdAndVocaId(word, vocabularyList).get());
+        }
     }
 
     @Override
