@@ -73,6 +73,8 @@ const MemeDictionaryTodayMemeDefinitionHeader = styled.div`
 `
 const MemeDictionaryTodayMemeDefinitionContent = styled.div`
   display: flex;
+  margin-top: 40px;
+  height: 100%;
   font-family: "NanumSquareNeoBold";
   text-align: left;
   font-size: 32px;
@@ -84,11 +86,11 @@ const MemeDictionaryHeadline = styled.div`
   margin-bottom: 150px;
 ` 
 
-const YearBox = styled.div`
+const YearBox = styled.div<IconProps>`
   position: relative;
   user-select: none;
-  top: -200px;
-  right: -300px;
+  top: ${props => props.isScrapped ? '-50%' : '-40%'}; 
+  right: ${props => props.isScrapped ? '-35%' : '-35%'}; 
   display: flex;
   font-family: "NanumSquareNeoExtraBold";
   font-size: 26px;
@@ -108,6 +110,13 @@ function MemeDictionaryTodayMeme() {
   const [wordId, setWordId] = useState<number | undefined>();
   const [isLoggedIn] = useRecoilState(isLoggedInState);  
 
+  const fetchToday = async () => {
+    const data = await fetchTodayWord();
+    const wordId = Number(Object.values(data)[0]);     
+    console.log(wordId) 
+    setWordId(wordId);
+  };
+
   const handleScrap = async () => {
     if (wordId === undefined) return;
     if (wordData?.scrap) {
@@ -120,12 +129,6 @@ function MemeDictionaryTodayMeme() {
 
     }
   }
-  const fetchToday = async () => {
-    const data = await fetchTodayWord();
-    const wordId = Number(Object.values(data)[0]);     
-    console.log(wordId) 
-    setWordId(wordId);
-  };
 
   useEffect(() => {
     fetchToday();
@@ -154,7 +157,7 @@ function MemeDictionaryTodayMeme() {
             <BsFillBookmarksFill size="50" />
           </MemeDictionaryDetailInfoIcon>
         }
-        <YearBox>{wordData?.useYear}</YearBox>
+        <YearBox isScrapped={isLoggedIn}>{wordData?.useYear}</YearBox>
       </MemeDictionaryTodayMemeInfoBox>
       <MemeDictionaryTodayMemeDefinitionHeader>뜻풀이</MemeDictionaryTodayMemeDefinitionHeader>
       <MemeDictionaryTodayMemeDefinitionContent>{wordData?.mean}</MemeDictionaryTodayMemeDefinitionContent>

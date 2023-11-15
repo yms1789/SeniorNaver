@@ -76,16 +76,13 @@ export async function fetchWords(pageNum: number, input: string, yearinput: numb
 }
 
 // 저장한 단어 조회 (페이지네이션)
-export async function fetchMyWords(pageNum: number, input: string, yearinput: number) {
+export async function fetchMyWords(pageNum: number, category: number) {
   try {
-    const response = await fetchApi.get("/api/dictionary/member/word/list", {
-      params: {
-        page: pageNum,
-        year: yearinput,
-        keyword: input,
-      },
+    const response = await fetchApi.post("/api/voca/list", {
+      page: pageNum,
+      category: category,
     });
-    console.log("단어ㅇㄴㅇㄴㅇㅁㅇ", response.data);
+    console.log("스크랩한 단어", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -121,18 +118,3 @@ export async function postProblem(newProblem: object) {
     }
   }
 }
-
-// export const useWordsQuery = (place: string, input?: string) => {
-//   const query = useInfiniteQuery({
-//     queryKey: ["words", place],
-//     queryFn: ({ pageParam = 0 }) => fetchWords(pageParam, input, yearin || ""),
-//     getNextPageParam: lastPage => {
-//       return lastPage?.page! < lastPage?.totalPage! ? lastPage?.page! + 1 : undefined;
-//     },
-//     suspense: true,
-//     useErrorBoundary: true,
-//     refetchOnWindowFocus: false,
-//   });
-
-//   return query;
-// };

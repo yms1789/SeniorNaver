@@ -60,7 +60,7 @@ function MemeDictionaryMineSavedWords() {
   const [searchvalue,setSearchvalue] = useState("")
 
   const fetchData = async () => {
-    const data = await fetchMyWords(currentPage-1, searchvalue, year);
+    const data = await fetchMyWords(currentPage-1, 1);
     console.log("오오노놔",data)
     setPosts(data.items);
     setTotalPages(data.totalPage)

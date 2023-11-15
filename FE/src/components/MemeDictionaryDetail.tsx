@@ -20,14 +20,14 @@ const MemeDictionaryDetailWraaper = styled.div`
   justify-content: center;
 `
 
-const MemeDictionaryDetailWordName = styled.div`
-  margin-top: 30px;
+const MemeDictionaryDetailWordName = styled.div<IconProps>`
   align-items: center;
   justify-content: center;
   display: flex;
   font-family: "NanumSquareNeoHeavy";
   font-size: 64px;
   color: var(--white);
+  margin-top: ${props => props.isScrapped ? '30px' : '-20px'}; 
   -webkit-text-stroke: 2px var(--dark01);
 `
 const MemeDictionaryDetailHeader = styled.div`
@@ -139,11 +139,11 @@ const MemeDictionaryDetailInfoLabel = styled.div`
   color : var(--white);
 `
 
-const YearBox = styled.div`
+const YearBox = styled.div<IconProps>`
   position: relative;
   user-select: none;
-  top: 0px;
-  right: -300px;
+  top: ${props => props.isScrapped ? '0px' : '-10%'}; 
+  right: ${props => props.isScrapped ? '-300px' : '-35%'}; 
   display: flex;
   font-family: "NanumSquareNeoExtraBold";
   font-size: 26px;
@@ -190,8 +190,8 @@ function MemeDictionaryDetail() {
   return(
     <MemeDictionaryDetailWraaper>
       <MemeDictionaryDetailInfoBox>     
-      <YearBox>{wordData?.useYear}</YearBox>
-        <MemeDictionaryDetailWordName>
+      <YearBox isScrapped={isLoggedIn}>{wordData?.useYear}</YearBox>
+        <MemeDictionaryDetailWordName isScrapped={isLoggedIn}>
           {wordData?.word}
       </MemeDictionaryDetailWordName>
       {isLoggedIn && 

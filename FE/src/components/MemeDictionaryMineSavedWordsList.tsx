@@ -115,8 +115,8 @@ function MemeDictionaryMineSavedWordsList({currentPosts}:{currentPosts:any;}) {
               {currentPosts.map((e:any, index:number) => (
               <SavedWordsListWrapper key={index}> 
               <SavedWordsListInnerWrapper>
-                <SavedWordsListBox onClick={()=>handleSetState(index)}>
-                <SavedWordsListBoxWordName>{e.content}</SavedWordsListBoxWordName>
+                <SavedWordsListBox onClick={()=>handleSetState(e.id)}>
+                <SavedWordsListBoxWordName>{e.title}</SavedWordsListBoxWordName>
                 <SavedWordsListBoxYear>{e.year}</SavedWordsListBoxYear>
                 <SavedWordsListBoxHeart>                
                   <AiOutlineHeart size="50" color="var(--red)"/>
