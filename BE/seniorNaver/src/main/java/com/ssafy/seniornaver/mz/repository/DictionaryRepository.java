@@ -15,6 +15,6 @@ public interface DictionaryRepository extends JpaRepository<Dictionary, Long> {
     List<Dictionary> findAllByWordContaining(String word);
     boolean existsByWord(String word);
 
-    @Query(value = "SELECT * FROM seniornaver.dictionary as sp order by RAND() limit 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM seniornaver.dictionary as sp order by RAND() limit 10", nativeQuery = true)
     List<Dictionary> findAll();
 }
