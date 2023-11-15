@@ -1,9 +1,11 @@
-
 import styled from "styled-components";
 import HeadBar from "../components/HeadBar";
 import JoinProcessBox from "../components/JoinProcessBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SetInfoBox from "../components/SetInfoBox";
+import { useNavigate } from "react-router";
+import { useRecoilValue } from "recoil";
+import { isLoggedInState } from "../states/useUser";
 const JoinInWrapper = styled.div`
   width: 100vw;
   height: 100%;
@@ -35,12 +37,19 @@ const JoinInInnerBox = styled.div`
   z-index: 11;
 `;
 function Join() {
+  const navigate = useNavigate();
+  const isLoggedIn = useRecoilValue(isLoggedInState);
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/home");
+    }
+  }, []);
   return (
     <JoinInWrapper>
       <HeadBar />
       <JoinInBox>
         <JoinInInnerBox>
-         <JoinProcessBox/>
+          <JoinProcessBox />
         </JoinInInnerBox>
       </JoinInBox>
     </JoinInWrapper>

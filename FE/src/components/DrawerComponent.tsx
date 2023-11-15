@@ -3,11 +3,12 @@ import { IconContext } from "react-icons";
 import { BiSearch } from "react-icons/bi";
 import { BsArrowUpCircleFill } from "react-icons/bs";
 import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
-import { SetterOrUpdater } from "recoil";
+import { SetterOrUpdater, useRecoilValue } from "recoil";
 import { styled } from "styled-components";
 import { useCategoryQuery, useSearchQuery } from "../hooks/usePlaceQuery";
 import Loading from "../pages/Loading";
 import { ICoordinate } from "../pages/Places";
+import { userState } from "../states/useUser";
 import RenderPlaces from "./RenderPlaces";
 
 export type IPlaceItem = {
@@ -59,9 +60,16 @@ const ContentsWrapper = styled.div`
 const Text = styled.p`
   color: black;
   padding: 5px 10px;
-  font-family: NanumSquareNeoReuglar;
+  font-family: NanumSquareNeoBold;
 `;
 
+const NickName = styled.b`
+  background: linear-gradient(90deg, #3fd5de, #2deea8); /* 가로 그라데이션 */
+  color: transparent; /* 텍스트 색상을 투명하게 만듦 */
+  -webkit-background-clip: text; /* 텍스트에만 적용 */
+  font-size: 20px;
+  font-family: NanumSquareNeoExtraBold;
+`;
 const CategoryButtonWrapper = styled.div`
   width: fit-content;
   margin: 0 auto;
@@ -152,7 +160,6 @@ const Observer = styled.div`
   margin-top: 16px;
   width: fit-content;
   height: fit-content;
-  /* background-color: blue; */
   color: var(--emerald);
 `;
 const UpButtonWrapper = styled.div`
@@ -168,6 +175,8 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
   const [isSearch, setIsSearch] = useState(false);
   const observerElem = useRef<HTMLDivElement>(null);
   const drawer = useRef<HTMLDivElement>(null);
+
+  const { nickname } = useRecoilValue(userState);
 
   const {
     data: categoryData,
@@ -289,6 +298,7 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
             onClick={() => {
               handleClick();
             }}
+            disabled={!inputSearch}
           >
             <IconContext.Provider value={{ color: "white" }}>
               <BiSearch size={30} />
@@ -297,12 +307,17 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
         </SearchWrapper>
         <ContentsWrapper>
           <Text>
-            <b>이순자</b> 님을 위한 추천 스팟이에요
+            {nickname && (
+              <>
+                <NickName>{nickname}&nbsp;</NickName>님을 위한 추천 스팟이에요
+              </>
+            )}
           </Text>
           <CategoryButtonWrapper>
             {categoryButtons.map((button: string) => {
               return (
                 <CategoryButton
+                  key={crypto.randomUUID()}
                   type="button"
                   value={button}
                   onClick={() => {
@@ -317,24 +332,22 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
             })}
           </CategoryButtonWrapper>
           <PlacesWrapper data-testid="category">
-            <Suspense fallback={<Loading />}>
-              {isSearch
-                ? searchData &&
-                  searchData.pages.map(
-                    page => page && <RenderPlaces key={crypto.randomUUID()} data={page} />,
-                  )
-                : isSuccess &&
-                  categoryData &&
-                  categoryData.pages.map(
-                    page => page && <RenderPlaces key={crypto.randomUUID()} data={page} />,
-                  )}
-            </Suspense>
+            {isSearch
+              ? searchData &&
+                searchData.pages.map(
+                  page => page && <RenderPlaces key={crypto.randomUUID()} data={page} />,
+                )
+              : isSuccess &&
+                categoryData &&
+                categoryData.pages.map(
+                  page => page && <RenderPlaces key={crypto.randomUUID()} data={page} />,
+                )}
             <Observer className="loader" ref={observerElem}>
               {(isFetchingNextSearchPage || isFetchingNextCategoryPage) &&
               (hasNextPage || hasNextSearch) ? (
                 <Loading />
               ) : (
-                (!hasNextPage || !hasNextSearch) &&
+                !(hasNextPage || hasNextSearch) &&
                 (searchData || categoryData) && (
                   <UpButtonWrapper onClick={goTop}>
                     <BsArrowUpCircleFill size={35} />

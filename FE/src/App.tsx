@@ -8,7 +8,6 @@ import ChatButton from "./components/ChatButton";
 import CompletedSignUp from "./components/CompletedSignUp";
 import CurationShowDetail from "./components/CurationShowDetail";
 import CurationTravelDetail from "./components/CurationTravelDetail";
-import Chats from "./pages/Chats";
 import Home from "./pages/Home";
 import Intro from "./pages/Intro";
 import JobDetail from "./pages/JobDetail";
@@ -37,7 +36,15 @@ function App() {
         <Routes>
           <Route path="/" element={<Intro />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/home" element={<Home />} />
+          <Route
+            path="/home"
+            element={
+              <>
+                <Home />
+                <ChatButton />
+              </>
+            }
+          />
           <Route path="/show/:showId" element={<CurationShowDetail />} />
           <Route
             path="/travel/:travelId"
@@ -45,21 +52,55 @@ function App() {
           />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/join" element={<Join />} />
-          <Route path="/places" element={<Places navermaps={navermaps} />} />
+          <Route
+            path="/places"
+            element={
+              <>
+                <Places navermaps={navermaps} />
+                <ChatButton />
+              </>
+            }
+          />
           <Route path="/oauth/login/oauth2/code/naver" element={<Wait />} />
           <Route path="/completed" element={<CompletedSignUp />} />
-          <Route path="/mypage" element={<MyPage />} />
+          <Route
+            path="/mypage"
+            element={
+              <>
+                <MyPage />
+                <ChatButton />
+              </>
+            }
+          />
           <Route
             path="/jobs"
             element={
-              <Suspense>
-                <Jobs />
-              </Suspense>
+              <>
+                <Suspense>
+                  <Jobs />
+                </Suspense>
+                <ChatButton />
+              </>
             }
           />
-          <Route path="/chats" element={<Chats />} />
-          <Route path="/job-detail" element={<JobDetail navermaps={navermaps} />} />
-          <Route path="/Meme" element={<MemeDictionary />} />
+          <Route
+            path="/job-detail"
+            element={
+              <>
+                <JobDetail navermaps={navermaps} />
+                <ChatButton />
+              </>
+            }
+          />
+          <Route
+            path="/Meme"
+            element={
+              <>
+                <MemeDictionary />
+                <ChatButton />
+              </>
+            }
+          />
         </Routes>
       </AppWrapper>
       {isRecord && (
@@ -67,7 +108,6 @@ function App() {
           <Recording />
         </Suspense>
       )}
-      <ChatButton />
     </>
   );
 }

@@ -6,7 +6,7 @@ import item2 from "../assets/images/2.png";
 import item3 from "../assets/images/3.png";
 import item4 from "../assets/images/4.png";
 import item5 from "../assets/images/5.png";
-
+import { useNavigate } from "react-router";
 
 const IntroWrapper = styled.div`
   width: 100vw;
@@ -24,8 +24,7 @@ const IntroAdvertisement = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 50px;
-
-`
+`;
 
 const IntroHeaderText = styled.div`
   display: flex;
@@ -39,6 +38,29 @@ const IntroHeaderText = styled.div`
   margin-bottom: 200px;
 `;
 
+const IntroRouterText = styled.div`
+  cursor: pointer;
+  display: flex;
+  font-family: "NanumSquareNeoBold";
+  font-size: 36px;
+  color: var(--dark01);
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  &:last-child {
+    &:hover {
+      color: var(--aqua02);
+    }
+  }
+  width: 350px;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  &:hover {
+    color: var(--emerald);
+  }
+`;
+
 const StyledImage = styled.img`
   width: 70%;
   height: 80%;
@@ -48,61 +70,76 @@ const StyledImage = styled.img`
 
 const IntroEmpty = styled.div`
   height: 30vh;
-`
+`;
+const IntroLast = styled.div`
+  height: 100px;
+`;
+const IntroRouterWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 100px;
+`;
 
 function Intro() {
+  const navigation = useNavigate();
   const [position, setPosition] = useState(0);
 
   const onScroll = () => {
     setPosition(window.scrollY);
-  }
+  };
 
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
-    }
+    };
   }, []);
 
   return (
     <IntroWrapper>
-      <HeadBar />
-      <IntroAdvertisement ></IntroAdvertisement>
+      <IntroAdvertisement></IntroAdvertisement>
       <IntroHeaderText>시니어 네이버에 오신 것을 환영합니다</IntroHeaderText>
 
-        <StyledImage 
-          src={item1} 
-          alt="" 
-          style={{ transform: `translateX(${position / 4}px)`, opacity: position / 10} // 스크롤 위치에 따라 opacity를 조절
-        } 
-        />
-        <IntroEmpty/>
-        <StyledImage 
-          src={item2} 
-          alt="" 
-          style={{ transform: `translateX(${position / -8}px)`, opacity: position / 1500}} 
-        />
-        <IntroEmpty/>
-        <StyledImage 
-          src={item3} 
-          alt="" 
-          style={{ transform: `translateX(${position / 12}px)`, opacity: position / 3000}} 
-        />
-        <IntroEmpty/>
-        <StyledImage 
-          src={item4} 
-          alt="" 
-          style={{ transform: `translateX(${position / -16}px)`, opacity: position / 4000}} 
-        />
-        <IntroEmpty/>
-        <StyledImage 
-          src={item5} 
-          alt="" 
-          style={{ transform: `translateX(${position / 20}px)`, opacity: position / 5000}} 
-        />
-        <IntroEmpty/>
-      <IntroHeaderText>시니어 네이버에 오신 것을 환영합니다</IntroHeaderText>
+      <StyledImage
+        src={item1}
+        alt=""
+        style={
+          { transform: `translateX(${position / 4}px)`, opacity: position / 10 } // 스크롤 위치에 따라 opacity를 조절
+        }
+      />
+      <IntroEmpty />
+      <StyledImage
+        src={item2}
+        alt=""
+        style={{ transform: `translateX(${position / -8}px)`, opacity: position / 1500 }}
+      />
+      <IntroEmpty />
+      <StyledImage
+        src={item3}
+        alt=""
+        style={{ transform: `translateX(${position / 12}px)`, opacity: position / 3000 }}
+      />
+      <IntroEmpty />
+      <StyledImage
+        src={item4}
+        alt=""
+        style={{ transform: `translateX(${position / -16}px)`, opacity: position / 4000 }}
+      />
+      <IntroEmpty />
+      <StyledImage
+        src={item5}
+        alt=""
+        style={{ transform: `translateX(${position / 20}px)`, opacity: position / 5000 }}
+      />
+      <IntroLast />
+      <IntroRouterWrapper>
+        <IntroRouterText onClick={() => navigation("/login")}>로그인 하러 가기</IntroRouterText>
+        <IntroRouterText onClick={() => navigation("/home")}>비회원으로 접속하기</IntroRouterText>
+      </IntroRouterWrapper>
     </IntroWrapper>
   );
 }

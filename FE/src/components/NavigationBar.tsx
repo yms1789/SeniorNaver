@@ -4,17 +4,38 @@ import { useNavigate } from "react-router-dom";
 import { css, styled } from "styled-components";
 
 const NavigationButtonWrapper = styled.div`
+  @media screen and (max-width: 450px) {
+    bottom: 0px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    z-index: 100;
+    top: auto;
+  }
   position: fixed;
-  top: 50%;
-  right: 0px;
+  right: 0;
+  bottom: 150px;
   display: flex;
   flex-direction: column;
   z-index: 100;
-  @media screen and (max-width: 500px) {
-    display: none;
-  }
 `;
 const NavigationButton = styled.button<{ $active: boolean }>`
+  @media screen and (max-width: 450px) {
+    width: 100%;
+    padding: 20px 10px;
+    box-shadow: 10px 0px 20px rgba(0, 0, 0, 0.1);
+    height: 70px;
+    border: 2px solid transparent;
+    z-index: 100;
+    &:hover {
+      border: 2px solid var(--emerald);
+    }
+    ${props =>
+      props.$active &&
+      css`
+        border: 2px solid var(--emerald);
+      `}
+  }
   background-color: white;
   color: #6c6c6c;
   border: solid 2px lightgray;

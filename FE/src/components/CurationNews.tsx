@@ -7,6 +7,7 @@ import { TSelectedNewsCategory } from "../utils/types";
 import { handleSelect, initSelectedCategory, onErrorImg } from "../utils/utils";
 import LoadingForCuration from "./LoadingForCuration";
 import RoundedButton from "./RoundedButton";
+import { upButtonState } from "../states/upButton";
 
 const CurationNewsWrapper = styled.div`
   display: flex;
@@ -54,12 +55,11 @@ const DataNewsWrapper = styled.a`
 const NewsTitleWrapper = styled.div`
   height: 5vw;
   font-size: 1.6vw;
-
+  color: var(--dark02);
   @media (max-width: 1280px) {
     height: 6vw;
     font-size: 2vw;
   }
-
   @media (max-width: 768px) {
     height: 8vw;
     font-size: 2.5vw;
@@ -105,6 +105,7 @@ function CurationNews() {
   const initialSelectedCategory = initSelectedCategory<TSelectedNewsCategory>(keywords, "속보");
   const [selectedCategory, setSelectedCategory] =
     useRecoilState<TSelectedNewsCategory>(newsCategoryState);
+  const [__, setUpButton] = useRecoilState(upButtonState);
 
   const [dataNews, setDataNews] = useState<TNewsData[]>([]);
   const [visibleData, setVisibleData] = useState<TNewsData[]>([]); // 화면에 보여줄 데이터를 저장할 상태
@@ -120,8 +121,13 @@ function CurationNews() {
     if (newsData) {
       setDataNews(newsData);
     }
-    console.log(newsData, selectedCategory);
   }, [newsData]);
+
+  useEffect(() => {
+    if (page > 0) {
+      setUpButton(true);
+    }
+  }, [page]);
 
   useEffect(() => {
     setVisibleData(dataNews.slice(0, (page === 0 ? 1 : page) * 10));
@@ -183,30 +189,33 @@ function CurationNews() {
           );
         })}
       </NewsCategoryWrapper>
-      <NewsGridWrapper>
-        {visibleData.map(news => {
-          return (
-            <DataNewsWrapper
-              key={self.crypto.randomUUID()}
-              href={news.link}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <NewsTitleWrapper>{news.title}</NewsTitleWrapper>
-              <NewsImageWrapper>
-                <NewsImage
-                  src={news.imageUrl}
-                  alt="NewsImage"
-                  onError={onErrorImg}
-                  referrerPolicy="no-referrer"
-                />
-              </NewsImageWrapper>
-              <NewsDateWrapper>{news.pubDate.slice(0, 16)}</NewsDateWrapper>
-            </DataNewsWrapper>
-          );
-        })}
-      </NewsGridWrapper>
-      {(!visibleData.length || isLoading) && <LoadingForCuration />}
+      {!isLoading ? (
+        <NewsGridWrapper>
+          {visibleData.map(news => {
+            return (
+              <DataNewsWrapper
+                key={self.crypto.randomUUID()}
+                href={news.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <NewsTitleWrapper>{news.title}</NewsTitleWrapper>
+                <NewsImageWrapper>
+                  <NewsImage
+                    src={news.imageUrl}
+                    alt="NewsImage"
+                    onError={onErrorImg}
+                    referrerPolicy="no-referrer"
+                  />
+                </NewsImageWrapper>
+                <NewsDateWrapper>{news.pubDate.slice(0, 16)}</NewsDateWrapper>
+              </DataNewsWrapper>
+            );
+          })}
+        </NewsGridWrapper>
+      ) : (
+        <LoadingForCuration />
+      )}
       <BottomBoundaryRef ref={bottomBoundaryRef} />
     </CurationNewsWrapper>
   );

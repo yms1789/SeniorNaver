@@ -28,6 +28,7 @@ export const JobWrapper = styled.div`
   display: flex;
   flex-direction: column;
   font-family: NanumSquareNeoRegular;
+  font-size: 30px;
   margin: 5px;
   cursor: pointer;
   &:hover {
@@ -47,6 +48,7 @@ export const JobTitle = styled.div`
   white-space: nowrap;
 `;
 export const JobDescription = styled.p`
+  font-size: 20px;
   display: inline;
   text-align: start;
   padding-right: 8px;

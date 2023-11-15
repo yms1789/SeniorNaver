@@ -13,7 +13,8 @@ const getDateDiff = (d1: string) => {
 
   const diffDate = date1.getTime() - today.getTime();
   const day = Math.floor(diffDate / (1000 * 60 * 60 * 24)) + 1;
-  return day <= 0 ? "마감" : "마감 " + day + "일 전";
+  console.log(day);
+  return day < 0 ? "마감" : "D - " + day;
 };
 
 export { placeholderImage, getDateDiff };

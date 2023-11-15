@@ -4,6 +4,8 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import LoadingForCuration from "./LoadingForCuration";
 import { onErrorImg } from "../utils/utils";
+import Footer from "./Footer";
+import HeadBar from "./HeadBar";
 
 const ShowDetailWrapper = styled.div`
   width: 100%;
@@ -11,6 +13,7 @@ const ShowDetailWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow-x: hidden;
   font-size: 0.9vw;
   font-family: "NanumSquareNeoBold";
   background-color: var(--aqua01);
@@ -20,6 +23,7 @@ const ShowDetailResponsiveWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5vw;
+  margin: 10vw 0vw;
   transition: all 0.3s ease-in-out;
 
   @media (max-width: 1280px) {
@@ -196,7 +200,6 @@ function CurationShowDetail() {
     ["showDetail", showId],
     async () => {
       const response = await axios.get(`/api/curation/v1/performance/${showId}`);
-      console.log(response, response.data);
       return response.data;
     },
     {
@@ -242,76 +245,83 @@ function CurationShowDetail() {
   }
 
   return (
-    <ShowDetailWrapper>
-      <ShowDetailResponsiveWrapper>
-        <ShowContextWrapper>
-          <ShowContextDetailWrapper>
-            <ShowGapWrapper>
-              <ShowGenreWrapper>{dataShowDetail.genrenm}</ShowGenreWrapper>
-              <ShowTitleWrapper>{dataShowDetail.prfnm}</ShowTitleWrapper>
-            </ShowGapWrapper>
-            <ShowGapWrapper>
-              {createGroup("시간")}
-              {createDetail("공연 날짜", `${dataShowDetail.prfpdfrom} ~ ${dataShowDetail.prfpdto}`)}
-              {createDetail("관람 시간", dataShowDetail.prfruntime)}
-              {dataShowDetail.dtguidance.trim() && (
-                <ShowRowWrapper>
-                  <ShowRowPaleWrapper>공연 시간</ShowRowPaleWrapper>
-                  <ShowRowDividerWrapper>|</ShowRowDividerWrapper>
-                  <ShowColTextWrapper>
-                    {dataShowDetail.dtguidance.split(/,(?![^()]*\))/).map((item: string) => {
-                      return (
-                        <ShowColTextWrapper key={self.crypto.randomUUID()}>
-                          {item}
-                        </ShowColTextWrapper>
-                      );
-                    })}
-                  </ShowColTextWrapper>
-                </ShowRowWrapper>
-              )}
-            </ShowGapWrapper>
-            <ShowGapWrapper>
-              {createGroup("장소")}
-              {createDetail("지역", dataShowDetail.area)}
-              {createDetail("장소", dataShowDetail.fcltynm)}
-            </ShowGapWrapper>
-            <ShowGapWrapper>
-              {createGroup("상세 정보")}
-              {createDetail("좌석 가격", dataShowDetail.pcseguidance)}
-              {createDetail("관람 등급", dataShowDetail.prfage)}
-              {createDetail("주최 주관", dataShowDetail.entrpsnm)}
-              {createDetail("주연 조연", dataShowDetail.prfcast)}
-              {createDetail("감독", dataShowDetail.prfcrew)}
-              {createDetail("개요", dataShowDetail.sty)}
-            </ShowGapWrapper>
-          </ShowContextDetailWrapper>
-          <ShowPosterImageWrapper
-            src={dataShowDetail.poster}
-            alt="ShowPosterImage"
-            onError={onErrorImg}
-            referrerPolicy="no-referrer"
-          />
-        </ShowContextWrapper>
-        <Divider />
-        {dataShowDetail.styUrlList && (
-          <>
-            <ShowMiddleTextWrapper>공연 팜플렛</ShowMiddleTextWrapper>
-            <ShowDetailImageWrapper>
-              {dataShowDetail.styUrlList.map((image: string) => {
-                return (
-                  <ShowDetailImage
-                    src={image}
-                    alt="ShowDetailImage"
-                    onError={onErrorImg}
-                    referrerPolicy="no-referrer"
-                  />
-                );
-              })}
-            </ShowDetailImageWrapper>
-          </>
-        )}
-      </ShowDetailResponsiveWrapper>
-    </ShowDetailWrapper>
+    <>
+      <HeadBar />
+      <ShowDetailWrapper>
+        <ShowDetailResponsiveWrapper>
+          <ShowContextWrapper>
+            <ShowContextDetailWrapper>
+              <ShowGapWrapper>
+                <ShowGenreWrapper>{dataShowDetail.genrenm}</ShowGenreWrapper>
+                <ShowTitleWrapper>{dataShowDetail.prfnm}</ShowTitleWrapper>
+              </ShowGapWrapper>
+              <ShowGapWrapper>
+                {createGroup("시간")}
+                {createDetail(
+                  "공연 날짜",
+                  `${dataShowDetail.prfpdfrom} ~ ${dataShowDetail.prfpdto}`,
+                )}
+                {createDetail("관람 시간", dataShowDetail.prfruntime)}
+                {dataShowDetail.dtguidance.trim() && (
+                  <ShowRowWrapper>
+                    <ShowRowPaleWrapper>공연 시간</ShowRowPaleWrapper>
+                    <ShowRowDividerWrapper>|</ShowRowDividerWrapper>
+                    <ShowColTextWrapper>
+                      {dataShowDetail.dtguidance.split(/,(?![^()]*\))/).map((item: string) => {
+                        return (
+                          <ShowColTextWrapper key={self.crypto.randomUUID()}>
+                            {item}
+                          </ShowColTextWrapper>
+                        );
+                      })}
+                    </ShowColTextWrapper>
+                  </ShowRowWrapper>
+                )}
+              </ShowGapWrapper>
+              <ShowGapWrapper>
+                {createGroup("장소")}
+                {createDetail("지역", dataShowDetail.area)}
+                {createDetail("장소", dataShowDetail.fcltynm)}
+              </ShowGapWrapper>
+              <ShowGapWrapper>
+                {createGroup("상세 정보")}
+                {createDetail("좌석 가격", dataShowDetail.pcseguidance)}
+                {createDetail("관람 등급", dataShowDetail.prfage)}
+                {createDetail("주최 주관", dataShowDetail.entrpsnm)}
+                {createDetail("주연 조연", dataShowDetail.prfcast)}
+                {createDetail("감독", dataShowDetail.prfcrew)}
+                {createDetail("개요", dataShowDetail.sty)}
+              </ShowGapWrapper>
+            </ShowContextDetailWrapper>
+            <ShowPosterImageWrapper
+              src={dataShowDetail.poster}
+              alt="ShowPosterImage"
+              onError={onErrorImg}
+              referrerPolicy="no-referrer"
+            />
+          </ShowContextWrapper>
+          <Divider />
+          {dataShowDetail.styUrlList && (
+            <>
+              <ShowMiddleTextWrapper>공연 팜플렛</ShowMiddleTextWrapper>
+              <ShowDetailImageWrapper>
+                {dataShowDetail.styUrlList.map((image: string) => {
+                  return (
+                    <ShowDetailImage
+                      src={image}
+                      alt="ShowDetailImage"
+                      onError={onErrorImg}
+                      referrerPolicy="no-referrer"
+                    />
+                  );
+                })}
+              </ShowDetailImageWrapper>
+            </>
+          )}
+        </ShowDetailResponsiveWrapper>
+        <Footer />
+      </ShowDetailWrapper>
+    </>
   );
 }
 

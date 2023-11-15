@@ -1,6 +1,7 @@
+import { SyntheticEvent } from "react";
 import styled from "styled-components";
+import errorImage from "../assets/images/defaultimage.png";
 import { IPlace } from "../hooks/usePlaceQuery";
-
 const PlaceText = styled.p`
   font-family: NanumSquareNeoExtraBold;
   display: inline;
@@ -56,10 +57,18 @@ export type IPlaceItem = {
 };
 
 function RenderPlaces({ data }: { data: IPlace }) {
+  const handleImgError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = errorImage;
+  };
   return data.documents.map((place: IPlaceItem) => {
     return (
       <PlaceWrapper key={place.place_name} href={place.place_url} target="_blank">
-        <PlaceImage src={place.thumbnail} referrerPolicy="no-referrer" />
+        <PlaceImage
+          src={place.thumbnail || errorImage}
+          alt="썸네일"
+          referrerPolicy="no-referrer"
+          onError={handleImgError}
+        />
         <PlaceText data-testid="title">{place.place_name}</PlaceText>
         <PlaceDetail>{place.address_name}</PlaceDetail>
       </PlaceWrapper>
