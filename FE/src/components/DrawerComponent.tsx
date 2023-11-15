@@ -3,11 +3,12 @@ import { IconContext } from "react-icons";
 import { BiSearch } from "react-icons/bi";
 import { BsArrowUpCircleFill } from "react-icons/bs";
 import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
-import { SetterOrUpdater } from "recoil";
+import { SetterOrUpdater, useRecoilValue } from "recoil";
 import { styled } from "styled-components";
 import { useCategoryQuery, useSearchQuery } from "../hooks/usePlaceQuery";
 import Loading from "../pages/Loading";
 import { ICoordinate } from "../pages/Places";
+import { userState } from "../states/useUser";
 import RenderPlaces from "./RenderPlaces";
 
 export type IPlaceItem = {
@@ -159,7 +160,6 @@ const Observer = styled.div`
   margin-top: 16px;
   width: fit-content;
   height: fit-content;
-  /* background-color: blue; */
   color: var(--emerald);
 `;
 const UpButtonWrapper = styled.div`
@@ -175,6 +175,8 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
   const [isSearch, setIsSearch] = useState(false);
   const observerElem = useRef<HTMLDivElement>(null);
   const drawer = useRef<HTMLDivElement>(null);
+
+  const { nickname } = useRecoilValue(userState);
 
   const {
     data: categoryData,
@@ -305,7 +307,11 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
         </SearchWrapper>
         <ContentsWrapper>
           <Text>
-            <NickName>이순자</NickName> 님을 위한 추천 스팟이에요!
+            {nickname && (
+              <>
+                <NickName>{nickname}&nbsp;</NickName>님을 위한 추천 스팟이에요
+              </>
+            )}
           </Text>
           <CategoryButtonWrapper>
             {categoryButtons.map((button: string) => {
