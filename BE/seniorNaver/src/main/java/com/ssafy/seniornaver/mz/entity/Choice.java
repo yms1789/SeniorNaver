@@ -12,6 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Choice {
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long choiceId;
 

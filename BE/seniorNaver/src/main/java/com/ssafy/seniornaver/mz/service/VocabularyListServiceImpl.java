@@ -52,7 +52,7 @@ public class VocabularyListServiceImpl implements VocabularyListService{
     }
 
     @Override
-    public List<VocaListResponseDto> getVocaList(Member member, VocaListRequestDto vocaListRequestDto) {
+    public VocaListResponseDto getVocaList(Member member, VocaListRequestDto vocaListRequestDto) {
 
         if (member.getVocaId() == null) {
             throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
@@ -63,8 +63,8 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
         // 스크랩 단어 리스트
         if (vocaListRequestDto.getCategory() == 1) {
-            List<VocaListResponseDto> wordList = scrapWordRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
-                    .map(scrapWord -> VocaListResponseDto.builder()
+            List<VocaListResponseDto.Item> wordList = scrapWordRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
+                    .map(scrapWord -> VocaListResponseDto.Item.builder()
                             .id(scrapWord.getWordId().getWordId())
                             .title(scrapWord.getWordId().getWord())
                             .content(scrapWord.getWordId().getMean())
@@ -72,13 +72,17 @@ public class VocabularyListServiceImpl implements VocabularyListService{
                             .build())
                     .collect(Collectors.toList());
 
-            return wordList;
+            return VocaListResponseDto.builder()
+                    .page(vocaListRequestDto.getPage() + 1)
+                    .totalPage(getTotalPage(scrapWordRepository.findAllByVocaId(member.getVocaId()).stream().count()))
+                    .items(wordList)
+                    .build();
         }
 
         // 저장 문제 리스트
         if (vocaListRequestDto.getCategory() == 2) {
-            List<VocaListResponseDto> problemList = saveProblemRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
-                    .map(saveProblem -> VocaListResponseDto.builder()
+            List<VocaListResponseDto.Item> problemList = saveProblemRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
+                    .map(saveProblem -> VocaListResponseDto.Item.builder()
                             .id(saveProblem.getProblemId().getProblemId())
                             .title(saveProblem.getProblemId().getTitle())
                             .content(saveProblem.getProblemId().getProblemExplanation())
@@ -86,14 +90,17 @@ public class VocabularyListServiceImpl implements VocabularyListService{
                             .build())
                     .collect(Collectors.toList());
 
-            return problemList;
-
+            return VocaListResponseDto.builder()
+                    .page(vocaListRequestDto.getPage() + 1)
+                    .totalPage(getTotalPage(saveProblemRepository.findAllByVocaId(member.getVocaId()).stream().count()))
+                    .items(problemList)
+                    .build();
         }
 
         // 만든 문제 리스트
         if (vocaListRequestDto.getCategory() == 3) {
-            List<VocaListResponseDto> problemList = makeProblemRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
-                    .map(makeProblem -> VocaListResponseDto.builder()
+            List<VocaListResponseDto.Item> problemList = makeProblemRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
+                    .map(makeProblem -> VocaListResponseDto.Item.builder()
                             .id(makeProblem.getProblemId().getProblemId())
                             .title(makeProblem.getProblemId().getTitle())
                             .content(makeProblem.getProblemId().getProblemExplanation())
@@ -101,9 +108,23 @@ public class VocabularyListServiceImpl implements VocabularyListService{
                             .build())
                     .collect(Collectors.toList());
 
-            return problemList;
+            return VocaListResponseDto.builder()
+                    .page(vocaListRequestDto.getPage() + 1)
+                    .totalPage(getTotalPage(makeProblemRepository.findAllByVocaId(member.getVocaId()).stream().count()))
+                    .items(problemList)
+                    .build();
         }
 
         throw new BadRequestException(ErrorCode.NOT_MATCH_CATEGORY);
+    }
+
+    // 전체 페이지 수 구하기
+    private int getTotalPage(long totalCount) {
+        int totalPage = 0;
+        totalPage = (int) (totalCount / 5);
+        if (totalCount % 5 != 0) {
+            totalPage++;
+        }
+        return totalPage;
     }
 }

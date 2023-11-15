@@ -10,8 +10,6 @@ import com.ssafy.seniornaver.mz.dto.request.WordCreateRequestDto;
 import com.ssafy.seniornaver.mz.dto.response.DictionaryWordListResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.WordDetailResponseDto;
 import com.ssafy.seniornaver.mz.service.DictionaryService;
-import com.ssafy.seniornaver.mz.service.TagService;
-import com.ssafy.seniornaver.mz.service.VocabularyListService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,13 +19,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Dictionary", description = "사전관련 서비스")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/dictionary/v1")
+@RequestMapping("/dictionary/")
 public class DictionaryController {
 
     private final DictionaryService dictionaryService;
@@ -35,27 +33,28 @@ public class DictionaryController {
     private final MemberRepository memberRepository;
 
     @Operation(summary = "전체 단어 조회", description = "ㄱㄴㄷ 순으로 단어 목록을 조회한다, page는 0부터 시작")
-    @GetMapping("/word/list")
-    public ResponseEntity<List<DictionaryWordListResponseDto>> getWordList(DictionaryWordListRequestDto requestDto) {
-
-        List<DictionaryWordListResponseDto> dictionaryWordListResponseDto = dictionaryService.getWordList(requestDto);
+    @GetMapping("v1/word/list")
+    public ResponseEntity<DictionaryWordListResponseDto> getWordList(DictionaryWordListRequestDto requestDto) {
+        
+        log.info("전체단어 조회");
+        DictionaryWordListResponseDto dictionaryWordListResponseDto = dictionaryService.getWordList(requestDto);
 
         return ResponseEntity.ok(dictionaryWordListResponseDto);
     }
 
     @Operation(summary = "멤버 별 전체 단어 조회", description = "ㄱㄴㄷ 순으로 단어 목록을 조회한다, complete 값이 완료 단어에 따라 상이, page는 0부터 시작")
     @GetMapping("member/word/list")
-    public ResponseEntity<List<DictionaryWordListResponseDto>> getMemberWordList(HttpServletRequest httpServletRequest,
+    public ResponseEntity<DictionaryWordListResponseDto> getMemberWordList(HttpServletRequest httpServletRequest,
                                                                                  DictionaryWordListRequestDto requestDto) {
 
-        List<DictionaryWordListResponseDto> dictionaryWordListResponseDto =
+        DictionaryWordListResponseDto dictionaryWordListResponseDto =
                 dictionaryService.getMemberWordList(requestDto, getMember(httpServletRequest));
 
         return ResponseEntity.ok(dictionaryWordListResponseDto);
     }
 
     @Operation(summary = "사전에 단어 등록", description = "Admin 계정 전용, 추후 Admin 계정이 아닐 시 에러 반환 예정")
-    @PostMapping("word/register")
+    @PostMapping("v1/word/register")
     public ResponseEntity createWord(@RequestBody WordCreateRequestDto wordCreateRequestDto) {
 
         dictionaryService.wordCreate(wordCreateRequestDto);
@@ -64,7 +63,7 @@ public class DictionaryController {
     }
 
     @Operation(summary = "단어 상세", description = "id -> wordId")
-    @GetMapping("word/{id}")
+    @GetMapping("v1/word/{id}")
     public ResponseEntity<WordDetailResponseDto> wordDetail(@PathVariable("id") Long id,
                                     HttpServletRequest httpServletRequest) {
 
@@ -93,6 +92,21 @@ public class DictionaryController {
         dictionaryService.unScrap(getMember(httpServletRequest).getVocaId(), id);
 
         return ResponseEntity.ok("스크랩 취소 성공");
+    }
+
+    @Operation(summary = "단어 삭제", description = "사전에 있는 단어를 삭제합니다.")
+    @DeleteMapping("word/removal/{id}")
+    public ResponseEntity deleteWord(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
+
+        dictionaryService.wordDelete(id, getMember(httpServletRequest));
+
+        return ResponseEntity.ok("스크랩 취소 성공");
+    }
+
+    @Operation(summary = "오늘의 단어", description = "사전에 있는 단어 중 랜덤으로 1개의 단어를 반환합니다.")
+    @GetMapping("today/word")
+    public ResponseEntity<Map<String, Long>> todayWord() {
+        return ResponseEntity.ok(dictionaryService.todayWord());
     }
 
     private Member getMember(HttpServletRequest httpServletRequest) {

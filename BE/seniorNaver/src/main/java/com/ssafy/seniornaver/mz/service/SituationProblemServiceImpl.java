@@ -7,6 +7,7 @@ import com.ssafy.seniornaver.mz.dto.request.ProblemCreateRequestDto;
 import com.ssafy.seniornaver.mz.dto.request.ProblemListRequestDto;
 import com.ssafy.seniornaver.mz.dto.response.ProblemDetailResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.ProblemListResponseDto;
+import com.ssafy.seniornaver.mz.dto.response.RandomProblemResponseDto;
 import com.ssafy.seniornaver.mz.entity.Choice;
 import com.ssafy.seniornaver.mz.entity.SituationProblem;
 import com.ssafy.seniornaver.mz.entity.Tag;
@@ -20,7 +21,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -81,6 +81,8 @@ public class SituationProblemServiceImpl implements SituationProblemService{
     @Override
     public void relTagToProblem(SituationProblem situationProblem, ProblemCreateRequestDto problemCreateRequestDto) {
         // 태그 생성, 이미 있다면 return 하여 기존의 태그에 추가
+        problemCreateRequestDto.getTags().add(situationProblem.getTitle());
+
         for (int i = 0; i < problemCreateRequestDto.getTags().size(); i++) {
             log.info("크기 : {}", problemCreateRequestDto.getTags().size());
             tagService.createTag(problemCreateRequestDto.getTags().get(i));
@@ -99,7 +101,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
 
         // 키워드 검색시
         if (problemListRequestDto.getKeyword() != null) {
-            Set<ProblemListResponseDto> problems = situationRepository.findAllByTitleContaining(problemListRequestDto.getKeyword(), pageable).stream()
+            List<ProblemListResponseDto> problems = situationRepository.findAllByTitleContaining(problemListRequestDto.getKeyword(), pageable).stream()
                     .map(problem -> ProblemListResponseDto.builder()
                             .problemId(problem.getProblemId())
                             .title(problem.getTitle())
@@ -110,24 +112,9 @@ public class SituationProblemServiceImpl implements SituationProblemService{
                             .complete(completeProblemRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
                                     .anyMatch(completeProblem -> completeProblem.getProblemId().getProblemId() == problem.getProblemId()))
                             .build())
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
 
-            List<Tag> tags = tagRepository.findAllByTagContaining(problemListRequestDto.getKeyword());
-            for (int i = 0; i < tags.size(); i++) {
-                tagToProblemRepository.findAllByTagId(tags.get(i)).stream()
-                        .map(tagToProblem -> problems.add(ProblemListResponseDto.builder()
-                                        .problemId(tagToProblem.getProblemId().getProblemId())
-                                        .title(tagToProblem.getProblemId().getTitle())
-                                        .complete(completeProblemRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
-                                                .anyMatch(completeProblem -> completeProblem.getProblemId().getProblemId() == tagToProblem.getProblemId().getProblemId()))
-                                        .problemExplanation(tagToProblem.getProblemId().getProblemExplanation())
-                                        .useYear(tagToProblem.getProblemId().getUseYear())
-                                        .save(saveProblemRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
-                                                .anyMatch(saveProblem -> saveProblem.getProblemId().getProblemId() == tagToProblem.getProblemId().getProblemId()))
-                                .build()));
-            }
-
-            return List.copyOf(problems);
+            return problems;
 
         } else {
             List<ProblemListResponseDto> problems = situationRepository.findAll(pageable).stream()
@@ -152,7 +139,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
 
         // 키워드 검색시
         if (problemListRequestDto.getKeyword() != null) {
-            Set<ProblemListResponseDto> problems = situationRepository.findAllByTitleContaining(problemListRequestDto.getKeyword(), pageable).stream()
+            List<ProblemListResponseDto> problems = situationRepository.findAllByTitleContaining(problemListRequestDto.getKeyword(), pageable).stream()
                     .map(problem -> ProblemListResponseDto.builder()
                             .problemId(problem.getProblemId())
                             .title(problem.getTitle())
@@ -161,22 +148,9 @@ public class SituationProblemServiceImpl implements SituationProblemService{
                             .useYear(problem.getUseYear())
                             .complete(false)
                             .build())
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
 
-            List<Tag> tags = tagRepository.findAllByTagContaining(problemListRequestDto.getKeyword());
-            for (int i = 0; i < tags.size(); i++) {
-                tagToProblemRepository.findAllByTagId(tags.get(i)).stream()
-                        .map(tagToProblem -> problems.add(ProblemListResponseDto.builder()
-                                .problemId(tagToProblem.getProblemId().getProblemId())
-                                .title(tagToProblem.getProblemId().getTitle())
-                                .complete(false)
-                                .problemExplanation(tagToProblem.getProblemId().getProblemExplanation())
-                                .useYear(tagToProblem.getProblemId().getUseYear())
-                                .save(false)
-                                .build()));
-            }
-
-            return List.copyOf(problems);
+            return problems;
 
         } else {
             List<ProblemListResponseDto> problems = situationRepository.findAll(pageable).stream()
@@ -195,6 +169,28 @@ public class SituationProblemServiceImpl implements SituationProblemService{
 
     @Override
     public ProblemDetailResponseDto getProblemDetail(Long problemId) {
-        return null;
+        SituationProblem situationProblem = situationRepository.findById(problemId).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_PROBLEM);
+        });
+
+        return ProblemDetailResponseDto.builder()
+                .title(situationProblem.getTitle())
+                .answer(situationProblem.getAnswer())
+                .problemExplanation(situationProblem.getProblemExplanation())
+                .useYear(situationProblem.getUseYear())
+                .image(situationProblem.getImage())
+                .review(situationProblem.getReview())
+                .answer(situationProblem.getAnswer())
+                .choices(situationProblem.getChoiceList())
+                .build();
+    }
+
+    @Override
+    public RandomProblemResponseDto getRandomProblem() {
+        return RandomProblemResponseDto.builder()
+                .problemList(situationRepository.findAll().stream()
+                        .map(problem -> problem.getProblemId())
+                        .collect(Collectors.toList()))
+                .build();
     }
 }
