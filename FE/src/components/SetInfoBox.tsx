@@ -29,9 +29,6 @@ const SetInfoForm = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* border: 1px solid rgba(0, 0, 0, 0.4);
-  border-radius: 15px;
-  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.25); */
 `;
 
 const NextButton = styled.div`
@@ -272,7 +269,6 @@ function SetInfoBox({meberId}:{meberId : string}) {
         }
   };
 
-
   const handleNextButtononClick = () => {
     if(!isPassedNickname){
       Swal.fire({
@@ -327,10 +323,8 @@ function SetInfoBox({meberId}:{meberId : string}) {
     const formData = new FormData();
     if (!profile) {
       formData.append("file", "");
-      console.log("없다")
     } else {
         formData.append("file", profile.file);
-        console.log("있다")
     }
     formData.append(
       "keywordRequestDto",
