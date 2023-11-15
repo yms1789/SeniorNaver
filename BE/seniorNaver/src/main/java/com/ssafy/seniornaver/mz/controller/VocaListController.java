@@ -38,7 +38,7 @@ public class VocaListController {
 
     @Operation(summary = "단어장 목록 불러오기", description = "category | 1 = 스크랩 단어,  2 = 저장 문제 , 3 = 만든 문제 " +
             " | 페이지는 0부터 시작")
-    @GetMapping("/list")
+    @PostMapping("/list")
     public ResponseEntity<VocaListResponseDto> getScrapWordList(@RequestBody VocaListRequestDto vocaListRequestDto,
                                                                 HttpServletRequest httpServletRequest) {
 
