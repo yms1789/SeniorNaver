@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class VocaListRequestDto {
-    private int page;
-    private int category;
+    private Integer page;
+    private Integer category;
 }
