@@ -115,7 +115,7 @@ public class SituationProblemController {
     }
 
     @Operation(summary = "전체 문제 풀이 결과", description = "5개의 문제를 모두 풀이 후 결과를 반환합니다.")
-    @PostMapping("register/result")
+    @PostMapping("total/result")
     public ResponseEntity<TotalEvaluationResponseDto> saveProblemResult(HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(situationProblemService.totalEvaluation(getMember(httpServletRequest)));
     }
