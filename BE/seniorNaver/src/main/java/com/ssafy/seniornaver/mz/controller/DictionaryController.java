@@ -34,24 +34,28 @@ public class DictionaryController {
 
     @Operation(summary = "전체 단어 조회", description = "ㄱㄴㄷ 순으로 단어 목록을 조회한다, page는 0부터 시작")
     @GetMapping("v1/word/list")
-    public ResponseEntity<DictionaryWordListResponseDto> getWordList(DictionaryWordListRequestDto requestDto) {
-        
-        log.info("전체단어 조회");
-        DictionaryWordListResponseDto dictionaryWordListResponseDto = dictionaryService.getWordList(requestDto);
+    public ResponseEntity<DictionaryWordListResponseDto> getWordList(DictionaryWordListRequestDto requestDto,
+                                                                     HttpServletRequest httpServletRequest) {
+
+        DictionaryWordListResponseDto dictionaryWordListResponseDto;
+        if (httpServletRequest.getHeader("Authorization") == null) {
+            dictionaryWordListResponseDto = dictionaryService.getWordList(requestDto);
+        } else {
+            dictionaryWordListResponseDto = dictionaryService.getMemberWordList(requestDto, getMember(httpServletRequest));
+        }
 
         return ResponseEntity.ok(dictionaryWordListResponseDto);
     }
-
-    @Operation(summary = "멤버 별 전체 단어 조회", description = "ㄱㄴㄷ 순으로 단어 목록을 조회한다, complete 값이 완료 단어에 따라 상이, page는 0부터 시작")
-    @GetMapping("member/word/list")
-    public ResponseEntity<DictionaryWordListResponseDto> getMemberWordList(HttpServletRequest httpServletRequest,
-                                                                                 DictionaryWordListRequestDto requestDto) {
-
-        DictionaryWordListResponseDto dictionaryWordListResponseDto =
-                dictionaryService.getMemberWordList(requestDto, getMember(httpServletRequest));
-
-        return ResponseEntity.ok(dictionaryWordListResponseDto);
-    }
+//
+//    @Operation(summary = "멤버 별 전체 단어 조회", description = "ㄱㄴㄷ 순으로 단어 목록을 조회한다, complete 값이 완료 단어에 따라 상이, page는 0부터 시작")
+//    @GetMapping("member/word/list")
+//    public ResponseEntity<DictionaryWordListResponseDto> getMemberWordList(HttpServletRequest httpServletRequest,
+//                                                                                 DictionaryWordListRequestDto requestDto) {
+//
+//
+//
+//        return ResponseEntity.ok(dictionaryWordListResponseDto);
+//    }
 
     @Operation(summary = "사전에 단어 등록", description = "Admin 계정 전용, 추후 Admin 계정이 아닐 시 에러 반환 예정")
     @PostMapping("v1/word/register")
