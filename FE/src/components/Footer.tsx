@@ -1,112 +1,72 @@
 import styled from "styled-components";
+import logo from "../assets/logo.png";
 
-const P = styled.p`
-  margin: 0;
+const FooterContainerWrapper = styled.div`
+  height: auto;
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 2vw;
+  background-color: var(--dark02);
 `;
-const Div = styled.div`
-  position: absolute;
-  top: calc(50% - 18px);
-  left: calc(50% - 23px);
-  font-weight: 800;
+const LeftWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  gap: 1vw;
 `;
-const Logo = styled.div`
-  position: relative;
-  background-color: var(--gray03);
-  width: 2.5rem;
-  height: 2.5rem;
-  overflow: hidden;
-  flex-shrink: 0;
-`;
-const SeniorNaver = styled.div`
-  position: relative;
-  font-size: var(--font-size-9xl);
-  letter-spacing: 0.05em;
-  font-weight: 800;
-  color: var(--white);
-  text-align: left;
-  -webkit-text-stroke: 0.4px #fff;
-`;
-const LogoParent = styled.div`
+const LogoWrapper = styled.a`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
-  gap: var(--gap-5xs);
+  justify-content: center;
+  gap: 0.5vw;
 `;
-const B = styled.b`
-  position: relative;
+const Logo = styled.img`
+  width: 2.5rem;
+  height: 2.5rem;
+  overflow: hidden;
 `;
-const Parent1 = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: var(--gap-base);
-  text-align: left;
-  font-size: var(--font-size-sm);
+const SeniorNaverWrapper = styled.div`
+  letter-spacing: 0.05vw;
   color: var(--white);
+  font-size: 1.3rem;
+  font-family: "NanumSquare Neo Heavy";
 `;
-const FrameGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: var(--gap-lgi);
-`;
-const FrameParent = styled.div`
-  flex: 1;
+const FooterRowWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: var(--padding-29xl) var(--padding-101xl);
+  gap: 0.5vw;
 `;
-const FooterWrapper = styled.footer`
-  position: absolute;
-  height: 7.05%;
-  width: 100%;
-  top: 92.95%;
-  right: 0rem;
-  bottom: 0%;
-  left: 0rem;
-  background-color: var(--dark02);
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: space-between;
-  text-align: center;
-  font-size: var(--font-size-base);
-  color: var(--gray02);
-  font-family: var(--font-nanumsquare-neo);
+const FooterTextWrapper = styled.div`
+  color: var(--gray03);
+  font-size: 1rem;
+  font-family: "NanumSquare Neo Regular";
 `;
 
 function Footer() {
   return (
-    <FooterWrapper>
-      <FrameParent>
-        <FrameGroup>
-          <LogoParent>
-            <Logo>
-              <Div>
-                <P>로고</P>
-                <P>이미지</P>
-              </Div>
-            </Logo>
-            <SeniorNaver>SENIOR NAVER</SeniorNaver>
-          </LogoParent>
-          <Parent1>
-            <B>개인정보처리방침</B>
-            <B>|</B>
-            <B>이용약관</B>
-          </Parent1>
-        </FrameGroup>
-        <Parent1>
-          <B>기획 개발</B>
-          <B>|</B>
-          <B>꼭꼭 유니버스</B>
-        </Parent1>
-      </FrameParent>
-    </FooterWrapper>
+    <FooterContainerWrapper>
+      <LeftWrapper>
+        <LogoWrapper href="/home">
+          <Logo src={logo} alt="logo" />
+          <SeniorNaverWrapper>SENIOR NAVER</SeniorNaverWrapper>
+        </LogoWrapper>
+        <FooterRowWrapper>
+          <FooterTextWrapper>개인정보처리방침</FooterTextWrapper>
+          <FooterTextWrapper>|</FooterTextWrapper>
+          <FooterTextWrapper>이용약관</FooterTextWrapper>
+        </FooterRowWrapper>
+      </LeftWrapper>
+      <FooterRowWrapper>
+        <FooterTextWrapper>기획 개발</FooterTextWrapper>
+        <FooterTextWrapper>|</FooterTextWrapper>
+        <FooterTextWrapper>꼭꼭 유니버스</FooterTextWrapper>
+      </FooterRowWrapper>
+    </FooterContainerWrapper>
   );
 }
 
