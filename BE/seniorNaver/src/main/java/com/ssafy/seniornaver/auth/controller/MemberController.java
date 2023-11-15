@@ -16,6 +16,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -71,8 +72,13 @@ public class MemberController {
      */
     @PostMapping("/logout")
     @Operation(summary = "로그아웃")
-    public String logOut(@RequestBody LogOutRequestDto logOutRequestDto) {
-        memberService.logOut(logOutRequestDto);
+    public String logOut(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        String token = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+        }
+        memberService.logOut(token);
         return "success logout";
     }
     // 유저 아이디 중복체크

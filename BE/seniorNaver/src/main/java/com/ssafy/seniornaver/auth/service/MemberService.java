@@ -16,11 +16,12 @@ public interface MemberService {
 
     Boolean validNickname(String nickname);
 
-    void logOut(LogOutRequestDto logOutRequestDto);
 
 
 
     MemberResponseDto getMemberInfo(String memberId);
 
     String addDetails(DetailRequestDto DetailRequestDto, MultipartFile file) throws IOException;
+
+    void logOut(String token);
 }
