@@ -3,16 +3,20 @@ package com.ssafy.seniornaver.chatbot.service;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.dialogflow.v2.*;
+import com.google.gson.JsonObject;
+import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
@@ -24,6 +28,15 @@ import java.util.UUID;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -44,6 +57,9 @@ public class ChatbotServiceImpl implements ChatbotService{
 
     @Value("${google.service-account.privateKey.json}")
     private String privateKeyJson;
+
+    @Value("${data.hospital.api-key}")
+    private String encodeKey;
 
     private static Map<String, String> skyStateMap = new HashMap<>();
     private static Map<String, String> precipStateMap = new HashMap<>();
@@ -117,7 +133,6 @@ public class ChatbotServiceImpl implements ChatbotService{
                 }
                 br.close();
                 result = response.toString();
-
             } else {
                 log.error("error !!!");
             }
@@ -129,7 +144,7 @@ public class ChatbotServiceImpl implements ChatbotService{
     }
 
     @Override
-    public String talkToChatbot(String text) {
+    public String talkToChatbot(String text, Member member) {
         try {
             log.info("Dialogflow API 요청: {}", text);
 
@@ -142,8 +157,15 @@ public class ChatbotServiceImpl implements ChatbotService{
             // GoogleCredentials 객체를 사용하여 SessionsClient를 생성합니다.
             SessionsClient sessionsClient = SessionsClient.create(sessionsSettings);
 
-            // 세션 ID를 생성합니다. 일반적으로 UUID를 사용합니다.
-            String sessionId = UUID.randomUUID().toString();
+            // 세션 ID를 생성합니다. 로그인한 사용자는 memberId를 사용하고, 로그인하지 않은 사용자는 랜덤 값을 사용합니다.
+            String sessionId;
+            if (member != null) {
+                sessionId = member.getMemberId();
+            } else {
+                sessionId = UUID.randomUUID().toString();
+            }
+
+            log.info("현재 사용하는 세션ID: " + sessionId);
 
             // Dialogflow에서 사용하는 프로젝트 ID를 입력합니다.
             String projectId = "seniornaver-qysk";
@@ -172,6 +194,7 @@ public class ChatbotServiceImpl implements ChatbotService{
         }
     }
 
+
     @Override
     public byte[] convertTextToSpeech(String text) {
         byte[] voiceData = null;
@@ -187,7 +210,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 
             // 요청 본문에 텍스트를 설정
             String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8.toString()); // 텍스트를 URL 인코딩
-            String postParams = "speaker=nnarae&volume=0&speed=0&pitch=0&format=mp3&text=" + encodedText;
+            String postParams = "speaker=nnarae&volume=0&speed=1.5&pitch=0&format=mp3&text=" + encodedText;
 
             conn.setDoOutput(true);
             DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
@@ -225,15 +248,18 @@ public class ChatbotServiceImpl implements ChatbotService{
     }
 
     @Override
-    public String talkToChat(String text) {
+    public String talkToChat(String text,Member member) {
         try {
             String response;
-            if (text.contains("오늘") && text.contains("날씨")) {
+            if (text.contains("병원정보") || text.contains("병원 정보") || text.contains("병원 전화번호") || text.contains("병원전화번호")) {
+                String hospitalName = extractHospitalName(text);
+                response = getHospitalInfo(hospitalName);
+            } else if (text.contains("오늘") && text.contains("날씨")) {
                 response = getWeatherInfo("오늘");
             } else if (text.contains("내일") && text.contains("날씨")) {
                 response = getWeatherInfo("내일");
             } else {
-                response = talkToChatbot(text);
+                response = talkToChatbot(text,member);
             }
 
             return response;
@@ -254,7 +280,7 @@ public class ChatbotServiceImpl implements ChatbotService{
             throw new IllegalArgumentException("Invalid day: " + day);
         }
 
-        String apiURL = "https://apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst?pageNo=1&numOfRows=1000&dataType=JSON&base_date=" + now.format(DateTimeFormatter.BASIC_ISO_DATE) + "&base_time=0500&nx=55&ny=127&authKey=td0Jk1t4R_GdCZNbeFfxQw";
+        String apiURL = "https://apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst?pageNo=1&numOfRows=1000&dataType=JSON&base_date=" + now.format(DateTimeFormatter.BASIC_ISO_DATE) + "&base_time=0500&nx=102&ny=83&authKey=td0Jk1t4R_GdCZNbeFfxQw";
 
         URL url = new URL(apiURL);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -276,8 +302,9 @@ public class ChatbotServiceImpl implements ChatbotService{
 
 // 현재 시간을 시간 단위로 가져옵니다.
         LocalTime nowTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS);
-        String targetTime = "0600";
+        String targetFcstTime = nowTime.getMinute() < 30 ? String.format("%02d00", nowTime.getHour()) : String.format("%02d00", nowTime.getHour() + 1);
 
+        String targetTime = "0600";
         for (JsonElement je : jitems.getAsJsonArray()) {
             String fcstDate = je.getAsJsonObject().get("fcstDate").getAsString();
             if (baseDate.equals(fcstDate)) {
@@ -289,7 +316,10 @@ public class ChatbotServiceImpl implements ChatbotService{
                     if ("TMX".equals(category)) {
                         tmx = fcstValue;
                     } else {
-                        if (LocalTime.of(Integer.parseInt(fcstTime.substring(0, 2)), Integer.parseInt(fcstTime.substring(2))).equals(nowTime)) {
+                        LocalTime currentFcstTime = LocalTime.of(Integer.parseInt(fcstTime.substring(0, 2)), Integer.parseInt(fcstTime.substring(2)));
+
+                        // 현재 시간과 가장 가까운 예보 시간을 찾습니다.
+                        if (fcstTime.equals(targetFcstTime)) {
                             switch (category) {
                                 case "POP":
                                     pop = fcstValue;
@@ -339,5 +369,81 @@ public class ChatbotServiceImpl implements ChatbotService{
         }
         return weatherInfo;
     }
+
+    public String getHospitalInfo(String hospitalName) throws IOException, ParserConfigurationException, SAXException {
+
+        String urlString = "https://apis.data.go.kr/B552657/HsptlAsembySearchService/getHsptlMdcncListInfoInqire?serviceKey=" + encodeKey + "&Q0=" + URLEncoder.encode("경상북도", "UTF-8") + "&Q1=" + URLEncoder.encode("구미", "UTF-8") + "&QN=" + URLEncoder.encode(hospitalName, "UTF-8");
+
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) { // 정상 응답이 온 경우
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = reader.readLine()) != null) {
+                response.append(inputLine);
+            }
+            reader.close();
+
+            // XML 응답 파싱
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(new InputSource(new StringReader(response.toString())));
+
+            // 병원 정보가 복수인 경우 모든 병원 정보를 순회
+            NodeList hospitalNodes = doc.getElementsByTagName("item");
+            StringBuilder result = new StringBuilder();
+
+            if(hospitalNodes.getLength() == 0) {
+                return "검색하신 병원을 찾을 수 없습니다.";
+            } else {
+                for (int i = 0; i < hospitalNodes.getLength(); i++) {
+                    Element hospitalElement = (Element) hospitalNodes.item(i);
+                    // 필요한 정보 추출
+                    String nameHospital = hospitalElement.getElementsByTagName("dutyName").item(0).getTextContent(); // 병원 이름
+                    String phoneNumber = hospitalElement.getElementsByTagName("dutyTel1").item(0).getTextContent(); // 전화번호
+
+                    // 전화번호를 '-' 기호로 분리하고, 각 부분 사이에 공백 추가
+                    String[] phoneNumberParts = phoneNumber.split("-");
+                    String spacedPhoneNumber = String.join(" ", phoneNumberParts);
+
+                    result.append("병원 이름은 ").append(nameHospital).append("이고, 전화번호는 ").append(spacedPhoneNumber).append("입니다.\n");
+                }
+                return result.toString();
+            }
+        } else { // 에러가 발생한 경우
+            throw new BadRequestException(ErrorCode.API_NOT_FOUND_ERROR);
+        }
+    }
+
+    public String extractHospitalName(String text) {
+        // 입력 문자열을 JSON으로 파싱합니다.
+        JSONObject jsonObject = new JSONObject(text);
+
+        // "text" 키에 해당하는 값을 추출합니다.
+        String inputText = jsonObject.getString("text");
+
+        String hospitalName = "";
+        String trigger1 = "병원 정보";
+        String trigger2 = "병원정보";
+        int startIndex = 0;
+        if (inputText.contains(trigger1)) {
+            startIndex = inputText.indexOf(trigger1) + trigger1.length();
+        } else if (inputText.contains(trigger2)) {
+            startIndex = inputText.indexOf(trigger2) + trigger2.length();
+        }
+        hospitalName = inputText.substring(startIndex).trim();
+        hospitalName = hospitalName.replace(" ", "");
+        hospitalName = hospitalName.replace("병원", "");
+
+        log.info(hospitalName);
+
+        return hospitalName;
+    }
+
 
 }
