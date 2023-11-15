@@ -2,10 +2,11 @@ import axios from "axios";
 import { useState } from "react";
 import { IconContext } from "react-icons";
 import { BsFillMicFill, BsRecordCircle } from "react-icons/bs";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { styled } from "styled-components";
 import records from "../states/records";
 import fetchApi from "../states/fetchApi";
+import { isLoggedInState } from "../states/useUser";
 
 const FloatingContainer = styled.div`
   @media screen and (max-width: 450px) {
@@ -59,17 +60,25 @@ function ChatButton() {
   const [source, setSource] = useState<MediaStreamAudioSourceNode>();
   const [analyser, setAnalyser] = useState<ScriptProcessorNode>();
   const setIsRecording = useSetRecoilState(records);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
   async function sendAudio(file: File) {
     try {
       const formData = new FormData();
 
       formData.append("voiceFile", file);
-      const response = await fetchApi.post("/api/chatbot/v1/talk", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        responseType: "blob",
-      });
+      const response = !isLoggedIn
+        ? await axios.post("/api/chatbot/v1/talk", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            responseType: "blob",
+          })
+        : await fetchApi.post("/api/chatbot/v1/talk", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            responseType: "blob",
+          });
       setIsRecording(false);
       const blobUrl = URL.createObjectURL(response.data);
       const audioElement = new Audio();
