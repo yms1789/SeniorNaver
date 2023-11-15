@@ -367,6 +367,7 @@ public class ChatbotServiceImpl implements ChatbotService{
         } else {
             weatherInfo = "강수확률은 " + pop + "%이고, 최저 기온은 " + tmn + "도, 최고 기온은 " + tmx + "도입니다. 하늘 상태는 " + sky + "이며, 강수 형태는 " + pty + "입니다.";
         }
+        log.info(weatherInfo);
         return weatherInfo;
     }
 
