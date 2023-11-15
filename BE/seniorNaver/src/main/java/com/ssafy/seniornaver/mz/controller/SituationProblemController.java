@@ -92,7 +92,7 @@ public class SituationProblemController {
     }
 
     @Operation(summary = "문제 저장 취소", description = "저장한 문제를 삭제합니다.")
-    @PostMapping("scrap/cancel/{id}")
+    @DeleteMapping("scrap/cancel/{id}")
     public ResponseEntity cancelProblem(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
         situationProblemService.cancelProblem(id, getMember(httpServletRequest));
 
