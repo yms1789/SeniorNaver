@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { userState, isLoggedInState, useNaverLogin } from "../states/useUser";
+import { useRecoilValue,  } from "recoil";
+import { userState, useNaverLogin } from "../states/useUser";
 
 const WaitWrapper = styled.div`
   width: 100vw;
