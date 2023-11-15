@@ -10,6 +10,7 @@ import java.util.List;
 public interface JobService {
     JobDetailResponseDto getDetailService(String jobId) throws JsonProcessingException;
     void saveWorkList() throws JsonProcessingException;
+    void deleteWorkList();
     JobListResponeDto getJobList(JobListSearchRequestDto jobListSearchRequestDto);
     String getListData(int pageNo);
     String getDetailData(String jobId);
