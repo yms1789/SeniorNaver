@@ -38,7 +38,6 @@ public class SituationProblemServiceImpl implements SituationProblemService{
 
     private final TagRepository tagRepository;
     private final TagService tagService;
-    private final TagToProblemRepository tagToProblemRepository;
 
     @Override
     public boolean wordCheck(String word) {
