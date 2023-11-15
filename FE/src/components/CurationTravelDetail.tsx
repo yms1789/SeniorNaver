@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import axios from "axios";
-import CurationMap from "./CurationMap";
-import locationpin from "../assets/images/locationpin.png";
+import { useQuery } from "@tanstack/react-query";
 import { onErrorImg } from "../utils/utils";
+import CurationMap from "./CurationMap";
+import LoadingForCuration from "./LoadingForCuration";
+import locationpin from "../assets/images/locationpin.png";
+import { IoMdClose } from "react-icons/io";
 
 const ShowDetailWrapper = styled.div`
   width: 100%;
@@ -188,7 +191,7 @@ const TravelMapMarker = styled.img`
 `;
 const TravelImageMarkerWrapper = styled.div<{ hovered: boolean }>`
   position: absolute;
-  bottom: 5vh;
+  bottom: 3vh;
   right: 3vw;
   display: flex;
   flex-direction: column;
@@ -209,123 +212,122 @@ const TravelImage = styled.img`
   width: 100%;
   object-fit: cover;
 `;
+const BackButtonWrapper = styled.div<{ hovered: boolean }>`
+  height: 3rem;
+  width: 3rem;
+  position: absolute;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1vw;
+  border-radius: 0.5rem;
+  font-size: 3rem;
+  transition: all 0.3s ease-in-out;
+  background-color: ${props => (props.hovered ? "var(--aqua)" : "var(--white50)")};
+  cursor: pointer;
+`;
 
 function CurationTravelDetail({ navermaps }: { navermaps: typeof naver.maps }) {
+  const navigate = useNavigate();
+
   const { travelId } = useParams();
-  const [dataTravelDetail, setDataTravelDetail] = useState({
-    contentid: "",
-    title: "",
-    createdtime: "",
-    modifiedtime: "",
-    tel: "",
-    telname: "",
-    homepage: "",
-    firstimage: "",
-    firstimage2: "",
-    areacode: "",
-    sigungucode: "",
-    addr1: "",
-    addr2: "",
-    zipcode: "",
-    mapx: "",
-    mapy: "",
-    mlevel: "",
-    overview: "",
+  const { data: dataTravelDetail, isLoading } = useQuery(["travelDetail", travelId], async () => {
+    if (!travelId) {
+      return;
+    }
+    const response = await axios.get(`/api/curation/v1/tourdt/detail/${parseInt(travelId)}`);
+    return response.data;
   });
 
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleHover = () => {
-    setIsHovered(true);
-  };
-
-  const handleLeave = () => {
-    setIsHovered(false);
-  };
-
-  useEffect(() => {
-    fetchTravelDetail();
-  }, [travelId]);
-
-  const fetchTravelDetail = async () => {
-    if (travelId) {
-      try {
-        const response = await axios.get(`/api/curation/v1/tourdt/detail/${parseInt(travelId)}`);
-        setDataTravelDetail(response.data);
-        console.log("관광 상세 데이터", dataTravelDetail);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  const handleLinkClick = (url: string) => {
-    window.open(url, "_blank");
-  };
+  const [isPinHovered, setPinIsHovered] = useState(false);
+  const [isCloseHovered, setCloseIsHovered] = useState(false);
 
   return (
-    <ShowDetailWrapper>
-      <ShowDetailResponsiveWrapper>
-        <CurationMapWrapper>
-          <CurationMap
-            navermaps={navermaps}
-            x={dataTravelDetail.mapx}
-            y={dataTravelDetail.mapy}
-            dataTravelDetail={dataTravelDetail}
-          />
-        </CurationMapWrapper>
-        <TravelContentWrapper>
-          <TravelGroupWrapper>
-            <TravelSubAddressWrapper>{dataTravelDetail.addr2.slice(1, -1)}</TravelSubAddressWrapper>
-            <TravelTitleWrapper>{dataTravelDetail.title}</TravelTitleWrapper>
-            <TravelRowWrapper>
-              <TravelAddressWrapper>{dataTravelDetail.addr1}</TravelAddressWrapper>
-              <TravelZipcodeWrapper>({dataTravelDetail.zipcode})</TravelZipcodeWrapper>
-            </TravelRowWrapper>
+    <>
+      {!isLoading ? (
+        <ShowDetailWrapper>
+          <ShowDetailResponsiveWrapper>
+            <CurationMapWrapper>
+              <CurationMap
+                navermaps={navermaps}
+                x={dataTravelDetail.mapx}
+                y={dataTravelDetail.mapy}
+                dataTravelDetail={dataTravelDetail}
+              />
+            </CurationMapWrapper>
+            <TravelContentWrapper>
+              <TravelGroupWrapper>
+                <TravelSubAddressWrapper>
+                  {dataTravelDetail.addr2.slice(1, -1)}
+                </TravelSubAddressWrapper>
+                <TravelTitleWrapper>{dataTravelDetail.title}</TravelTitleWrapper>
+                <TravelRowWrapper>
+                  <TravelAddressWrapper>{dataTravelDetail.addr1}</TravelAddressWrapper>
+                  <TravelZipcodeWrapper>({dataTravelDetail.zipcode})</TravelZipcodeWrapper>
+                </TravelRowWrapper>
 
-            {dataTravelDetail.overview && (
-              <TravelOverviewWrapper>
-                {dataTravelDetail.overview
-                  .split(". ")
-                  .map(
-                    (line, index) =>
-                      line.trim() && (
-                        <TravelOverviewTextWrapper key={index}>
-                          {line.trim()}
-                        </TravelOverviewTextWrapper>
-                      ),
+                {dataTravelDetail.overview && (
+                  <TravelOverviewWrapper>
+                    {dataTravelDetail.overview
+                      .split(". ")
+                      .map(
+                        (line: string) =>
+                          line.trim() && (
+                            <TravelOverviewTextWrapper key={self.crypto.randomUUID()}>
+                              {line.trim()}
+                            </TravelOverviewTextWrapper>
+                          ),
+                      )}
+                  </TravelOverviewWrapper>
+                )}
+                <TravelRowBetweenWrapper>
+                  {dataTravelDetail.tel && (
+                    <TravelTelWrapper>Tel. {dataTravelDetail.tel}</TravelTelWrapper>
                   )}
-              </TravelOverviewWrapper>
-            )}
-            <TravelRowBetweenWrapper>
-              {dataTravelDetail.tel && (
-                <TravelTelWrapper>Tel. {dataTravelDetail.tel}</TravelTelWrapper>
-              )}
-              {dataTravelDetail.homepage && (
-                <TravelLinkWrapper onClick={() => handleLinkClick(dataTravelDetail.homepage)}>
-                  홈페이지 바로가기
-                </TravelLinkWrapper>
-              )}
-            </TravelRowBetweenWrapper>
-          </TravelGroupWrapper>
-        </TravelContentWrapper>
-        <TravelMapMarkerWrapper onMouseEnter={handleHover} onMouseLeave={handleLeave}>
-          <TravelMapMarker src={locationpin} />
-          <TravelMapAreaWrapper />
-        </TravelMapMarkerWrapper>
+                  {dataTravelDetail.homepage && (
+                    <TravelLinkWrapper
+                      onClick={() => window.open(dataTravelDetail.homepage.split('"')[1], "_blank")}
+                    >
+                      홈페이지 바로가기
+                    </TravelLinkWrapper>
+                  )}
+                </TravelRowBetweenWrapper>
+              </TravelGroupWrapper>
+            </TravelContentWrapper>
 
-        <TravelImageMarkerWrapper hovered={isHovered}>
-          <TravelImageWrapper>
-            <TravelImage
-              src={dataTravelDetail.firstimage}
-              alt="TravelImage"
-              onError={onErrorImg}
-              referrerPolicy="no-referrer"
-            />
-          </TravelImageWrapper>
-        </TravelImageMarkerWrapper>
-      </ShowDetailResponsiveWrapper>
-    </ShowDetailWrapper>
+            <TravelMapMarkerWrapper
+              onMouseEnter={() => setPinIsHovered(true)}
+              onMouseLeave={() => setPinIsHovered(false)}
+            >
+              <TravelMapMarker src={locationpin} />
+              <TravelMapAreaWrapper />
+            </TravelMapMarkerWrapper>
+
+            <TravelImageMarkerWrapper hovered={isPinHovered}>
+              <TravelImageWrapper>
+                <TravelImage
+                  src={dataTravelDetail.firstimage}
+                  alt="TravelImage"
+                  onError={onErrorImg}
+                  referrerPolicy="no-referrer"
+                />
+              </TravelImageWrapper>
+            </TravelImageMarkerWrapper>
+            <BackButtonWrapper
+              onClick={() => navigate(-1)}
+              onMouseEnter={() => setCloseIsHovered(true)}
+              onMouseLeave={() => setCloseIsHovered(false)}
+              hovered={isCloseHovered}
+            >
+              <IoMdClose />
+            </BackButtonWrapper>
+          </ShowDetailResponsiveWrapper>
+        </ShowDetailWrapper>
+      ) : (
+        <LoadingForCuration />
+      )}
+    </>
   );
 }
 
