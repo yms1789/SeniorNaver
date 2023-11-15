@@ -84,15 +84,15 @@ public class MemberServiceImpl implements MemberService{
 		TokenDto accessTokenDto = jwtProvider.createAccessToken(logInRequestDto.getMemberId(), member.getAuthProvider());
 		TokenDto refreshTokenDto = jwtProvider.createRefreshToken(logInRequestDto.getMemberId(), member.getAuthProvider());
 
-		member.updateRefreshToken(refreshTokenDto.getAccesstoken(), refreshTokenDto.getTokenExpirationTime());
+		member.updateRefreshToken(refreshTokenDto.getAccessToken(), refreshTokenDto.getTokenExpirationTime());
 
 		return LogInResponseDto.builder()
 			.memberId(member.getMemberId())
 			.nickname(member.getNickname())
 			.email(member.getEmail())
 			.mobile(member.getMobile())
-			.accessToken(accessTokenDto.getAccesstoken())
-			.refreshToken(refreshTokenDto.getAccesstoken())
+			.accessToken(accessTokenDto.getAccessToken())
+			.refreshToken(refreshTokenDto.getAccessToken())
 			.refreshTokenExpirationTime(refreshTokenDto.getTokenExpirationTime())
 			.build();
 	}
@@ -100,8 +100,10 @@ public class MemberServiceImpl implements MemberService{
 	/*
 	 ** 로그아웃 -> DB에 저장된 리프레쉬 토큰 최신화
 	 */
-	public void logOut(String token) {
-		Member member = memberRepository.findByRefreshToken(token).get();
+	@Transactional
+	public void logOut(String memberId) {
+		Member member = memberRepository.findByMemberId(memberId)
+				.orElseThrow(() -> new BadRequestException(ErrorCode.NOT_FOUND_REFRESH_TOKEN));
 		member.expireRefreshToken(new Date());
 	}
 
