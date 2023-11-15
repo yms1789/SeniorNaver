@@ -46,7 +46,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/join" element={<Join />} />
           <Route path="/places" element={<Places navermaps={navermaps} />} />
-          <Route path="/oauth/login/oauth2/code" element={<Wait />} />
+          <Route path="/oauth/login/oauth2/code/naver" element={<Wait />} />
           <Route path="/completed" element={<CompletedSignUp />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route
