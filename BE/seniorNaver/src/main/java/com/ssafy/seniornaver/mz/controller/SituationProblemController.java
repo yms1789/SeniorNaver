@@ -6,10 +6,12 @@ import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import com.ssafy.seniornaver.mz.dto.request.ProblemCreateRequestDto;
+import com.ssafy.seniornaver.mz.dto.request.ProblemEvaluationRequestDto;
 import com.ssafy.seniornaver.mz.dto.request.ProblemListRequestDto;
 import com.ssafy.seniornaver.mz.dto.response.ProblemDetailResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.ProblemListResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.RandomProblemResponseDto;
+import com.ssafy.seniornaver.mz.dto.response.TotalEvaluationResponseDto;
 import com.ssafy.seniornaver.mz.service.SituationProblemService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -101,8 +103,21 @@ public class SituationProblemController {
     @PostMapping("removal/{id}")
     public ResponseEntity deleteProblem(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
         situationProblemService.deleteProblem(id, getMember(httpServletRequest));
-
         return ResponseEntity.ok("문제 삭제 완료");
+    }
+
+    @Operation(summary = "문제 풀이 결과 저장", description = "문제 풀이 후 결과를 저장합니다. 로그인 특전입니다.")
+    @PostMapping("register/result")
+    public ResponseEntity saveProblemResult(@RequestBody ProblemEvaluationRequestDto problemEvaluationRequestDto,
+                                            HttpServletRequest httpServletRequest) {
+        situationProblemService.problemEvaluation(problemEvaluationRequestDto, getMember(httpServletRequest));
+        return ResponseEntity.ok("결과 저장 완료");
+    }
+
+    @Operation(summary = "전체 문제 풀이 결과", description = "5개의 문제를 모두 풀이 후 결과를 반환합니다.")
+    @PostMapping("register/result")
+    public ResponseEntity<TotalEvaluationResponseDto> saveProblemResult(HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(situationProblemService.totalEvaluation(getMember(httpServletRequest)));
     }
 
     private Member getMember(HttpServletRequest httpServletRequest) {

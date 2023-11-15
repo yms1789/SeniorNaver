@@ -31,6 +31,9 @@ public class VocabularyList {
     @OneToMany(mappedBy = "problemId", fetch = FetchType.LAZY)
     List<MakeProblem> makeProblems = new ArrayList<>();
 
+    @OneToMany(mappedBy = "vocaId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    List<EvaluationResult> evaluationResults = new ArrayList<>();
+
     @Builder
     public VocabularyList(Long memberId) {
         this.memberId = memberId;

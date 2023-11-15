@@ -18,4 +18,5 @@ public interface DictionaryService {
     WordDetailResponseDto wordCreate(WordCreateRequestDto wordCreateRequestDto);
     void wordDelete(Long wordId, Member member);
     Map<String, Long> todayWord();
+    void setTodayWord();
 }

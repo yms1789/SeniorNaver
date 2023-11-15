@@ -33,8 +33,8 @@ public class DictionaryController {
     private final MemberRepository memberRepository;
 
     @Operation(summary = "전체 단어 조회", description = "ㄱㄴㄷ 순으로 단어 목록을 조회한다, page는 0부터 시작")
-    @GetMapping("v1/word/list")
-    public ResponseEntity<DictionaryWordListResponseDto> getWordList(DictionaryWordListRequestDto requestDto,
+    @PostMapping("v1/word/list")
+    public ResponseEntity<DictionaryWordListResponseDto> getWordList(@RequestBody DictionaryWordListRequestDto requestDto,
                                                                      HttpServletRequest httpServletRequest) {
 
         DictionaryWordListResponseDto dictionaryWordListResponseDto;
@@ -46,16 +46,6 @@ public class DictionaryController {
 
         return ResponseEntity.ok(dictionaryWordListResponseDto);
     }
-//
-//    @Operation(summary = "멤버 별 전체 단어 조회", description = "ㄱㄴㄷ 순으로 단어 목록을 조회한다, complete 값이 완료 단어에 따라 상이, page는 0부터 시작")
-//    @GetMapping("member/word/list")
-//    public ResponseEntity<DictionaryWordListResponseDto> getMemberWordList(HttpServletRequest httpServletRequest,
-//                                                                                 DictionaryWordListRequestDto requestDto) {
-//
-//
-//
-//        return ResponseEntity.ok(dictionaryWordListResponseDto);
-//    }
 
     @Operation(summary = "사전에 단어 등록", description = "Admin 계정 전용, 추후 Admin 계정이 아닐 시 에러 반환 예정")
     @PostMapping("v1/word/register")
@@ -113,6 +103,10 @@ public class DictionaryController {
         return ResponseEntity.ok(dictionaryService.todayWord());
     }
 
+    @Operation(summary = "오늘의 단어 세팅", description = "강제 설정용")
+    @GetMapping("v1/register/today/word")
+    public void setTodayWord() { dictionaryService.setTodayWord(); }
+    
     private Member getMember(HttpServletRequest httpServletRequest) {
         String header = httpServletRequest.getHeader("Authorization");
         String bearer = header.substring(7);

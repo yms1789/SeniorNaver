@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,9 @@ public class DictionaryServiceImpl implements DictionaryService {
     private final TagToWordRepository tagToWordRepository;
     private final TagToProblemRepository tagToProblemRepository;
     private final TagRepository tagRepository;
+
+    private static String todayWord;
+    private static Long todayWordId;
 
     @Override
     @Transactional(readOnly = true)
@@ -267,10 +271,16 @@ public class DictionaryServiceImpl implements DictionaryService {
     @Override
     public Map<String, Long> todayWord() {
         Map<String, Long> result = new HashMap<>();
-        List<Dictionary> word = dictionaryRepository.findAll();
-        result.put(word.get(0).getWord(), word.get(0).getWordId());
+        result.put(todayWord, todayWordId);
 
         return result;
+    }
+    @Override
+    @Scheduled (cron = "0 0 0 * * ?", zone = "Asia/Seoul")
+    public void setTodayWord() {
+        List<Dictionary> word = dictionaryRepository.findAll();
+        todayWord = word.get(0).getWord();
+        todayWordId = word.get(0).getWordId();
     }
 
     // 전체 페이지 수 구하기

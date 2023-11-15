@@ -13,8 +13,6 @@ public interface SituationRepository extends JpaRepository<SituationProblem, Lon
     Optional<SituationProblem> findByTitle(String title);
     List<SituationProblem> findAllByTitleContaining(String keyword, Pageable pageable);
     boolean existsByTitle(String title);
-
-
     @Query(value = "SELECT * FROM seniornaver.situation_problem as sp order by RAND() limit 5", nativeQuery = true)
     List<SituationProblem> findAll();
 }

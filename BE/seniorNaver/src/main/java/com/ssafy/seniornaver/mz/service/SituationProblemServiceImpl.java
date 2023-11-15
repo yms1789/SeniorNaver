@@ -4,18 +4,16 @@ import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import com.ssafy.seniornaver.mz.dto.request.ProblemCreateRequestDto;
+import com.ssafy.seniornaver.mz.dto.request.ProblemEvaluationRequestDto;
 import com.ssafy.seniornaver.mz.dto.request.ProblemListRequestDto;
 import com.ssafy.seniornaver.mz.dto.response.ProblemDetailResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.ProblemListResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.RandomProblemResponseDto;
-import com.ssafy.seniornaver.mz.entity.Choice;
-import com.ssafy.seniornaver.mz.entity.SaveProblem;
-import com.ssafy.seniornaver.mz.entity.SituationProblem;
-import com.ssafy.seniornaver.mz.entity.VocabularyList;
+import com.ssafy.seniornaver.mz.dto.response.TotalEvaluationResponseDto;
+import com.ssafy.seniornaver.mz.entity.*;
 import com.ssafy.seniornaver.mz.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.integration.IntegrationProperties;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,6 +34,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
     private final VocabularyListRepository vocabularyListRepository;
     private final SaveProblemRepository saveProblemRepository;
     private final ChoiceRepository choiceRepository;
+    private final EvaluationRepository evaluationRepository;
 
     private final TagRepository tagRepository;
     private final TagService tagService;
@@ -233,5 +232,35 @@ public class SituationProblemServiceImpl implements SituationProblemService{
         situationRepository.delete(situationRepository.findById(id).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXIST_PROBLEM);
         }));
+    }
+
+    @Override
+    @Transactional
+    public void problemEvaluation(ProblemEvaluationRequestDto problemEvaluationRequestDto, Member member) {
+        VocabularyList vocabularyList = vocabularyListRepository.findByVocaId(member.getVocaId()).orElseThrow(() -> {
+           throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
+        });
+
+        vocabularyList.getEvaluationResults().add(evaluationRepository.saveAndFlush(EvaluationResult.builder()
+                        .problemId(problemEvaluationRequestDto.getProblemId())
+                        .vocabularyList(vocabularyList)
+                        .choice(problemEvaluationRequestDto.getChoice())
+                        .answer(problemEvaluationRequestDto.getAnswer() == problemEvaluationRequestDto.getChoice())
+                .build()));
+    }
+
+    @Override
+    public TotalEvaluationResponseDto totalEvaluation(Member member) {
+        VocabularyList vocabularyList = vocabularyListRepository.findByVocaId(member.getVocaId()).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
+        });
+
+        return TotalEvaluationResponseDto.builder()
+                .problemList(evaluationRepository.findAllByVocaId(vocabularyList).stream()
+                        .map(evaluationResult -> TotalEvaluationResponseDto.Problem.builder()
+                                .id(evaluationResult.getProblemId())
+                                .answer(evaluationResult.isAnswer())
+                                .build()).collect(Collectors.toList()))
+                .build();
     }
 }
