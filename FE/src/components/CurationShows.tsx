@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { styled } from "styled-components";
 import { useRecoilState } from "recoil";
 import { showCategoryState } from "../states/curationCategory";
+import { upButtonState } from "../states/upButton";
 import { useCurationShowsQuery } from "../hooks/useCurationQuery";
 import { handleSelect, initSelectedCategory, onErrorImg, showGenre } from "../utils/utils";
 import { TSelectedShowCategory } from "../utils/types";
@@ -172,6 +173,7 @@ function CurationShows() {
   const initialSelectedCategory = initSelectedCategory<TSelectedShowCategory>(showGenre, "전체");
   const [selectedCategory, setSelectedCategory] =
     useRecoilState<TSelectedShowCategory>(showCategoryState);
+  const [_, setUpButton] = useRecoilState(upButtonState);
 
   const [dataShows, setDataShows] = useState<TShowData[]>([]);
   const [visibleData, setVisibleData] = useState<TShowData[]>([]);
@@ -189,6 +191,12 @@ function CurationShows() {
       setDataShows(showsData);
     }
   }, [showsData]);
+
+  useEffect(() => {
+    if (page > 0) {
+      setUpButton(true);
+    }
+  }, [page]);
 
   useEffect(() => {
     const filteredShows = dataShows.filter(show => {
@@ -259,47 +267,52 @@ function CurationShows() {
           );
         })}
       </ShowCategoryWrapper>
-      <ShowGridWrapper>
-        {noData && visibleData.length === 0 ? (
-          <NoDataWrapper>해당 결과가 없습니다.</NoDataWrapper>
-        ) : (
-          visibleData.map(show => {
-            return (
-              <DataShowsWrapper
-                key={self.crypto.randomUUID()}
-                onClick={() => navigate(`/show/${show.pfId}`)}
-              >
-                <ShowPosterWrapper>
-                  <ShowImageWrapper>
-                    <ShowImage
-                      src={show.poster}
-                      alt="ShowImage"
-                      onError={onErrorImg}
-                      referrerPolicy="no-referrer"
-                    />
-                  </ShowImageWrapper>
-                  <ShowStateWrapper $state={show.pfState}>
-                    {Array(6)
-                      .fill(show.pfState)
-                      .map(state => {
-                        return <StateWrapper key={self.crypto.randomUUID()}>{state}</StateWrapper>;
-                      })}
-                  </ShowStateWrapper>
-                </ShowPosterWrapper>
-                <ShowTextWrapper>
-                  <ShowTitleWrapper>{show.performenceName}</ShowTitleWrapper>
-                  <ShowTheater>{show.theaterName}</ShowTheater>
-                  <ShowDateWrapper>
-                    <ShowDateTextWrapper>{show.startDate}</ShowDateTextWrapper>
-                    <ShowDateTextWrapper>{show.endDate}</ShowDateTextWrapper>
-                  </ShowDateWrapper>
-                </ShowTextWrapper>
-              </DataShowsWrapper>
-            );
-          })
-        )}
-      </ShowGridWrapper>
-      {((!noData && !visibleData.length) || isLoading) && <LoadingForCuration />}
+      {!isLoading ? (
+        <ShowGridWrapper>
+          {noData && visibleData.length === 0 ? (
+            <NoDataWrapper>해당 결과가 없습니다.</NoDataWrapper>
+          ) : (
+            visibleData.map(show => {
+              return (
+                <DataShowsWrapper
+                  key={self.crypto.randomUUID()}
+                  onClick={() => navigate(`/show/${show.pfId}`)}
+                >
+                  <ShowPosterWrapper>
+                    <ShowImageWrapper>
+                      <ShowImage
+                        src={show.poster}
+                        alt="ShowImage"
+                        onError={onErrorImg}
+                        referrerPolicy="no-referrer"
+                      />
+                    </ShowImageWrapper>
+                    <ShowStateWrapper $state={show.pfState}>
+                      {Array(6)
+                        .fill(show.pfState)
+                        .map(state => {
+                          return (
+                            <StateWrapper key={self.crypto.randomUUID()}>{state}</StateWrapper>
+                          );
+                        })}
+                    </ShowStateWrapper>
+                  </ShowPosterWrapper>
+                  <ShowTextWrapper>
+                    <ShowTitleWrapper>{show.performenceName}</ShowTitleWrapper>
+                    <ShowTheater>{show.theaterName}</ShowTheater>
+                    <ShowDateWrapper>
+                      <ShowDateTextWrapper>{show.startDate}</ShowDateTextWrapper>
+                      <ShowDateTextWrapper>{show.endDate}</ShowDateTextWrapper>
+                    </ShowDateWrapper>
+                  </ShowTextWrapper>
+                </DataShowsWrapper>
+              );
+            })
+          )}
+        </ShowGridWrapper>
+      ) : (
+        <LoadingForCuration />
+      )}
       <BottomBoundaryRef ref={bottomBoundaryRef} />
     </CurationShowWrapper>
   );
