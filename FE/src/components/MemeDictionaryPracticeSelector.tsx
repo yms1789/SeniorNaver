@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { memeMineCurrentPracticeState } from "../states/useMeme";
-import { useRecoilState,useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import Swal from 'sweetalert2'
+import { SoundEffectButton2 } from "../utils/effectsound";
 
 const MemeDictionaryPracticeWraaper = styled.div`
   width: 930px;
@@ -119,7 +120,7 @@ const  StartSolvingBoxDeco3 = styled.div<IbackgroundColor>`
   height: 195px;
   background: ${props => props.clicked ? 'var(--decogradient02)' : 'var(--dark30)'};
 `
-const StartSolvingBox = styled.div<IbackgroundColor>`
+const StartSolvingBox = styled(SoundEffectButton2)<IbackgroundColor>`
   margin-bottom: 200px;
   display: flex;
   flex-direction: column;

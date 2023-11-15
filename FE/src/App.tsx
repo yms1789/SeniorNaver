@@ -16,7 +16,7 @@ import Jobs from "./pages/Jobs";
 import Join from "./pages/Join";
 import Login from "./pages/Login";
 import MemeDictionary from "./pages/MemeDictionary";
-import Mypage from "./pages/Mypage";
+import MyPage from "./pages/MyPage";
 import Places from "./pages/Places";
 import SignUp from "./pages/SignUp";
 import Wait from "./pages/Wait";
@@ -48,7 +48,7 @@ function App() {
           <Route path="/places" element={<Places navermaps={navermaps} />} />
           <Route path="/oauth/login/oauth2/code/naver" element={<Wait />} />
           <Route path="/completed" element={<CompletedSignUp />} />
-          <Route path="/mypage" element={<Mypage />} />
+          <Route path="/mypage" element={<MyPage />} />
           <Route
             path="/jobs"
             element={

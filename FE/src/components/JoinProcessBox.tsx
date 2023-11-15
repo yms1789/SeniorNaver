@@ -187,6 +187,7 @@ function JoinProcessBox() {
     setNewUser(prevState => ({ ...prevState, gender: "woman" }));
   };
 
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewUser({
         ...newUser,
@@ -197,6 +198,7 @@ function JoinProcessBox() {
     }
   };
 
+  
   const handleValidCheckId= ()=>{
     if (!newUser.memberId) {
       Swal.fire({
@@ -257,6 +259,20 @@ function JoinProcessBox() {
         background: "var(--white)",
         color: "var(--dark01)",
         width: "500px",
+        padding: "30px"
+      });
+      return;
+    }
+    if (!newUser.email.includes("@")){
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "이메일에는 '@'가 포함되어야 합니다.",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "600px",
         padding: "30px"
       });
       return;
@@ -327,7 +343,7 @@ function JoinProcessBox() {
         <JoinEmpty />
         <JoinInputSecondBoxWrapper>
         <JoinInputBox placeholder="이름" type="text" name="name" value={newUser.name} onChange={handleChange} />
-        <JoinInputBox placeholder="생년월일(예:19900101)" name="birth" type="text"  value={newUser.birth} onChange={handleChange} />
+        <JoinInputBox placeholder="생년월일(예:19900101)" name="birth" type="date"  value={newUser.birth} onChange={handleChange} />
         </JoinInputSecondBoxWrapper>
         <JoinGenderBoxWrapper>
         <JoinGenderBox active={newUser.gender === "man"}  onClick={handleManButtonClick}>남성

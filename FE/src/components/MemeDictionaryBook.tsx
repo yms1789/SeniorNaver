@@ -46,9 +46,7 @@ const MemeDictionaryBookFilterWrapper = styled.form`
   display: flex;
   margin-bottom: 40px;
 `
-const MemeDictionaryBookEmpty = styled.div`
-  height: 450px;
-`
+
 const MemeDictionaryBookFilter = styled.div`
   width: 98px;
   height: 46px;

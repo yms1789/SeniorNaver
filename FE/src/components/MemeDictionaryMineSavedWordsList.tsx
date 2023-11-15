@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useRecoilState,useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import MemeDictionaryMineSelector from "./MemeDictionaryMineSelector";
 import { memeMineCurrentWordDetailState, memeCurrentTapState } from "../states/useMeme";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";

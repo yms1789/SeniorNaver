@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { memeMineCurrentPracticeState } from "../states/useMeme";
-import { useRecoilState,useSetRecoilState } from "recoil";
-import AOS from "aos";
-import "aos/dist/aos.css";
+import { postProblem, validWord} from "../hooks/useMemeQuery";
 import posefileformbutton from "./../assets/images/posefileformbutton.png"
+import Swal from 'sweetalert2'
 
 
 const MemeDictionaryPracticeWraaper = styled.div`
@@ -82,14 +80,14 @@ const MemeDictionaryPracticeForm = styled.form`
 
 const MemeDictionaryPracticeFileFormArea = styled.div`
   margin-top: 20px;
-  width: 1280px;
+  width: 1100px;
   height: 500px;
   border-radius: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--gray03);
-  margin-bottom: 150px;
+  margin-bottom: 50px;
   overflow: hidden;
 
 `
@@ -103,8 +101,29 @@ const MemeDictionaryPracticeFileFormImage = styled.img`
 const MemeDictionaryPracticeFileFormInput = styled.input`
   display: none;
 `
+const MemeDictionaryPracticeValidWordInput = styled.input`
+  width: 800px;
+  text-align: center;
+  font-family: "NanumSquareNeoHeavy";
+  font-size: 50px;
+  border: 1px solid var(--dark50);
+  border-radius: 20px;
+  padding: 15px;
+  margin-bottom: 20px;
+`
 
 const MemeDictionaryPracticeProblemInput = styled.input`
+  width: 1100px;
+  text-align: center;
+  font-family: "NanumSquareNeoExtraBold";
+  font-size: 50px;
+  border: 1px solid var(--dark50);
+  border-radius: 20px;
+  padding: 15px;
+  margin-bottom: 20px;
+`
+
+const MemeDictionaryPracticeProblemExplanatioInput = styled.input`
   width: 1100px;
   text-align: center;
   font-family: "NanumSquareNeoExtraBold";
@@ -114,6 +133,32 @@ const MemeDictionaryPracticeProblemInput = styled.input`
   padding: 15px;
   margin-bottom: 20px;
 `
+const MemeDictionaryPracticeTagInput = styled.input`
+
+  width: 600px;
+  text-align: center;
+  font-family: "NanumSquareNeoExtraBold";
+  font-size: 32px;
+  color: #4a7deb;
+  border: 1px solid #4a7deb;
+  border-radius: 20px;
+  padding: 15px;
+  margin-top: 60px;
+  margin-bottom: 120px;
+`
+const MemeDictionaryPracticeReviewInput = styled.input`
+  width: 1100px;
+  height: 500px;
+  text-align: center;
+  font-family: "NanumSquareNeoExtraBold";
+  font-size: 32px;
+  color: #4a7deb;
+  border: 1px solid var(--dark50);
+  border-radius: 20px;
+  padding: 15px;
+  margin-bottom: 20px;
+`
+
 const MemeDictionaryPracticeOptionsInput = styled.input<{ isSelected: boolean }>`
   width: 980px;
   font-family: "NanumSquareNeoBold";
@@ -158,86 +203,203 @@ justify-content: center;
 align-items: center;
 color : var(--emerald);
 margin-bottom: 100px;
-
 `
 
-function MemeDictionaryPracticePoseProcessBox() {
-  const setcurrentPage = useRecoilState(memeMineCurrentPracticeState);
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+
+function MemeDictionaryPracticePoseProcessBox({useYear}:{useYear:number}) {
   const [problemFile, setProblemFile] = useState<{ url: string; file: File; } | null>(null);
-  const [clicked, setClicked] = useState(true); 
+  const [valid, setValid] = useState(false); 
   const [completed, setCompleted] = useState(false); 
   const [currentStep, setCurrentStep] = useState(0); 
-  const handleNextButtononClick = () => {
-  
-  };
-  
-  
+  const [newProblem, setProblem] = useState({
+    title: "",
+    image: "",
+    answer: 0,
+    review: "",
+    problemExplanation: "",
+    useYear: useYear,
+    word: "",
+    tags: [""],
+    choices: [
+      {
+        choiceId: 0,
+        choiceNum: 0,
+        content: ""
+      },
+      {
+        choiceId: 1,
+        choiceNum: 1,
+        content: ""
+      },
+      {
+        choiceId: 2,
+        choiceNum: 2,
+        content: ""
+      }
+    ]
+  });
+
+  useEffect(() => {
+    const { title, answer, review, problemExplanation, word, tags, choices } = newProblem;
+    if (title && answer && review && problemExplanation && word && tags[0] && choices.every(choice => choice.content)) {
+      setCompleted(true);
+    } else {
+      console.log(newProblem)
+      setCompleted(false);
+    }
+  }, [newProblem]);
+
+
   useEffect(()=>{
     window.scrollTo(0, 0);
   },[currentStep])
 
-  const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    
+    if (name === "tags") {
+      const tags = value.replace(/#/g, '').split(',').map(tag => '#' + tag.trim());
+      setProblem({
+        ...newProblem,
+        [name]: tags
+      });
+    } else {
+      setProblem({
+        ...newProblem,
+        [name]: value
+      });
+    }
+  };
+  
+  const handleChoiceChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newChoices = [...newProblem.choices];
+    newChoices[index].content = e.target.value;
+    setProblem({...newProblem, choices: newChoices});
+  };
+  
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imageList = e.target.files;
     if (imageList && imageList.length > 0) {
-        const imageObj = {
-            url: URL.createObjectURL(imageList[0]),
-            file: imageList[0],
-        };
-        setProblemFile(imageObj);
-        }
+      const imageObj = {
+        url: URL.createObjectURL(imageList[0]),
+        file: imageList[0],
+      };
+      setProblem({...newProblem, image: imageObj.url});
+      setProblemFile(imageObj);
+    }
   };
 
+  const handleSubmit= (e:any)=>{
+    e.preventDefault();
+    postProblem(newProblem);
+    setCurrentStep(2);
+  }
+
+
+  const handleWordSearch = async ()=>{  
+    const response = await validWord(newProblem.word); 
+    if(response === true){
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "출제 가능한 단어입니다!",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+        padding: "30px"
+      });
+      setValid(response);
+    }
+    else{
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "존재하지 않는 단어입니다.",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+        padding: "30px"
+      });
+      setValid(response);
+      return;
+    }
+}
+
+  
 
   switch (currentStep) {
     case 0:
   return (
     <MemeDictionaryPracticeWraaper>
-      <MemeDictionaryPracticeText>문제를 출제할 단어를 선정해주세요</MemeDictionaryPracticeText>
-      <MemeDictionaryPracticeHeader>우짤래미</MemeDictionaryPracticeHeader>
-      {clicked ? (
+
+
+      {valid ? (
+         <> 
+        <MemeDictionaryPracticeText>아래 단어로 문제를 출제합니다.</MemeDictionaryPracticeText>
+        <MemeDictionaryPracticeHeader>{newProblem.word}</MemeDictionaryPracticeHeader>
         <NextButton onClick={()=> setCurrentStep(1)}>
           <NextButtonText>다음</NextButtonText>
         </NextButton>
+        </>
+
       ) : (
-        <LockedNextButton >
-          <NextButtonText >다음</NextButtonText>
-        </LockedNextButton>
+        <>
+        <MemeDictionaryPracticeText>문제를 출제할 단어를 적어주세요</MemeDictionaryPracticeText>
+        <MemeDictionaryPracticeValidWordInput placeholder="단어 입력" name="word" value={newProblem.word} onChange={handleChange}/>
+        <NextButton onClick={handleWordSearch}>
+          <NextButtonText>단어 결정완료</NextButtonText>
+        </NextButton>
+        </>
       )}
+
     </MemeDictionaryPracticeWraaper>
   )
   case 1:
     return (
       <MemeDictionaryPracticeWraaper> 
-        <MemeDictionaryPracticeForm>
+        <MemeDictionaryPracticeProblemInput placeholder="문제 이름을 지어주세요" name="title" value={newProblem.title} onChange={handleChange}/>
+        <MemeDictionaryPracticeForm onSubmit={handleSubmit}>
           <MemeDictionaryPracticeFileFormArea>
-
-          <MemeDictionaryPracticeFileFormInput id="fileinput" type="file" accept="image/*" onChange={handleChangeImage}>
+            
+          <MemeDictionaryPracticeFileFormInput id="fileinput" type="file" accept="image/*" onChange={handleImageChange}>
           </MemeDictionaryPracticeFileFormInput>
           <ProblemEditorLabel htmlFor="fileinput">
           <MemeDictionaryPracticeFileFormImage src={problemFile ? problemFile.url : posefileformbutton}/>
           </ProblemEditorLabel>
           </MemeDictionaryPracticeFileFormArea>
             
-            <MemeDictionaryPracticeProblemInput placeholder="문제를 입력해주세요"/>
+            <MemeDictionaryPracticeProblemExplanatioInput placeholder="문제 설명을 입력해주세요" name="problemExplanation" value={newProblem.problemExplanation} onChange={handleChange}/>
 
             <MemeDictionaryPracticeOptionsWrapper>
-              <MemeDictionaryPracticeOptionsCircle isSelected={selectedOption === 1} onClick={() => setSelectedOption(1)}>1</MemeDictionaryPracticeOptionsCircle>
-              <MemeDictionaryPracticeOptionsInput isSelected={selectedOption === 1} placeholder="첫 번째 선지를 입력해주세요"/>
+            <MemeDictionaryPracticeOptionsCircle isSelected={newProblem.answer === 1} onClick={() => setProblem({...newProblem, answer: 1})}>1</MemeDictionaryPracticeOptionsCircle>
+            <MemeDictionaryPracticeOptionsInput isSelected={newProblem.answer === 1} placeholder="첫 번째 선지를 입력해주세요" onChange={handleChoiceChange(0)} value={newProblem.choices[0]?.content || ""}/>
             </MemeDictionaryPracticeOptionsWrapper>
 
             <MemeDictionaryPracticeOptionsWrapper>
-              <MemeDictionaryPracticeOptionsCircle isSelected={selectedOption === 2} onClick={() => setSelectedOption(2)}>2</MemeDictionaryPracticeOptionsCircle>
-              <MemeDictionaryPracticeOptionsInput isSelected={selectedOption === 2} placeholder="두 번째 선지를 입력해주세요"/>
+            <MemeDictionaryPracticeOptionsCircle isSelected={newProblem.answer === 2} onClick={() => setProblem({...newProblem, answer: 2})}>2</MemeDictionaryPracticeOptionsCircle>
+            <MemeDictionaryPracticeOptionsInput isSelected={newProblem.answer === 2} placeholder="두 번째 선지를 입력해주세요" onChange={handleChoiceChange(1)} value={newProblem.choices[1]?.content || ""}/>
             </MemeDictionaryPracticeOptionsWrapper>
 
             <MemeDictionaryPracticeOptionsWrapper>
-              <MemeDictionaryPracticeOptionsCircle isSelected={selectedOption === 3} onClick={() => setSelectedOption(3)}>3</MemeDictionaryPracticeOptionsCircle>
-              <MemeDictionaryPracticeOptionsInput isSelected={selectedOption === 3} placeholder="세 번째 선지를 입력해주세요"/>
+            <MemeDictionaryPracticeOptionsCircle isSelected={newProblem.answer === 3} onClick={() => setProblem({...newProblem, answer: 3})}>3</MemeDictionaryPracticeOptionsCircle>
+            <MemeDictionaryPracticeOptionsInput isSelected={newProblem.answer === 3} placeholder="세 번째 선지를 입력해주세요" onChange={handleChoiceChange(2)} value={newProblem.choices[2]?.content || ""}/>
             </MemeDictionaryPracticeOptionsWrapper>
+            <MemeDictionaryPracticeTagInput 
+              placeholder="문제 태그를 적어주세요" 
+              name="tags" 
+              value={newProblem.tags.join(', ')} 
+              onChange={handleChange}
+            />
+            <MemeDictionaryPracticeHeader>문제 풀이도 적어주세요!</MemeDictionaryPracticeHeader>
+            <MemeDictionaryPracticeReviewInput type="text" placeholder="문제 풀이를 입력해주세요" name="review" value={newProblem.review} onChange={handleChange}/>
 
             {completed ? (
-              <NextButton onClick={()=> setCurrentStep(2)}>
+              <NextButton onClick={handleSubmit}>
                 <NextButtonText>출제완료</NextButtonText>
               </NextButton>
             ) : (
@@ -251,7 +413,7 @@ function MemeDictionaryPracticePoseProcessBox() {
     case 2:
       return (
         <MemeDictionaryPracticeWraaper>
-                <MemeDictionaryPracticeCompletedProblem>"하이퍼 우짤래미"</MemeDictionaryPracticeCompletedProblem>
+                <MemeDictionaryPracticeCompletedProblem>"{newProblem.title}"</MemeDictionaryPracticeCompletedProblem>
                 <MemeDictionaryPracticeHeader>출제 완료!</MemeDictionaryPracticeHeader>
                 <MemeDictionaryPracticeText>출제한 문제는 나의 단어장에서 확인 가능합니다.</MemeDictionaryPracticeText>
         </MemeDictionaryPracticeWraaper>

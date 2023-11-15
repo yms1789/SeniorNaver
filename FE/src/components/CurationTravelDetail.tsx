@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import { styled } from "styled-components";
+import axios from "axios";
 import CurationMap from "./CurationMap";
+import locationpin from "../assets/images/locationpin.png";
+import { onErrorImg } from "../utils/utils";
 
 const ShowDetailWrapper = styled.div`
   width: 100%;
@@ -18,7 +20,6 @@ const ShowDetailResponsiveWrapper = styled.div`
   width: 100vw;
   display: flex;
   gap: 5vw;
-  transition: all 0.3s ease-in-out;
 `;
 const CurationMapWrapper = styled.div`
   width: 100%;
@@ -42,16 +43,39 @@ const TravelGroupWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 5vw 0vw 5vw 10vw;
-  /* background-color: #fe1717; */
+  ::-webkit-scrollbar {
+    width: 0.9vw;
+  }
+  ::-webkit-scrollbar-thumb {
+    height: 30%;
+    background: linear-gradient(180deg, #46d780 0%, #5cbad8 100%);
+    border-radius: 1vw;
+  }
+  ::-webkit-scrollbar-track {
+    margin-top: 0.5vw;
+    margin-bottom: 0.5vw;
+  }
 `;
 const TravelSubAddressWrapper = styled.div`
   font-size: 1.8vw;
   color: var(--dark50);
+  @media (max-width: 1280px) {
+    font-size: 2.5vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 3vw;
+  }
 `;
 const TravelTitleWrapper = styled.div`
   font-size: 4vw;
   color: var(--dark);
   font-family: "NanumSquareNeoHeavy";
+  @media (max-width: 1280px) {
+    font-size: 5vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 6vw;
+  }
 `;
 const TravelRowWrapper = styled.div`
   display: flex;
@@ -61,14 +85,27 @@ const TravelRowWrapper = styled.div`
 `;
 const TravelAddressWrapper = styled.div`
   font-size: 1.5vw;
+  white-space: nowrap;
+  @media (max-width: 1280px) {
+    font-size: 2vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 2.5vw;
+  }
 `;
 const TravelZipcodeWrapper = styled.div`
   font-size: 1.4vw;
   color: var(--dark50);
+  @media (max-width: 1280px) {
+    font-size: 2vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 2.5vw;
+  }
 `;
 const TravelOverviewWrapper = styled.div`
-  height: 30vw;
-  padding: 1vw;
+  height: fit-content;
+  padding: 1vw 0vw 1vw 1vw;
   border-radius: 1vw;
   margin: 2vw 0vw;
   overflow-y: scroll;
@@ -77,12 +114,18 @@ const TravelOverviewWrapper = styled.div`
 `;
 const TravelOverviewTextWrapper = styled.div`
   font-size: 1.1vw;
-  white-space: pre-wrap;
+  white-space: pre-line;
   padding: 1vw;
   margin: 1vw;
   border-radius: 1vw;
   color: var(--dark70);
   background: linear-gradient(90deg, var(--white70), var(--white50));
+  @media (max-width: 1280px) {
+    font-size: 1.5vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 1.7vw;
+  }
 `;
 const TravelRowBetweenWrapper = styled.div`
   display: flex;
@@ -101,6 +144,12 @@ const TravelLinkWrapper = styled.div`
     background: var(--dark70);
     color: var(--white);
   }
+  @media (max-width: 1280px) {
+    font-size: 1.5vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 2vw;
+  }
 `;
 const TravelTelWrapper = styled.div`
   margin-bottom: 1vw;
@@ -108,38 +157,48 @@ const TravelTelWrapper = styled.div`
 `;
 const TravelMapMarkerWrapper = styled.div`
   position: absolute;
-  top: 33vh;
-  right: 23vw;
-  background-color: #8460602c;
+  bottom: 50%;
+  right: 18.5vw;
+  transform: translate(20%, 36%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   z-index: 6;
 `;
 const TravelMapAreaWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 10vw;
-  height: 10vw;
+  width: 20vw;
+  height: 20vw;
   border-radius: 99vw;
   z-index: -3;
-  background-color: #ff00002c;
+  background-color: #ff000010;
 `;
 const TravelMapMarker = styled.img`
-  height: 5vw;
+  position: absolute;
+  height: 6vw;
   width: fit-content;
   z-index: 2;
+  animation: floatAnimation 2s ease-in-out infinite;
+
+  @keyframes floatAnimation {
+    50% {
+      transform: translateY(-2vw);
+    }
+  }
 `;
 const TravelImageMarkerWrapper = styled.div<{ hovered: boolean }>`
   position: absolute;
-  top: 5vh;
+  bottom: 5vh;
   right: 3vw;
   display: flex;
   flex-direction: column;
   gap: 1vw;
   transition: all 0.3s ease-in-out;
   opacity: ${props => (props.hovered ? 1 : 0)};
+  z-index: 10;
 `;
 const TravelImageWrapper = styled.div`
-  height: 10vw;
+  height: 20vw;
   width: fit-content;
   overflow: hidden;
   border-radius: 2vw;
@@ -227,12 +286,12 @@ function CurationTravelDetail({ navermaps }: { navermaps: typeof naver.maps }) {
             {dataTravelDetail.overview && (
               <TravelOverviewWrapper>
                 {dataTravelDetail.overview
-                  .split(".")
+                  .split(". ")
                   .map(
                     (line, index) =>
                       line.trim() && (
                         <TravelOverviewTextWrapper key={index}>
-                          {line.trim()}.
+                          {line.trim()}
                         </TravelOverviewTextWrapper>
                       ),
                   )}
@@ -251,16 +310,18 @@ function CurationTravelDetail({ navermaps }: { navermaps: typeof naver.maps }) {
           </TravelGroupWrapper>
         </TravelContentWrapper>
         <TravelMapMarkerWrapper onMouseEnter={handleHover} onMouseLeave={handleLeave}>
+          <TravelMapMarker src={locationpin} />
           <TravelMapAreaWrapper />
-          <TravelMapMarker src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Backhand%20Index%20Pointing%20Down.png" />
         </TravelMapMarkerWrapper>
 
         <TravelImageMarkerWrapper hovered={isHovered}>
           <TravelImageWrapper>
-            <TravelImage src={dataTravelDetail.firstimage} />
-          </TravelImageWrapper>
-          <TravelImageWrapper>
-            <TravelImage src={dataTravelDetail.firstimage2} />
+            <TravelImage
+              src={dataTravelDetail.firstimage}
+              alt="TravelImage"
+              onError={onErrorImg}
+              referrerPolicy="no-referrer"
+            />
           </TravelImageWrapper>
         </TravelImageMarkerWrapper>
       </ShowDetailResponsiveWrapper>

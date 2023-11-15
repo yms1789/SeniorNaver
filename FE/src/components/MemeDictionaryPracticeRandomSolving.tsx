@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { memeMineCurrentPracticeState } from "../states/useMeme";
 import { useRecoilState,useSetRecoilState } from "recoil";
-import MemeDictionaryPracticePoseProcessBox from "./MemeDictionaryPracticePoseProcessBox";
+import MemeDictionaryPracticeRandomSolvingProcessBox from "./MemeDictionaryPracticeRandomSolvingProcessBox";
 
 
 const MemeDictionaryPracticeWraaper = styled.div`
@@ -69,7 +69,7 @@ function MemeDictionaryPracticeRandomSolving() {
         </MemeDictionaryPracticeSelectorHeader>
       </PoseHeadeWraaper>
       <MemeDictionaryHeadline/>
-      {/* <MemeDictionaryPracticePoseProcessBox/> */}
+      <MemeDictionaryPracticeRandomSolvingProcessBox/>
     </MemeDictionaryPracticeWraaper>
   )
 }

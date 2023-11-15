@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { styled } from "styled-components";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { styled } from "styled-components";
+import { useQuery } from "@tanstack/react-query";
+import LoadingForCuration from "./LoadingForCuration";
+import { onErrorImg } from "../utils/utils";
 
 const ShowDetailWrapper = styled.div`
   width: 100%;
@@ -11,6 +13,7 @@ const ShowDetailWrapper = styled.div`
   align-items: center;
   font-size: 0.9vw;
   font-family: "NanumSquareNeoBold";
+  background-color: var(--aqua01);
 `;
 const ShowDetailResponsiveWrapper = styled.div`
   width: 80vw;
@@ -36,6 +39,15 @@ const ShowContextDetailWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5vw;
+  font-size: 1.3vw;
+  @media (max-width: 1280px) {
+    font-size: 2vw;
+    gap: 3vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 3.5vw;
+    gap: 4vw;
+  }
 `;
 const ShowGapWrapper = styled.div`
   width: 100%;
@@ -46,11 +58,23 @@ const ShowGapWrapper = styled.div`
 const ShowGenreWrapper = styled.div`
   display: flex;
   font-size: 1.5vw;
+  @media (max-width: 1280px) {
+    font-size: 2vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 3.5vw;
+  }
 `;
 const ShowTitleWrapper = styled.div`
   display: flex;
   font-size: 2vw;
   font-family: "NanumSquareNeoExtraBold";
+  @media (max-width: 1280px) {
+    font-size: 3vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 5vw;
+  }
 `;
 const ShowGroupWrapper = styled.div`
   display: flex;
@@ -62,25 +86,39 @@ const ShowGroupTextWrapper = styled.div`
   font-size: 1.1vw;
   color: var(--white);
   background-color: var(--aqua);
+  @media (max-width: 1280px) {
+    font-size: 2vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 3.5vw;
+    padding: 0.1vw 1vw;
+  }
 `;
 const ShowRowPaleWrapper = styled.div`
   width: fit-content;
   display: grid;
-  grid-template-columns: 4vw 1vw 40vw;
   gap: 0.5vw;
+  white-space: nowrap;
   color: var(--gray02);
   font-family: "NanumSquareNeoRegular";
 `;
 const ShowRowWrapper = styled.div`
   width: fit-content;
   display: grid;
-  grid-template-columns: 4vw 1vw 40vw;
+  grid-template-columns: 6vw 1vw 40vw;
   gap: 0.5vw;
+  overflow-x: hidden;
   color: var(--gray01);
+  @media (max-width: 1280px) {
+    grid-template-columns: 9vw 1vw 46vw;
+  }
+  @media (max-width: 768px) {
+    grid-template-columns: 16vw 3vw 72vw;
+  }
 `;
 const ShowRowTextWrapper = styled.div`
   display: flex;
-  gap: 0.5vw;
+  gap: 1vw;
 `;
 const ShowColTextWrapper = styled.div``;
 const ShowRowDividerWrapper = styled.div`
@@ -88,17 +126,31 @@ const ShowRowDividerWrapper = styled.div`
 `;
 const ShowStateWrapper = styled.div<{ state: string }>`
   display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 0.1vw 0.2vw;
   border-radius: 0.3vw;
-  font-size: 0.8vw;
+  font-size: 1vw;
+  white-space: nowrap;
   color: var(--dark50);
   background-color: ${props => (props.state === "공연중" ? "var(--aqua02)" : "var(--gray03)")};
   font-family: "NanumSquareNeoExtraBold";
+  @media (max-width: 1280px) {
+    font-size: 1.5vw;
+    padding: 0.1vw 0.5vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 3vw;
+    padding: 0.1vw 1vw;
+  }
 `;
 const ShowPosterImageWrapper = styled.img`
   width: 30vw;
   padding-top: 2.5vw;
   height: fit-content;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 const Divider = styled.div`
   width: inherit;
@@ -112,6 +164,12 @@ const ShowMiddleTextWrapper = styled.div`
   font-size: 1.2vw;
   color: var(--dark01);
   font-family: "NanumSquareNeoExtraBold";
+  @media (max-width: 1280px) {
+    font-size: 2.5vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 4vw;
+  }
 `;
 const ShowDetailImageWrapper = styled.div`
   width: 100%;
@@ -123,47 +181,28 @@ const ShowDetailImage = styled.img`
   width: 100%;
   height: 100%;
   padding: 0 20%;
+  @media (max-width: 1280px) {
+    padding: 0 10%;
+  }
+  @media (max-width: 768px) {
+    padding: 0;
+  }
 `;
 
 function CurationShowDetail() {
   const { showId } = useParams();
-  const [dataShowDetail, setDataShowDetail] = useState({
-    mt20id: "",
-    prfnm: "",
-    prfpdfrom: "",
-    prfpdto: "",
-    fcltynm: "",
-    prfcast: "",
-    prfcrew: "",
-    prfruntime: "",
-    prfage: "",
-    entrpsnm: "",
-    pcseguidance: "",
-    poster: "",
-    sty: "",
-    area: "",
-    genrenm: "",
-    openrun: "",
-    prfstate: "",
-    styUrlList: [""],
-    dtguidance: "",
-  });
 
-  useEffect(() => {
-    fetchShowDetail();
-  }, []);
-
-  const fetchShowDetail = async () => {
-    if (showId) {
-      try {
-        const response = await axios.get(`/api/curation/v1/performance/${showId}`);
-        setDataShowDetail(response.data);
-        console.log("공연 상세 데이터", dataShowDetail);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
+  const { data: dataShowDetail, isLoading } = useQuery(
+    ["showDetail", showId],
+    async () => {
+      const response = await axios.get(`/api/curation/v1/performance/${showId}`);
+      console.log(response, response.data);
+      return response.data;
+    },
+    {
+      enabled: !!showId,
+    },
+  );
 
   const createGroup = (title: string) => {
     return (
@@ -174,7 +213,7 @@ function CurationShowDetail() {
   };
 
   const createDetail = (title: string, value: string) => {
-    if (value.trim()) {
+    if (value.trim() && dataShowDetail) {
       return (
         <ShowRowWrapper>
           <ShowRowPaleWrapper>{title}</ShowRowPaleWrapper>
@@ -193,6 +232,15 @@ function CurationShowDetail() {
       );
     }
   };
+
+  if (isLoading) {
+    return <LoadingForCuration />;
+  }
+
+  if (!dataShowDetail) {
+    return <ShowMiddleTextWrapper>데이터가 없습니다.</ShowMiddleTextWrapper>;
+  }
+
   return (
     <ShowDetailWrapper>
       <ShowDetailResponsiveWrapper>
@@ -211,8 +259,12 @@ function CurationShowDetail() {
                   <ShowRowPaleWrapper>공연 시간</ShowRowPaleWrapper>
                   <ShowRowDividerWrapper>|</ShowRowDividerWrapper>
                   <ShowColTextWrapper>
-                    {dataShowDetail.dtguidance.split(/,(?![^()]*\))/).map((item, index) => {
-                      return <ShowColTextWrapper key={index}>{item}</ShowColTextWrapper>;
+                    {dataShowDetail.dtguidance.split(/,(?![^()]*\))/).map((item: string) => {
+                      return (
+                        <ShowColTextWrapper key={self.crypto.randomUUID()}>
+                          {item}
+                        </ShowColTextWrapper>
+                      );
                     })}
                   </ShowColTextWrapper>
                 </ShowRowWrapper>
@@ -233,15 +285,31 @@ function CurationShowDetail() {
               {createDetail("개요", dataShowDetail.sty)}
             </ShowGapWrapper>
           </ShowContextDetailWrapper>
-          <ShowPosterImageWrapper src={dataShowDetail.poster} />
+          <ShowPosterImageWrapper
+            src={dataShowDetail.poster}
+            alt="ShowPosterImage"
+            onError={onErrorImg}
+            referrerPolicy="no-referrer"
+          />
         </ShowContextWrapper>
         <Divider />
-        <ShowMiddleTextWrapper>공연 팜플렛</ShowMiddleTextWrapper>
-        <ShowDetailImageWrapper>
-          {dataShowDetail.styUrlList.map(image => {
-            return <ShowDetailImage src={image} />;
-          })}
-        </ShowDetailImageWrapper>
+        {dataShowDetail.styUrlList && (
+          <>
+            <ShowMiddleTextWrapper>공연 팜플렛</ShowMiddleTextWrapper>
+            <ShowDetailImageWrapper>
+              {dataShowDetail.styUrlList.map((image: string) => {
+                return (
+                  <ShowDetailImage
+                    src={image}
+                    alt="ShowDetailImage"
+                    onError={onErrorImg}
+                    referrerPolicy="no-referrer"
+                  />
+                );
+              })}
+            </ShowDetailImageWrapper>
+          </>
+        )}
       </ShowDetailResponsiveWrapper>
     </ShowDetailWrapper>
   );

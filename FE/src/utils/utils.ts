@@ -1,3 +1,5 @@
+import defaultimage from "../assets/images/defaultimage.png";
+
 const placeholderImage = (number: number) => {
   return `https://picsum.photos/1920/1000/?image=${number}`;
 };
@@ -16,24 +18,24 @@ const getDateDiff = (d1: string) => {
 };
 
 export { placeholderImage, getDateDiff };
-export const curationCategory = ["뉴스", "공연", "맛집", "관광"];
+export const curationCategory = ["공연", "관광", "뉴스", "맛집"];
 
 export const curationIcon: [number, string][] = [
-  [
-    4,
-    "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Newspaper.png",
-  ],
   [
     4,
     "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Musical%20Note.png",
   ],
   [
     5,
-    "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Cut%20of%20Meat.png",
+    "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Camping.png",
+  ],
+  [
+    4,
+    "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Newspaper.png",
   ],
   [
     5,
-    "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Camping.png",
+    "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Cut%20of%20Meat.png",
   ],
 ];
 
@@ -49,7 +51,6 @@ export const showGenre = [
 ];
 
 export const travelLocation = [
-  "전체",
   "서울",
   "경기",
   "강원",
@@ -125,11 +126,11 @@ export const handleSelect: ThandleSelect = (
     let newCategory: Record<string, boolean> = initialSelectedCategory;
     if (mode === 1) {
       const first = Object.keys(initialSelectedCategory)[0];
-      if (first === "전체") {
-        if (value === "전체") {
+      if (first === "서울") {
+        if (value === "서울") {
           newCategory = initialSelectedCategory;
         } else {
-          newCategory = { ...initialSelectedCategory, 전체: false, [value]: !prev[value] };
+          newCategory = { ...initialSelectedCategory, 서울: false, [value]: !prev[value] };
         }
       } else if (first === "속보") {
         if (value === "속보") {
@@ -154,4 +155,9 @@ export const handleSelect: ThandleSelect = (
     }
     return newCategory;
   });
+};
+
+export const onErrorImg: React.ReactEventHandler<HTMLImageElement> = e => {
+  const target = e.target as HTMLImageElement;
+  target.src = defaultimage;
 };

@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { IoIosArrowBack, IoIosArrowForward, IoIosPause, IoIosPlay } from "react-icons/io";
-import React from "react";
+import { onErrorImg } from "../utils/utils";
 
 const CarouselWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: "NanumSquareNeoExtraBold";
 `;
 const FrameContainerWrapper = styled.div`
   height: 100%;
@@ -18,8 +19,15 @@ const FrameContainerWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 2vw;
-  /* transition: all 0.5s ease-in-out; */
+  transition: all 0.3s ease-in-out;
   user-select: none;
+  @media (max-width: 1280px) {
+    grid-template-columns: repeat(3, 30vw);
+    grid-template-rows: repeat(4, 8vw) repeat(2, 3vw);
+  }
+  @media (max-width: 768px) {
+    grid-template-rows: repeat(4, 8vw) repeat(2, 5vw);
+  }
 `;
 const FrameCurationContainerWrapper = styled.div`
   height: 100%;
@@ -47,7 +55,7 @@ const CurationImageContainerWrapper = styled.ul`
   display: flex;
   padding: 0rem;
 `;
-const CurationImageWrapper = styled.li`
+const CurationImageWrapper = styled.a`
   height: 100%;
   width: 100%;
   display: flex;
@@ -92,9 +100,13 @@ const CurationText = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
-  text-overflow: ellipsis;
-  white-space: wrap;
-  font-size: max(1rem, 1.75vw);
+  font-size: 1.8vw;
+  @media (max-width: 1280px) {
+    font-size: 2vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 3vw;
+  }
 `;
 const FrameOtherWrapper = styled.div`
   grid-column-start: 3;
@@ -132,7 +144,7 @@ const MzWrapper = styled.li`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2vh;
+  gap: 2vw;
   padding: 2vh;
   background: var(--maingradient);
 `;
@@ -143,14 +155,22 @@ const MzDictionaryWrapper = styled.div`
   justify-content: center;
   overflow: hidden;
   padding: 0.25rem;
-  border-radius: 99rem;
+  border-radius: 99vw;
   white-space: nowrap;
   font-size: 1vw;
   background-color: var(--white);
+  @media (max-width: 1280px) {
+    padding: 0.5rem 0;
+    font-size: 1.5vw;
+  }
+  @media (max-width: 768px) {
+    padding: 0.5rem 0;
+    font-size: 1.7vw;
+  }
 `;
 const MzDictionaryText = styled.div`
   position: relative;
-  padding: 0 1rem;
+  padding: 0 1vw;
   white-space: nowrap;
   color: var(--aqua);
 `;
@@ -159,24 +179,32 @@ const MzWordText = styled.div`
   white-space: nowrap;
   font-size: 2vw;
   color: var(--white);
+  @media (max-width: 1280px) {
+    font-size: 2.5vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 3vw;
+  }
 `;
 const MzWordWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  padding: 0 1rem;
-  border-radius: 1rem;
+  padding: 0.2vw 1vw;
+  border-radius: 1vw;
   background-color: var(--dark02);
 `;
 const MzQuestionText = styled.div`
   position: relative;
   white-space: nowrap;
-  font-size: 1vw;
+  font-size: 1.3vw;
   color: var(--dark02);
+  @media (max-width: 1280px) {
+    font-size: 2vw;
+  }
 `;
-const PlaceContainerWrapper = styled.li`
+const PlaceContainerWrapper = styled.a`
   width: 100%;
   display: flex;
   flex: none;
@@ -194,18 +222,48 @@ const PlaceImage = styled.img`
   width: 100%;
   object-fit: cover;
 `;
-const PlaceText = styled.div`
+const PlaceTextWrapper = styled.div`
   height: 100%;
   width: 100%;
   position: absolute;
   display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: end;
+`;
+const PlaceTextGroupWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: center;
+  border-radius: 3vw 0 0 0;
+  gap: 0.2vw;
+  padding: 0.5vw 1vw;
+  background: linear-gradient(150deg, #0000003e, #000000);
+`;
+const PlaceText = styled.div`
+  display: flex;
   align-items: center;
   justify-content: center;
   text-overflow: ellipsis;
-  white-space: wrap;
+  white-space: nowrap;
   font-size: 1vw;
-  color: var(--dark02);
-  z-index: 20;
+  color: var(--white);
+`;
+const PlaceTextTitle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 2vw;
+  color: var(--aqua02);
+  @media (max-width: 1280px) {
+    font-size: 2.5vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 2.7vw;
+  }
 `;
 const CarouselControlWrapper = styled.div`
   width: 100%;
@@ -247,23 +305,24 @@ const Dot = styled.div<{ $active: boolean }>`
   background-color: ${props => (props.$active ? "var(--aqua02)" : "var(--gray03)")};
   transition: all 0.7s ease-in-out;
 `;
-
-interface TCarouselProps {
-  curationImages: string[];
-  curationTexts: string[];
-  mzWords: string[];
-  places: string[][];
+interface TResponseData {
+  curations: { imageUrl: string; link: string; title: string }[];
+  mzWords: { word: string; wordId: number }[];
+  places: {
+    firstimage: string;
+    addr1: string;
+    title: string;
+    contentid: string;
+  }[];
 }
-
-function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselProps) {
+function Carousel({ curations, mzWords, places }: TResponseData) {
   // 이미지를 좌우로 이동시키기 위한 현재 인덱스
   const [currentIndex, setCurrentIndex] = useState(1);
 
   // 무한 슬라이드를 위해 양 끝에 각각 마지막 요소과 첫 요소 붙여줄 배열
-  const [currentCurationImages, setCurrentCurationImages] = useState<string[]>([]);
-  const [currentCurationTexts, setCurrentCurationTexts] = useState<string[]>([]);
-  const [currentMzWords, setCurrentMzWords] = useState<string[]>([]);
-  const [currentPlaces, setCurrentPlaces] = useState<string[]>([]);
+  const [currentCuration, setCurrentCuration] = useState<string[][]>([]);
+  const [currentMzWords, setCurrentMzWords] = useState<string[][]>([]);
+  const [currentPlaces, setCurrentPlaces] = useState<string[][]>([]);
 
   // 캐러셀의 배열들을 보관하는 컨테이너에 useRef 지정
   const curationImagesRef = useRef<HTMLUListElement>(null);
@@ -276,13 +335,8 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
   const [hovered, setHovered] = useState({ left: false, right: false, play: false });
   const [playOn, setPlayOn] = useState(true);
 
-  const carouselGroup = [curationImages, curationTexts, mzWords, places];
-  const setCurrentFunctions = [
-    setCurrentCurationImages,
-    setCurrentCurationTexts,
-    setCurrentMzWords,
-    setCurrentPlaces,
-  ];
+  const carouselGroup = [curations, mzWords, places];
+  const setCurrentFunctions = [setCurrentCuration, setCurrentMzWords, setCurrentPlaces];
   const refs = [curationImagesRef, curationTextsRef, mzRef, placeRef];
 
   const setTransform = (ref: React.RefObject<HTMLElement>, value: string): void => {
@@ -313,16 +367,20 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
       if (thing?.length !== 0) {
         const startData = thing[0];
         const endData = thing[thing?.length - 1];
-        const newData = [endData, ...thing, startData] as string[];
+        const newData = [
+          Object.values(endData) as string[],
+          ...thing.map(item => Object.values(item) as string[]),
+          Object.values(startData) as string[],
+        ];
         setCurrentFunctions[idx](newData);
       }
     });
-  }, [curationImages]);
+  }, [curations]);
 
   // 자동으로 5초마다 다음으로 넘어가기
   useEffect(() => {
     if (playOn === true) {
-      const autoSlide = setInterval(() => {
+      const autoSlide = setTimeout(() => {
         handleSwipe(1);
       }, 3000);
       return () => {
@@ -343,11 +401,11 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
   // transition의 지속 시간을 정확히 알 수 없어도 transition이 끝난 시점을 정확히 알 수 있으므로 부자연스러운 화면 전환이 없어질 것입니다.
   useEffect(() => {
     const handleTransitionEnd = () => {
-      if (currentIndex === curationImages?.length + 1) {
+      if (currentIndex === curations?.length + 1) {
         setCurrentIndex(1);
         refs.forEach(eleRef => setTransition(eleRef, ""));
       } else if (currentIndex === 0) {
-        setCurrentIndex(curationImages?.length);
+        setCurrentIndex(curations?.length);
         refs.forEach(eleRef => setTransition(eleRef, ""));
       }
       setIsMoving(false); // 이동 완료
@@ -358,7 +416,7 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
     return () => {
       refs.forEach(eleRef => handleTransitionEventListener(eleRef, handleTransitionEnd, "remove"));
     };
-  }, [currentIndex, curationImages]);
+  }, [currentIndex, curations]);
 
   // 이동할 방향(1이면 오른쪽으로, -1이면 왼쪽으로 이동)을 받아 해당 슬라이드로 이동시켜준다.
   const handleSwipe = (direction: number) => {
@@ -371,7 +429,7 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
     refs.forEach(eleRef => setTransition(eleRef, "all 0.7s ease-in-out"));
 
     setCurrentIndex(prev => prev + direction);
-    console.log(currentIndex);
+    // console.log(currentIndex);
   };
 
   const handleHover = (key: string, value: boolean) => {
@@ -401,11 +459,20 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
         <FrameCurationContainerWrapper>
           <FrameCurationWrapper>
             <CurationImageContainerWrapper ref={curationImagesRef}>
-              {currentCurationImages?.map(image => {
-                const uuid = self.crypto.randomUUID();
+              {currentCuration?.map(curation => {
                 return (
-                  <CurationImageWrapper key={uuid}>
-                    <CurationImage src={image} />
+                  <CurationImageWrapper
+                    key={self.crypto.randomUUID()}
+                    href={curation[2]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <CurationImage
+                      src={curation[0]}
+                      alt="CurationImage"
+                      onError={onErrorImg}
+                      referrerPolicy="no-referrer"
+                    />
                   </CurationImageWrapper>
                 );
               })}
@@ -414,11 +481,10 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
         </FrameCurationContainerWrapper>
         <FrameCurationText>
           <CurationTextContainerWrapper ref={curationTextsRef}>
-            {currentCurationTexts?.map(text => {
-              const uuid = self.crypto.randomUUID();
+            {currentCuration?.map(curation => {
               return (
-                <CurationTextWrapper key={uuid}>
-                  <CurationText>{text}</CurationText>
+                <CurationTextWrapper key={self.crypto.randomUUID()}>
+                  <CurationText>{curation[1]}</CurationText>
                 </CurationTextWrapper>
               );
             })}
@@ -428,15 +494,13 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
           <FrameOtherColWrapper>
             <OtherContainerWrapper ref={mzRef}>
               {currentMzWords?.map(word => {
-                const uuid = self.crypto.randomUUID();
-
                 return (
-                  <MzWrapper key={uuid}>
+                  <MzWrapper key={self.crypto.randomUUID()}>
                     <MzDictionaryWrapper>
                       <MzDictionaryText>MZ 사전</MzDictionaryText>
                     </MzDictionaryWrapper>
                     <MzWordWrapper>
-                      <MzWordText>“ {word} ”</MzWordText>
+                      <MzWordText>“ {word[0]} ”</MzWordText>
                     </MzWordWrapper>
                     <MzQuestionText>이 말의 뜻은?</MzQuestionText>
                   </MzWrapper>
@@ -448,11 +512,24 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
             <OtherContainerWrapper ref={placeRef}>
               <PlaceContainerOuterWrapper>
                 {currentPlaces?.map(place => {
-                  let uuid = self.crypto.randomUUID();
+                  const placeTextTitle = place[2].split(/[(\[].*/)[0].slice(0, 13);
                   return (
-                    <PlaceContainerWrapper key={uuid}>
-                      <PlaceImage src={place[0]} />
-                      <PlaceText>{place[1]}</PlaceText>
+                    <PlaceContainerWrapper
+                      key={self.crypto.randomUUID()}
+                      href={`travel/${place[3]}`}
+                    >
+                      <PlaceImage
+                        src={place[0]}
+                        alt="PlaceImage"
+                        onError={onErrorImg}
+                        referrerPolicy="no-referrer"
+                      />
+                      <PlaceTextWrapper>
+                        <PlaceTextGroupWrapper>
+                          <PlaceText>{place[1]}</PlaceText>
+                          <PlaceTextTitle>{placeTextTitle}</PlaceTextTitle>
+                        </PlaceTextGroupWrapper>
+                      </PlaceTextWrapper>
                     </PlaceContainerWrapper>
                   );
                 })}
@@ -461,12 +538,11 @@ function Carousel({ curationImages, curationTexts, mzWords, places }: TCarouselP
           </FrameOtherColWrapper>
         </FrameOtherWrapper>
         <DotWrapper>
-          {curationImages.map((dot, index) => {
-            const uuid = self.crypto.randomUUID();
+          {curations.map((dot, index) => {
             return (
               <Dot
                 $active={currentIndex - 1 === index}
-                key={uuid + dot}
+                key={self.crypto.randomUUID() + dot}
                 onClick={() => {
                   setCurrentIndex(index + 1);
                 }}
