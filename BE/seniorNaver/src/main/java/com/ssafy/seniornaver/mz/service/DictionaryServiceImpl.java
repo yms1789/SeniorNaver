@@ -171,7 +171,7 @@ public class DictionaryServiceImpl implements DictionaryService {
                 .mean(word.getMean())
                 .example(word.getExample())
                 .useYear(word.getUseYear())
-                .scrap(scrapWordRepository.existsByWordIdAndVocaId(vocabularyList, word))
+                .scrap(scrapWordRepository.existsByWordIdAndVocaId(word, vocabularyList))
                 .total(total)
                 .tags(wordTags)
                 .relProblem(relProblem)
