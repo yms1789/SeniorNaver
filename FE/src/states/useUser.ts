@@ -2,7 +2,6 @@ import { atom } from "recoil";
 import axios from "axios";
 import { recoilPersist } from "recoil-persist";
 import { useSetRecoilState, useRecoilState } from "recoil";
-import fetchApi from "./fetchApi";
 const { persistAtom } = recoilPersist({
   storage: sessionStorage,
 });
@@ -49,6 +48,9 @@ export const useLogin = (userFormData: { memberId: string; password: string }) =
     const response = await axios.post("api/auth/login", userFormData);
     const { memberId, nickname, email, mobile, accessToken, refreshToken } = response.data;
     axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    console.log("Current token: ", `Bearer ${accessToken}`); // 토큰 출력
+    console.log("Current token when posting: ", axios.defaults.headers.common); // 요청 전 토큰 출력
+
     setUser({
       memberId,
       nickname,
@@ -86,31 +88,35 @@ export const useLogout = (userLogoutData: { accessToken: string; refreshToken: s
   return logout;
 };
 
-export const naverLogin = async () => {
+export const useNaverLogin = () => {
   const code = new URLSearchParams(window.location.search).get("code");
   const state = new URLSearchParams(window.location.search).get("state");
   const setUser = useSetRecoilState(userState);
   const setLogin = useSetRecoilState(isLoggedInState);
   const registrationId = "naver";
-  const response = await axios.post(
-    `${BaseURL}/oauth/login/oauth2/code/${registrationId}?code=${code}&state=${state}`,
-  );
-  const { memberId, email, mobile, accessToken } = response.data;
-  axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-
-  setUser({
-    memberId,
-    email,
-    mobile,
-    accessToken: "",
-    refreshToken: "",
-    refreshTokenExpirationTime: "",
-    nickname: "",
-  });
-  setLogin(true);
+  const naverLogin = async () => {
+    const response = await axios.post(
+      `${BaseURL}/oauth/login/oauth2/code/${registrationId}?code=${code}&state=${state}`,
+    );
+    const { memberId, email, mobile, accessToken } = response.data;
+    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    setUser({
+      memberId,
+      email,
+      mobile,
+      accessToken: "",
+      refreshToken: "",
+      refreshTokenExpirationTime: "",
+      nickname: "",
+    });
+    setLogin(true);
+  };
+  return naverLogin;
 };
 
 export const fetchToken = async (refreshTokenData: { refreshToken: string }) => {
+  console.log("패치토큰요청?");
+
   try {
     const response = await axios.post("api/token/reissue", {
       headers: {
@@ -118,6 +124,7 @@ export const fetchToken = async (refreshTokenData: { refreshToken: string }) => 
       },
     });
     const { accessToken } = response.data;
+    console.log("패치토큰성공?");
     return {
       accessToken,
     };

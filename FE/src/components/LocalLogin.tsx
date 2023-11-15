@@ -7,6 +7,7 @@ import styled from "styled-components";
 import NaverLogin from "./NaverLogin";
 
 const LoginFormWrapper = styled.div`
+  zoom: 80%;
   border-radius: 30px;
   border: 1px solid rgba(0, 0, 0, 0.5);
   width: 700px;

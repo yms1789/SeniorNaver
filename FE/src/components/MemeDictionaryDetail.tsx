@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { useRecoilState,useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { memeMineCurrentWordDetailState } from "../states/useMeme";
-
+import {BsFillBookmarksFill} from "react-icons/bs"
 const MemeDictionaryDetailWraaper = styled.div`
   padding: 50px;
   width: 930px;
@@ -13,6 +13,9 @@ const MemeDictionaryDetailWraaper = styled.div`
 `
 
 const MemeDictionaryDetailWordName = styled.div`
+  margin-top: 30px;
+  align-items: center;
+  justify-content: center;
   display: flex;
   font-family: "NanumSquareNeoHeavy";
   font-size: 64px;
@@ -25,6 +28,8 @@ const MemeDictionaryDetailHeader = styled.div`
   font-family: "NanumSquareNeoExtraBold";
   text-align: center;
   font-size: 46px;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 50px;
 `
 const MemeDictionaryDetailProblemHeader = styled.div`
@@ -56,19 +61,32 @@ const MemeDictionaryDetailContent = styled.div`
 `
 
 const MemeDictionaryDetailInfoBox = styled.div`
-  width: 820px;
-  padding: 100px;
-  height: 300px;
+  width: 850px;
+  height: 350px;
   background: #33E47A;
   border-radius: 30px;
-  font-family: "NanumSquareNeoHeavy";
-  font-size: 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-bottom: 50px;
 `
+
+const MemeDictionaryDetailInfoIcon = styled.div`
+  display: flex;
+  position: relative;
+  top: 30px;
+  left: 330px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  &:hover {
+    top: 36px;
+  }
+  &:active {
+    top: 30px;
+  }
+`
+
 const MemeDictionaryDetailInfoContentWrapper = styled.div`
   margin-top: 100px;
   display: flex;
@@ -101,7 +119,6 @@ const MemeDictionaryDetailInfoLabel = styled.div`
   height: 200px;
   padding: 100px;
   background: #2d129a;
-  border-radius: 30px;
   font-family: "NanumSquareNeoHeavy";
   font-size: 50px;
   display: flex;
@@ -122,6 +139,9 @@ function MemeDictionaryDetail() {
         <MemeDictionaryDetailWordName>
           {Data[0].wordname}
       </MemeDictionaryDetailWordName>
+      <MemeDictionaryDetailInfoIcon>
+      <BsFillBookmarksFill size="50" color="var(--white)" />
+      </MemeDictionaryDetailInfoIcon>
       </MemeDictionaryDetailInfoBox>
       <MemeDictionaryDetailHeader>뜻 풀이</MemeDictionaryDetailHeader>
       <MemeDictionaryDetailContent>{Data[0].description}</MemeDictionaryDetailContent>

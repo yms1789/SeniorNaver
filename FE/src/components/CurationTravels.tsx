@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { styled } from "styled-components";
-import RoundedButton from "./RoundedButton";
-import { cityCodes, handleSelect, initSelectedCategory, travelLocation } from "../utils/utils";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { travelCategoryState } from "../states/curationCategory";
+import { styled } from "styled-components";
 import { useRecoilState } from "recoil";
+import { travelCategoryState } from "../states/curationCategory";
+import { useCurationTravelsQuery } from "../hooks/useCurationQuery";
+import { handleSelect, initSelectedCategory, onErrorImg, travelLocation } from "../utils/utils";
+import { TSelectedTravelCategory, TTravelData } from "../utils/types";
+import LoadingForCuration from "./LoadingForCuration";
+import RoundedButton from "./RoundedButton";
 
 const CurationTravelWrapper = styled.div`
   display: flex;
@@ -21,6 +23,9 @@ const TravelCategoryWrapper = styled.div`
   align-items: center;
   flex-wrap: wrap;
   gap: 1vw;
+  @media (max-width: 768px) {
+    width: 70vw;
+  }
 `;
 const TravelGridWrapper = styled.div`
   width: 100%;
@@ -29,12 +34,15 @@ const TravelGridWrapper = styled.div`
   justify-content: center;
   align-items: center;
   display: grid;
-  /* background-color: #35a62b; */
   grid-template-columns: repeat(3, 23.5vw);
   gap: 4vw;
 
   @media (max-width: 1280px) {
     grid-template-columns: repeat(2, 40vw);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 45vw);
   }
 `;
 const DataTravelsWrapper = styled.div`
@@ -62,14 +70,32 @@ const TravelSubAddressWrapper = styled.div`
   align-items: end;
   font-size: 1.1vw;
   color: var(--dark30);
+  @media (max-width: 1280px) {
+    font-size: 1.5vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 1.7vw;
+  }
 `;
 const TravelTitleWrapper = styled.div`
   font-size: 1.8vw;
+  @media (max-width: 1280px) {
+    font-size: 2vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 2.5vw;
+  }
 `;
 const TravelAddressWrapper = styled.div`
   font-size: 1.2vw;
   color: var(--gray02);
   font-family: "NanumsquareNeoRegular";
+  @media (max-width: 1280px) {
+    font-size: 1.8vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 2vw;
+  }
 `;
 const TravelImageWrapper = styled.div<{ hovered: string }>`
   height: 16vw;
@@ -85,64 +111,29 @@ const TravelImage = styled.img`
   width: 100%;
   object-fit: cover;
 `;
-const TravelBackImage = styled.img`
-  flex-shrink: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
+const BottomBoundaryRef = styled.div`
+  height: 1px;
 `;
-
-interface TTravelData {
-  addr1: string;
-  addr2: string;
-  createdtime: string;
-  contentid: string;
-  firstimage: string;
-  firstimage2: string;
-  mapx: string;
-  mapy: string;
-  modifiedtime: string;
-  title: string;
-  hovered?: boolean;
-}
-
-interface TSelectedShowCategory {
-  [key: string]: boolean;
-  전체: boolean;
-  서울: boolean;
-  경기: boolean;
-  강원: boolean;
-  인천: boolean;
-  세종: boolean;
-  광주: boolean;
-  대전: boolean;
-  충북: boolean;
-  충남: boolean;
-  전북: boolean;
-  전남: boolean;
-  대구: boolean;
-  경북: boolean;
-  부산: boolean;
-  울산: boolean;
-  경남: boolean;
-  제주: boolean;
-}
 
 function CurationTravels() {
   const navigate = useNavigate();
 
-  const initialSelectedCategory = initSelectedCategory<TSelectedShowCategory>(
+  const initialSelectedCategory = initSelectedCategory<TSelectedTravelCategory>(
     travelLocation,
-    "전체",
+    "서울",
   );
+  const [selectedCategory, setSelectedCategory] =
+    useRecoilState<TSelectedTravelCategory>(travelCategoryState);
 
   const [dataTravels, setDataTravels] = useState<TTravelData[]>([]);
-  const [frontTravels, setFrontTravels] = useState<TTravelData[]>([]);
-  const [selectedCategory, setSelectedCategory] =
-    useRecoilState<TSelectedShowCategory>(travelCategoryState);
+  const [visibleData, setVisibleData] = useState<TTravelData[]>([]);
+  const [page, setPage] = useState(0);
+  const [changeCategory, setChangeCategory] = useState(false);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const bottomBoundaryRef = useRef<HTMLDivElement | null>(null);
+
+  const { data: travelsData, isLoading } = useCurationTravelsQuery();
 
   const handleHover = (contentid: string, isHovered: boolean) => {
     setDataTravels(prevDataTravels => {
@@ -156,28 +147,45 @@ function CurationTravels() {
   };
 
   useEffect(() => {
-    console.log(selectedCategory);
-    const a = Object.keys(selectedCategory).filter(key => selectedCategory[key]);
-    fetchTravels(a[0]);
+    if (travelsData) {
+      setDataTravels(travelsData);
+    }
+    console.log(travelsData, selectedCategory);
+  }, [travelsData]);
+
+  useEffect(() => {
+    setVisibleData(dataTravels.slice(0, (page === 0 ? 1 : page) * 10));
+  }, [dataTravels, page]);
+
+  useEffect(() => {
+    setChangeCategory(true);
+    if (changeCategory) {
+      setDataTravels([]);
+      setPage(0);
+    }
+    setChangeCategory(false);
   }, [selectedCategory]);
 
   useEffect(() => {
-    fetchTravels("서울");
+    observer.current = new IntersectionObserver(handleObserver, {
+      root: null,
+      rootMargin: "0px",
+      threshold: 1.0,
+    });
+    if (bottomBoundaryRef.current) {
+      observer.current.observe(bottomBoundaryRef.current);
+    }
+    return () => {
+      if (bottomBoundaryRef.current && observer.current) {
+        observer.current.unobserve(bottomBoundaryRef.current);
+      }
+    };
   }, []);
 
-  const fetchTravels = async (code: string) => {
-    const sendBE = cityCodes[code] || 1;
-
-    try {
-      const response = await axios.get(`/api/curation/v1/tourdt/${sendBE}`);
-      const data = response.data.map((travel: TTravelData) => ({
-        ...travel,
-        hovered: false,
-      }));
-      setDataTravels(data.slice(1, 30));
-      console.log("관광 데이터", dataTravels);
-    } catch (error) {
-      console.error(error);
+  const handleObserver = (entries: IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage(prevPage => prevPage + 1);
     }
   };
 
@@ -200,14 +208,13 @@ function CurationTravels() {
                   >,
                   initialSelectedCategory,
                 );
-                fetchTravels("서울");
               }}
             />
           );
         })}
       </TravelCategoryWrapper>
       <TravelGridWrapper>
-        {dataTravels.map(travel => {
+        {visibleData.map(travel => {
           return (
             <DataTravelsWrapper
               key={travel.contentid}
@@ -221,12 +228,19 @@ function CurationTravels() {
               </TravelGroupWrapper>
               <TravelAddressWrapper>{travel.addr1}</TravelAddressWrapper>
               <TravelImageWrapper hovered={travel.hovered ? "true" : "false"}>
-                <TravelImage src={travel.firstimage} />
+                <TravelImage
+                  src={travel.firstimage}
+                  alt="TravelImage"
+                  onError={onErrorImg}
+                  referrerPolicy="no-referrer"
+                />
               </TravelImageWrapper>
             </DataTravelsWrapper>
           );
         })}
       </TravelGridWrapper>
+      {(!visibleData.length || isLoading) && <LoadingForCuration />}
+      <BottomBoundaryRef ref={bottomBoundaryRef} />
     </CurationTravelWrapper>
   );
 }

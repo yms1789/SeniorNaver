@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { useState } from "react";
 import { useRecoilState,useSetRecoilState } from "recoil";
-import { memeCurrentTapState } from "../states/useMeme";
-import { memeMineCurrentCategoryState, memeMineCurrentPracticeState } from "../states/useMeme";
+import { isLoggedInState } from "../states/useUser";
+import { memeCurrentTapState, memeMineCurrentCategoryState, memeMineCurrentPracticeState,  } from "../states/useMeme";
+import {SoundEffectButton} from "../utils/effectsound";
+import Swal from 'sweetalert2'
 
 const MemeNavBarWrapper = styled.div`
   /* position: fixed; */
@@ -56,7 +57,7 @@ const MemeNavBarLogoMiniText = styled.div`
   margin-bottom: 50px;
 ` 
 
-const MemeNavBarTap = styled.div<IbackgroundColor>`
+const MemeNavBarTap = styled(SoundEffectButton)<IbackgroundColor>`
   background: ${props => props.clicked ? 'var(--maingradient)' : 'var(--white)'};
   display: flex;
   flex-direction: column;
@@ -98,6 +99,7 @@ function MemeNavigationBarforDesktop() {
   const setCurrentTab = useSetRecoilState(memeCurrentTapState);
   const setcurrentCategory = useSetRecoilState(memeMineCurrentCategoryState)
   const setcurrentPage = useSetRecoilState(memeMineCurrentPracticeState)
+  const [isLoggedIn] = useRecoilState(isLoggedInState);  
 
   const navMenu = [
     { name: "Tab1", content: "오늘의 용어"  },
@@ -107,10 +109,29 @@ function MemeNavigationBarforDesktop() {
   ];
 
   const selectMenuHandler = (index:number) => {
-    setCurrentTab({currentPage : index});
-    setcurrentCategory({currentCategory : 0})
-    setcurrentPage({currentPage : 0, currentYear: 0})
-
+    if(index === 1 || index === 3){
+      if(isLoggedIn){
+        setCurrentTab({currentPage : index});
+        setcurrentCategory({currentCategory : 0})
+        setcurrentPage({currentPage : 0, currentYear: 0})
+      }
+      else{
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "로그인이 필요합니다.",
+          showConfirmButton: false,
+          timer: 1500,
+          background: "var(--white)",
+          color: "var(--dark01)",
+          width: "500px",
+        });
+      }
+    }else{
+      setCurrentTab({currentPage : index});
+      setcurrentCategory({currentCategory : 0})
+      setcurrentPage({currentPage : 0, currentYear: 0})
+    }
   };
 
   return (

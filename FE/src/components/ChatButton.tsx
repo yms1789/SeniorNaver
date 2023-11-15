@@ -7,12 +7,16 @@ import { styled } from "styled-components";
 import records from "../states/records";
 
 const FloatingContainer = styled.div`
+  @media screen and (max-width: 450px) {
+    margin: 100px 0px;
+  }
   position: fixed;
   width: 100px;
   height: 100px;
-  bottom: 0;
+  bottom: 0px;
   right: 0;
-  margin: 35px 25px;
+
+  margin: 35px 0px;
   &:hover {
     height: 300px;
   }

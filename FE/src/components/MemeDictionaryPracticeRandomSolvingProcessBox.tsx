@@ -15,11 +15,27 @@ const MemeDictionaryPracticeWraaper = styled.div`
 const MemeDictionaryPracticeText = styled.div`
   display: flex;
   font-family: "NanumSquareNeoBold";
-  font-size: 44px;
+  font-size: 36px;
   text-align: center;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  user-select: none;
+`
+const MemeDictionaryPracticeStartText = styled.div`
+  display: flex;
+  font-family: "NanumSquareNeoExtraBold";
+  font-size: 40px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  color: var(--white);
+  margin-top: 100px;
+`
+
+const MemeDictionaryPracticeTextWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `
 
 const MemeDictionaryPracticeHeader = styled.div`
@@ -29,7 +45,9 @@ const MemeDictionaryPracticeHeader = styled.div`
   text-align: center;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
+  user-select: none;
+
 `
 const LockedNextButton = styled.div`
   margin-top: 60px;
@@ -71,101 +89,43 @@ const NextButtonText = styled.div`
 `;
 
 /// case 1
-const MemeDictionaryPracticeForm = styled.form`
+const MemeDictionaryPracticeInfoWrapper = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `
 
-const MemeDictionaryPracticeFileFormArea = styled.div`
-  margin-top: 20px;
-  width: 770px;
-  height: 500px;
+const MemeDictionaryPracticeInfoBox = styled.div`
+  width: 900px;
+  height: 800px;
   border-radius: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--gray03);
-  margin-bottom: 150px;
-`
-
-const MemeDictionaryPracticeFileFormImage = styled.img`
-  width: 440px;
-  height: 366px;
-`
-
-const MemeDictionaryPracticeFileFormInput = styled.input`
-  width: 980px;
-  font-family: "NanumSquareNeoExtraBold";
-  font-size: 32px;
-  border: 1px solid var(--dark10);
-  border-radius: 20px;
-  padding: 15px;
-`
-
-const MemeDictionaryPracticeProblemInput = styled.input`
-  width: 1100px;
-  text-align: center;
-  font-family: "NanumSquareNeoExtraBold";
-  font-size: 32px;
-  border: 1px solid var(--dark50);
-  border-radius: 20px;
-  padding: 15px;
-  margin-bottom: 20px;
-`
-
-const MemeDictionaryPracticeOptionsInput = styled.input<{ isSelected: boolean }>`
-  width: 980px;
-  font-family: "NanumSquareNeoBold";
-  font-size: 28px;
-  border: 1px solid var(--dark10);
-  border-radius: 20px;
-  padding: 15px;
-  background: ${props => props.isSelected ? 'var(--dark01)' : 'white'};
-`
-
-const MemeDictionaryPracticeOptionsWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-`
-
-const MemeDictionaryPracticeOptionsCircle = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  font-family: "NanumSquareNeoHeavy";
-  text-align: center;
-  font-size: 28px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 4px solid var(--dark01);
-  margin-right: 10px;
-  user-select: none;
+  background: var(--decogradient01);
+  margin-bottom: 130px;
+  transition: all 0.15s ease;
   cursor: pointer;
+  &:hover {
+    border: 2px solid transparent;
+    background: linear-gradient(97.76deg, #3fd5de 3.15%, #2deea8 76.87%) transparent;
+    opacity: 0.5;
+    border-radius: 30%;
+
+  }
+  &:active {
+    border: 3px solid rgba(0, 0, 0, 0.3);
+    border-radius: 30px;
+
+  }
 `
 
-//case2
-const MemeDictionaryPracticeCompletedProblem = styled.div`
-display: flex;
-font-family: "NanumSquareNeoExtraBold";
-font-size: 62px;
-text-align: center;
-justify-content: center;
-align-items: center;
-color : var(--emerald);
-margin-bottom: 100px;
-
-`
 
 function MemeDictionaryPracticeRandomSolvingProcessBox() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [completed, setCompleted] = useState(true); 
-  const [currentStep, setCurrentStep] = useState(1); 
+  const [currentStep, setCurrentStep] = useState(0); 
   const handleNextButtononClick = () => {
   
   };
@@ -175,49 +135,26 @@ function MemeDictionaryPracticeRandomSolvingProcessBox() {
   },[currentStep])
 
   switch (currentStep) {
-  case 1:
+  case 0:
     return (
       <MemeDictionaryPracticeWraaper> 
-        <MemeDictionaryPracticeForm>
-          <MemeDictionaryPracticeFileFormArea>
-          <MemeDictionaryPracticeFileFormImage src={posefileformbutton}/>
-          </MemeDictionaryPracticeFileFormArea>
-            
-            <MemeDictionaryPracticeProblemInput placeholder="문제를 입력해주세요"/>
-
-            <MemeDictionaryPracticeOptionsWrapper>
-              <MemeDictionaryPracticeOptionsCircle onClick={() => setSelectedOption(1)}>1</MemeDictionaryPracticeOptionsCircle>
-              <MemeDictionaryPracticeOptionsInput isSelected={selectedOption === 1} placeholder="첫 번째 선지를 입력해주세요"/>
-            </MemeDictionaryPracticeOptionsWrapper>
-
-            <MemeDictionaryPracticeOptionsWrapper>
-              <MemeDictionaryPracticeOptionsCircle onClick={() => setSelectedOption(2)}>2</MemeDictionaryPracticeOptionsCircle>
-              <MemeDictionaryPracticeOptionsInput isSelected={selectedOption === 2} placeholder="두 번째 선지를 입력해주세요"/>
-            </MemeDictionaryPracticeOptionsWrapper>
-
-            <MemeDictionaryPracticeOptionsWrapper>
-              <MemeDictionaryPracticeOptionsCircle onClick={() => setSelectedOption(3)}>3</MemeDictionaryPracticeOptionsCircle>
-              <MemeDictionaryPracticeOptionsInput isSelected={selectedOption === 3} placeholder="세 번째 선지를 입력해주세요"/>
-            </MemeDictionaryPracticeOptionsWrapper>
-
-            {completed ? (
-              <NextButton onClick={()=> setCurrentStep(2)}>
-                <NextButtonText>출제완료</NextButtonText>
-              </NextButton>
-            ) : (
-              <LockedNextButton >
-                <NextButtonText >출제완료</NextButtonText>
-              </LockedNextButton>
-            )}
-        </MemeDictionaryPracticeForm>
+        <MemeDictionaryPracticeInfoWrapper>
+          <MemeDictionaryPracticeInfoBox>
+          <MemeDictionaryPracticeTextWrapper>
+          <MemeDictionaryPracticeHeader>문제 랜덤 풀이</MemeDictionaryPracticeHeader>
+          <MemeDictionaryPracticeText>선택하신 연도의 단어 문제가 무작위로 출제됩니다.</MemeDictionaryPracticeText>
+          <MemeDictionaryPracticeText>문제풀이는 총 1세트 1문제로 진행됩니다.</MemeDictionaryPracticeText>
+          <MemeDictionaryPracticeText>제시된 문제와 그림을 잘 보고, </MemeDictionaryPracticeText>
+          <MemeDictionaryPracticeText>가장 적절한 답을 골라주세요.</MemeDictionaryPracticeText>
+          <MemeDictionaryPracticeStartText>준비가 됐으면 눌러주세요!</MemeDictionaryPracticeStartText>
+          </MemeDictionaryPracticeTextWrapper>
+          </MemeDictionaryPracticeInfoBox>
+        </MemeDictionaryPracticeInfoWrapper>
       </MemeDictionaryPracticeWraaper>
     )
-    case 2:
+    case 1:
       return (
         <MemeDictionaryPracticeWraaper>
-            <MemeDictionaryPracticeCompletedProblem>"하이퍼 우짤래미"</MemeDictionaryPracticeCompletedProblem>
-                    <MemeDictionaryPracticeHeader>출제 완료!</MemeDictionaryPracticeHeader>
-                    <MemeDictionaryPracticeText>출제한 문제는 나의 단어장에서 확인 가능합니다.</MemeDictionaryPracticeText>
         </MemeDictionaryPracticeWraaper>
       )
     default:

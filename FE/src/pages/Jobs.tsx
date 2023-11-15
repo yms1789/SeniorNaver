@@ -39,9 +39,10 @@ const RectangleParent = styled.div`
   height: 47px;
 `;
 const FrameGroup = styled.div`
-  @media screen and (max-width: 425px) {
+  @media screen and (max-width: 449px) {
+    width: 100%;
   }
-  @media screen and (min-width: 400px) and (max-width: 780px) {
+  @media screen and (min-width: 450px) and (max-width: 780px) {
     width: 250px;
     margin: 0 auto;
   }
@@ -57,13 +58,14 @@ const FrameParentRoot = styled.div`
   position: relative;
   display: block;
   justify-content: center;
-  top: 200px;
+  top: 150px;
 `;
 const JobCategoryWrapper = styled.div`
-  @media screen and (max-width: 400px) {
+  @media screen and (max-width: 449px) {
+    width: 100%;
     padding: 0px 20px;
   }
-  @media screen and (min-width: 400px) and (max-width: 780px) {
+  @media screen and (min-width: 450px) and (max-width: 780px) {
     width: 100%;
     padding: 0px 20px;
   }
@@ -78,11 +80,11 @@ const JobCategoryWrapper = styled.div`
   max-width: 1300px;
 `;
 const JobsWrapper = styled.div`
-  @media screen and (max-width: 400px) {
-    padding: 0px 20px;
+  @media screen and (max-width: 449px) {
+    padding: 0px 0px;
     grid-template-columns: repeat(1, 1fr);
   }
-  @media screen and (min-width: 400px) and (max-width: 780px) {
+  @media screen and (min-width: 450px) and (max-width: 780px) {
     padding: 0px 20px;
     grid-template-columns: repeat(2, 1fr);
   }
@@ -236,7 +238,7 @@ function Jobs() {
             </MoreButtonWrapper>
           )}
         </FrameParentRoot>
-        <NavigationBar />
+        {<NavigationBar />}
       </ErrorBoundary>
     </>
   );

@@ -1,5 +1,4 @@
 import { atom } from "recoil";
-import axios from "axios";
 import { recoilPersist } from "recoil-persist";
 const { persistAtom } = recoilPersist();
 

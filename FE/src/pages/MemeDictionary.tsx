@@ -8,7 +8,7 @@ import "aos/dist/aos.css";
 
 const MemeDictionaryBackground = styled.div`
   background: var(--gray04);
-  height: 900px;
+  height: 100vh;
 `
 const MemeDictionaryWrapper = styled.div`
   width: 100vw;
@@ -60,8 +60,9 @@ function MemeDictionary() {
   }, []);
 
   return (
+    <>
+    <HeadBar/>
     <MemeDictionaryWrapper>
-      <HeadBar/>
       <MemeDictionaryNavWrapper>
       <MemeNavigationBarForDesktop/>
       </MemeDictionaryNavWrapper>
@@ -72,6 +73,7 @@ function MemeDictionary() {
       <MemeDictionaryBackground/>
       </MemeDictionaryBoxWrapper>
     </MemeDictionaryWrapper>
+    </>
   )
 }
 

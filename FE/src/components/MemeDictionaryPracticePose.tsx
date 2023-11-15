@@ -59,17 +59,17 @@ function MemeDictionaryPracticePose() {
 
   const setcurrentPage = useRecoilState(memeMineCurrentPracticeState);
   const [clicked, setClicked] = useState(false); 
-  
+  const useYear = setcurrentPage[0].currentYear
   return (
     <MemeDictionaryPracticeWraaper>
       <PoseHeadeWraaper>
         <MemeDictionaryPracticeSelectorHeader>
           문제 출제      
-          <PoseYearBox>{setcurrentPage[0].currentYear}</PoseYearBox>
+          <PoseYearBox>{useYear}</PoseYearBox>
         </MemeDictionaryPracticeSelectorHeader>
       </PoseHeadeWraaper>
       <MemeDictionaryHeadline/>
-      <MemeDictionaryPracticePoseProcessBox/>
+      <MemeDictionaryPracticePoseProcessBox useYear={useYear}/>
     </MemeDictionaryPracticeWraaper>
   )
 }

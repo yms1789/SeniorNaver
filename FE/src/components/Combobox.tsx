@@ -9,7 +9,7 @@ import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { styled } from "styled-components";
 import { IJob } from "./RenderJobList";
 const SelectPlace = styled.div`
-  @media screen and (max-width: 400px) {
+  @media screen and (max-width: 450px) {
     display: none;
   }
   width: fit-content;
