@@ -39,7 +39,7 @@ const JobDetailWrapper = styled.div`
   position: relative;
   max-width: 1000px;
   margin: 0 auto;
-  margin-top: 140px;
+  top: 140px;
 `;
 
 const DetailWrapper = styled.div`
