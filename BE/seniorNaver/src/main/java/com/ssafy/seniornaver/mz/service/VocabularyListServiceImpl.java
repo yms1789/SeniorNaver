@@ -62,7 +62,7 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
         // 스크랩 단어 리스트
         if (vocaListRequestDto.getCategory() == 1) {
-            List<VocaListResponseDto.Item> wordList = scrapWordRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
+            List<VocaListResponseDto.Item> wordList = scrapWordRepository.findAllByVocaId(member.getVocaId(), pageable).stream()
                     .map(scrapWord -> VocaListResponseDto.Item.builder()
                             .id(scrapWord.getWordId().getWordId())
                             .title(scrapWord.getWordId().getWord())
@@ -80,7 +80,7 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
         // 저장 문제 리스트
         if (vocaListRequestDto.getCategory() == 2) {
-            List<VocaListResponseDto.Item> problemList = saveProblemRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
+            List<VocaListResponseDto.Item> problemList = saveProblemRepository.findAllByVocaId(member.getVocaId(), pageable).stream()
                     .map(saveProblem -> VocaListResponseDto.Item.builder()
                             .id(saveProblem.getProblemId().getProblemId())
                             .title(saveProblem.getProblemId().getTitle())
@@ -98,7 +98,7 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
         // 만든 문제 리스트
         if (vocaListRequestDto.getCategory() == 3) {
-            List<VocaListResponseDto.Item> problemList = makeProblemRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
+            List<VocaListResponseDto.Item> problemList = makeProblemRepository.findAllByVocaId(member.getVocaId(), pageable).stream()
                     .map(makeProblem -> VocaListResponseDto.Item.builder()
                             .id(makeProblem.getProblemId().getProblemId())
                             .title(makeProblem.getProblemId().getTitle())
