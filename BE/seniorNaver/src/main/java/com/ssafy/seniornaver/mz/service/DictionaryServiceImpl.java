@@ -40,9 +40,6 @@ public class DictionaryServiceImpl implements DictionaryService {
     private final TagToProblemRepository tagToProblemRepository;
     private final TagRepository tagRepository;
 
-    private static String todayWord = null;
-    private static Long todayWordId = null;
-
     @Override
     @Transactional(readOnly = true)
     public DictionaryWordListResponseDto getMemberWordList(DictionaryWordListRequestDto requestDto, Member member) {
@@ -271,7 +268,8 @@ public class DictionaryServiceImpl implements DictionaryService {
     @Override
     public Map<String, Long> todayWord() {
         Map<String, Long> result = new HashMap<>();
-        result.put(todayWord, todayWordId);
+        List<Dictionary> word = dictionaryRepository.findAll();
+        result.put(word.get(0).getWord(), word.get(0).getWordId());
 
         return result;
     }
@@ -279,8 +277,6 @@ public class DictionaryServiceImpl implements DictionaryService {
     @Scheduled (cron = "0 0 0 * * ?", zone = "Asia/Seoul")
     public void setTodayWord() {
         List<Dictionary> word = dictionaryRepository.findAll();
-        todayWord = word.get(0).getWord();
-        todayWordId = word.get(0).getWordId();
     }
 
     // 전체 페이지 수 구하기
