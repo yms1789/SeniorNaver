@@ -44,7 +44,7 @@ const MyPageNicknameText = styled.div`
   font-family: "NanumSquareNeoRegular";
   font-size: 1.5vw;
   color: var(--gray02);
-  margin-bottom: 3vh;
+  margin-bottom: 10vh;
 `
 const MyPageHeader = styled.div`
   display: flex;
@@ -143,7 +143,7 @@ function MyPageProfile() {
         <ProfileImgae src={profile ? profile.url : mainscreenpingpingeee}/>
       </ProfileWrapper>
       <MyPageNicknameHeader>{userInfo.nickname}</MyPageNicknameHeader>
-      <MyPageText>{userInfo.email}</MyPageText>
+      <MyPageNicknameText>{userInfo.email}</MyPageNicknameText>
       <MyPageProfileBox>
       
       <MyPageHeader>개인정보 재설정</MyPageHeader>

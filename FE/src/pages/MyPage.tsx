@@ -49,8 +49,9 @@ const MyPageHeadBarLine= styled.div`
   const activeCategory = useRecoilValue(myPageCategoryState);
 
   return (
+    <>
+    <HeadBar/>
     <MyPageWrapper>
-      <HeadBar/>
       <MyPageHeadBarWrapper>
         <MyPageHeadBarText>내 정보 관리</MyPageHeadBarText>
         <MyPageHeadBarLine/>
@@ -63,6 +64,7 @@ const MyPageHeadBarLine= styled.div`
         {activeCategory.currentCategory === 3 && <MyPageWithdrawal />}
       </MyPageRowWrapper>
     </MyPageWrapper>
+    </>
   )
 }
 export default MyPage;
