@@ -60,6 +60,8 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
         Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 5, Sort.by("word").ascending());
 
+        log.info("요청 category : {}", vocaListRequestDto.getCategory());
+
         // 스크랩 단어 리스트
         if (vocaListRequestDto.getCategory() == 1) {
             List<VocaListResponseDto.Item> wordList = scrapWordRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
