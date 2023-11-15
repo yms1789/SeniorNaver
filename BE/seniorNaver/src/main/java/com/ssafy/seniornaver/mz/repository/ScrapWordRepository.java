@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ScrapWordRepository extends JpaRepository<ScrapWord, Long> {
-    List<ScrapWord> findAllByVocaId(Long vocaId, Pageable pageable);
-    List<ScrapWord> findAllByVocaId(Long vocaId);
+    List<ScrapWord> findAllByVocaId(VocabularyList vocabularyList, Pageable pageable);
+    List<ScrapWord> findAllByVocaId(VocabularyList vocabularyList);
     boolean existsByWordIdAndVocaId(Dictionary wordId, VocabularyList vocaId);
     List<ScrapWord> findAllByWordId(Dictionary wordId);
     Optional<ScrapWord> findByWordIdAndVocaId(Dictionary wordId, VocabularyList vocaId);
