@@ -60,7 +60,7 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
         log.info("category Num : {}", vocaListRequestDto.getCategory());
 
-        Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 5);
+        Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 5, Sort.by("wordId.word").ascending());
 
         // 스크랩 단어 리스트
         if (vocaListRequestDto.getCategory() == 1) {
