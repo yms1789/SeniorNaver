@@ -104,25 +104,38 @@ function Home() {
   }
 
   return (
-    <HomeWrapper>
+    <TotalWrapper>
       <HeadBar />
-      <NavigationBar />
-      {dataCarousel && (
-        <Carousel
-          curations={dataCarousel.curations}
-          mzWords={dataCarousel.mzWords}
-          places={dataCarousel.places}
-        />
+      {!isTop && upButton && (
+        <UpButton
+          onMouseEnter={() => setUpIsHovered(true)}
+          onMouseLeave={() => setUpIsHovered(false)}
+          $isHovered={upIsHovered}
+          onClick={scrollToTop}
+        >
+          <IoIosArrowUp />
+        </UpButton>
       )}
-      <Divider />
-      <CurationWrapper>
-        <CurationCategoryButton />
-        {activeCategory === "공연" && <CurationShows />}
-        {activeCategory === "관광" && <CurationTravels />}
-        {activeCategory === "맛집" && <CurationTastes />}
-        {activeCategory === "뉴스" && <CurationNews />}
-      </CurationWrapper>
-    </HomeWrapper>
+      <HomeWrapper>
+        <NavigationBar />
+        {dataCarousel && (
+          <Carousel
+            curations={dataCarousel.curations}
+            mzWords={dataCarousel.mzWords}
+            places={dataCarousel.places}
+          />
+        )}
+        <Divider />
+        <CurationWrapper>
+          <CurationCategoryButton />
+          {activeCategory === "공연" && <CurationShows />}
+          {activeCategory === "관광" && <CurationTravels />}
+          {activeCategory === "맛집" && <CurationTastes />}
+          {activeCategory === "뉴스" && <CurationNews />}
+        </CurationWrapper>
+        <Footer />
+      </HomeWrapper>
+    </TotalWrapper>
   );
 }
 
