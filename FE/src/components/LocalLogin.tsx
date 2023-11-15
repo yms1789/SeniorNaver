@@ -87,7 +87,7 @@ function LocalLogin() {
     e.preventDefault();
     try {
       await login();
-      navigate("/")
+      navigate("/home")
     } catch (error) {
       alert
       console.error(error);
