@@ -2,12 +2,16 @@ package com.ssafy.seniornaver.mz.repository;
 
 import com.ssafy.seniornaver.mz.entity.SaveProblem;
 import com.ssafy.seniornaver.mz.entity.ScrapWord;
+import com.ssafy.seniornaver.mz.entity.SituationProblem;
+import com.ssafy.seniornaver.mz.entity.VocabularyList;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SaveProblemRepository extends JpaRepository<SaveProblem, Long> {
     List<SaveProblem> findAllByVocaId(Long vocaId);
     List<SaveProblem> findAllByVocaId(Pageable pageable, Long vocaId);
+    Optional<SaveProblem> findByProblemIdAndVocaId(SituationProblem situationProblem, VocabularyList vocabularyList);
 }

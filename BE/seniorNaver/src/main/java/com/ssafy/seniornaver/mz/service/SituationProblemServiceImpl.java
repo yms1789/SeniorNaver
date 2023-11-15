@@ -9,12 +9,13 @@ import com.ssafy.seniornaver.mz.dto.response.ProblemDetailResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.ProblemListResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.RandomProblemResponseDto;
 import com.ssafy.seniornaver.mz.entity.Choice;
+import com.ssafy.seniornaver.mz.entity.SaveProblem;
 import com.ssafy.seniornaver.mz.entity.SituationProblem;
-import com.ssafy.seniornaver.mz.entity.Tag;
 import com.ssafy.seniornaver.mz.entity.VocabularyList;
 import com.ssafy.seniornaver.mz.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.integration.IntegrationProperties;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -174,6 +174,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
         });
 
         return ProblemDetailResponseDto.builder()
+                .problemId(situationProblem.getProblemId())
                 .title(situationProblem.getTitle())
                 .answer(situationProblem.getAnswer())
                 .problemExplanation(situationProblem.getProblemExplanation())
@@ -192,5 +193,45 @@ public class SituationProblemServiceImpl implements SituationProblemService{
                         .map(problem -> problem.getProblemId())
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    @Override
+    public void saveProblem(Long id, Member member) {
+        VocabularyList vocabularyList = vocabularyListRepository.findByVocaId(member.getVocaId()).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
+        });
+
+        vocabularyList.getSaveProblems().add(saveProblemRepository.save(SaveProblem.builder()
+                .problemId(situationRepository.findById(id).orElseThrow(() -> {
+                    throw new BadRequestException(ErrorCode.NOT_EXIST_PROBLEM);
+                }))
+                .vocaId(vocabularyList)
+                .build()));
+    }
+
+    @Override
+    public void cancelProblem(Long id, Member member) {
+        VocabularyList vocabularyList = vocabularyListRepository.findByVocaId(member.getVocaId()).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
+        });
+
+        SituationProblem problem = situationRepository.findById(id).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_PROBLEM);
+        });
+
+        saveProblemRepository.delete(saveProblemRepository.findByProblemIdAndVocaId(problem, vocabularyList).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_PROBLEM_IN_VOCA_LIST);
+        }));
+    }
+
+    @Override
+    public void deleteProblem(Long id, Member member) {
+        if (member.getMemberId() != "test1234") {
+            throw new BadRequestException(ErrorCode.DONT_AUTHENTICATION_ROLE);
+        }
+
+        situationRepository.delete(situationRepository.findById(id).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_PROBLEM);
+        }));
     }
 }

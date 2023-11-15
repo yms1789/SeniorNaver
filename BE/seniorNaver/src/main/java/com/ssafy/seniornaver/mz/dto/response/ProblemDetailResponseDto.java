@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class ProblemDetailResponseDto {
+    private Long problemId;
     private String title;
     private String image;
     private int answer;
@@ -19,8 +20,9 @@ public class ProblemDetailResponseDto {
     private List<Choice> choices;
 
     @Builder
-    public ProblemDetailResponseDto(String title, String image, int answer, String review,
+    public ProblemDetailResponseDto(Long problemId, String title, String image, int answer, String review,
                                     String problemExplanation, int useYear, List<Choice> choices) {
+        this.problemId = problemId;
         this.title = title;
         this.image = image;
         this.answer = answer;

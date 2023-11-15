@@ -95,6 +95,7 @@ public enum ErrorCode {
 
     ALREADY_REGISTERED_PROBLEM(HttpStatus.BAD_REQUEST, "SP-001", "이미 등록된 문제 제목입니다."),
     NOT_EXIST_PROBLEM(HttpStatus.BAD_REQUEST,"SP-002", "문제가 존재하지 않습니다. 문제 ID를 확인해주세요"),
+    NOT_EXIST_PROBLEM_IN_VOCA_LIST(HttpStatus.BAD_REQUEST, "SP-003", "단어장에 문제가 존재하지 않습니다."),
 
     NOT_MATCH_CATEGORY(HttpStatus.BAD_REQUEST, "V-001", "요청 목록과 메서드가 상이합니다."),
 

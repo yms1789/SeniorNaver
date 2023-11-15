@@ -18,4 +18,7 @@ public interface SituationProblemService {
     List<ProblemListResponseDto> getProblemList(ProblemListRequestDto problemListRequestDto);
     ProblemDetailResponseDto getProblemDetail(Long problemId);
     RandomProblemResponseDto getRandomProblem();
+    void saveProblem(Long id, Member member);
+    void cancelProblem(Long id, Member member);
+    void deleteProblem(Long id, Member member);
 }

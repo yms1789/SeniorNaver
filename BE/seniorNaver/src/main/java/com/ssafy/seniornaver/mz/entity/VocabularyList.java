@@ -23,6 +23,9 @@ public class VocabularyList {
     List<ScrapWord> scrapWords = new ArrayList<>();
 
     @OneToMany(mappedBy = "problemId", fetch = FetchType.LAZY)
+    List<SaveProblem> saveProblems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "problemId", fetch = FetchType.LAZY)
     List<CompleteProblem> completeProblems = new ArrayList<>();
 
     @OneToMany(mappedBy = "problemId", fetch = FetchType.LAZY)

@@ -107,7 +107,8 @@ public class PlaceSearchServiceImpl implements PlaceSearchService {
             }
             searchResponseDto.getDocuments().get(i).updatePlaceName(placeName);
 
-            LoadImageData loadImageData = imageSearch(imageUri, searchResponseDto.getDocuments().get(i).getPlace_name());
+            LoadImageData loadImageData = imageSearch(imageUri, searchResponseDto.getDocuments().get(i).getPlace_name()
+                    + " " + searchResponseDto.getDocuments().get(i).getCategory_group_name());
 
             if (loadImageData.getDocuments().size() == 0) {
                 continue;

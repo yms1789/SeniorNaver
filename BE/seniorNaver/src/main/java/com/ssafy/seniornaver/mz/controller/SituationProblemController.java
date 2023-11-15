@@ -26,7 +26,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/problem")
+@RequestMapping("/problem/")
 public class SituationProblemController {
 
     private final JwtProvider jwtProvider;
@@ -34,7 +34,7 @@ public class SituationProblemController {
     private final SituationProblemService situationProblemService;
 
     @Operation(summary = "단어 확인", description = "문제 생성이 가능한 단어인지 확인합니다.")
-    @PostMapping("/valid/{word}")
+    @PostMapping("valid/{word}")
     public ResponseEntity wordCheck(@PathVariable("word") String word) {
         if (!situationProblemService.wordCheck(word)) {
             throw new BadRequestException(ErrorCode.NOT_EXIST_WORD);
@@ -44,7 +44,7 @@ public class SituationProblemController {
     }
 
     @Operation(summary = "문제 등록", description = "문제를 등록합니다. 로그인이 된 상태여야 합니다.")
-    @PostMapping("/register")
+    @PostMapping("register")
     public ResponseEntity createProblem(@RequestBody ProblemCreateRequestDto problemCreateRequestDto,
                                         HttpServletRequest httpServletRequest) {
 
@@ -55,7 +55,7 @@ public class SituationProblemController {
     }
 
     @Operation(summary = "문제 리스트 목록", description = "로그인 되어있을경우 푼 문제, 저장한 문제를 구분합니다.")
-    @GetMapping("/v1/list")
+    @GetMapping("v1/list")
     public ResponseEntity<List<ProblemListResponseDto>> getMemberProblemList(ProblemListRequestDto problemListRequestDto,
                                                                              HttpServletRequest httpServletRequest) {
 
@@ -70,15 +70,39 @@ public class SituationProblemController {
     }
 
     @Operation(summary = "문제 상세", description = "랜덤으로 ProblemId 값을 5개 반환합니다.")
-    @GetMapping("/v1/detail/{id}")
+    @GetMapping("v1/detail/{id}")
     public ResponseEntity<ProblemDetailResponseDto> getMemberProblemList(@PathVariable("id") Long id) {
         return ResponseEntity.ok(situationProblemService.getProblemDetail(id));
     }
     
     @Operation(summary = "랜덤 문제 번호", description = "랜덤으로 ProblemId 값을 5개 반환합니다.")
-    @GetMapping("/v1/random")
+    @GetMapping("v1/random")
     public ResponseEntity<RandomProblemResponseDto> getMemberProblemList() {
         return ResponseEntity.ok(situationProblemService.getRandomProblem());
+    }
+
+    @Operation(summary = "문제 저장", description = "랜덤 문제 간 추후에 풀어보고 싶은 문제를 개별로 저장합니다.")
+    @PostMapping("scrap/{id}")
+    public ResponseEntity saveProblem(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
+        situationProblemService.saveProblem(id, getMember(httpServletRequest));
+
+        return ResponseEntity.ok("저장 완료");
+    }
+
+    @Operation(summary = "문제 저장 취소", description = "저장한 문제를 삭제합니다.")
+    @PostMapping("scrap/cancel/{id}")
+    public ResponseEntity cancelProblem(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
+        situationProblemService.cancelProblem(id, getMember(httpServletRequest));
+
+        return ResponseEntity.ok("저장 취소 완료");
+    }
+
+    @Operation(summary = "문제 삭제", description = "{Admin 전용} 해당 문제를 삭제합니다.")
+    @PostMapping("removal/{id}")
+    public ResponseEntity deleteProblem(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
+        situationProblemService.deleteProblem(id, getMember(httpServletRequest));
+
+        return ResponseEntity.ok("문제 삭제 완료");
     }
 
     private Member getMember(HttpServletRequest httpServletRequest) {
