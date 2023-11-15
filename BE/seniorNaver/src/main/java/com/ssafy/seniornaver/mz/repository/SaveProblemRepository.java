@@ -12,6 +12,6 @@ import java.util.Optional;
 
 public interface SaveProblemRepository extends JpaRepository<SaveProblem, Long> {
     List<SaveProblem> findAllByVocaId(Long vocaId);
-    List<SaveProblem> findAllByVocaId(Pageable pageable, Long vocaId);
+    List<SaveProblem> findAllByVocaId(Long vocaId, Pageable pageable);
     Optional<SaveProblem> findByProblemIdAndVocaId(SituationProblem situationProblem, VocabularyList vocabularyList);
 }
