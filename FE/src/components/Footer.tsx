@@ -2,6 +2,9 @@ import styled from "styled-components";
 import logo from "../assets/logo.png";
 
 const FooterContainerWrapper = styled.div`
+  @media screen and (max-width: 450px) {
+    display: none;
+  }
   height: auto;
   width: 100vw;
   display: flex;
