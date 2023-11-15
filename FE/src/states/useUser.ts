@@ -70,7 +70,9 @@ export const useLogout = (userLogoutData: { accessToken: string; refreshToken: s
   const setLogin = useSetRecoilState(isLoggedInState);
   const logout = async () => {
     try {
-      await axios.post("api/auth/logout", userLogoutData);
+      await axios.post("api/auth/logout", null, {
+        headers: { Authorization: `Bearer ${userLogoutData.refreshToken}` },
+      });
       setUser({
         memberId: "",
         nickname: "",
@@ -115,18 +117,17 @@ export const useNaverLogin = () => {
 };
 
 export const fetchToken = async (refreshTokenData: { refreshToken: string }) => {
-  console.log("패치토큰요청?");
-
   try {
-    const response = await axios.post("api/token/reissue", {
+    console.log("리프리프", refreshTokenData);
+    const response = await axios.post("api/token/reAccess", {
       headers: {
         Authorization: `Bearer ${refreshTokenData}`,
       },
     });
-    const { accessToken } = response.data;
+    const { accesstoken } = response.data;
     console.log("패치토큰성공?");
     return {
-      accessToken,
+      accesstoken,
     };
   } catch (error) {
     console.error("Error during logout:", error);

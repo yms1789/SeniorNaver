@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosRequestHeaders } from "axios";
-import { fetchToken, useLogout, userState } from "./useUser";
+import { fetchToken, useLogout } from "./useUser";
 
 interface AdaptAxiosRequestConfig extends AxiosRequestConfig {
   headers: AxiosRequestHeaders;
@@ -7,8 +7,8 @@ interface AdaptAxiosRequestConfig extends AxiosRequestConfig {
 
 interface Ierror {
   httpStatus: string;
-  code: string;
-  message: string;
+  errorCode: string;
+  errorMessage: string;
 }
 
 export const fetchApi: AxiosInstance = axios.create();
@@ -32,24 +32,25 @@ fetchApi.interceptors.response.use(
   response => response,
   async (error: AxiosError<Ierror>) => {
     const originalRequest = error.config as AdaptAxiosRequestConfig;
-    const user = JSON.parse(sessionStorage.getItem("userInfo") || "{}"); // 세션 저장소에서 토큰 액세스
-    const refreshTokenData = {
+    const persistData = JSON.parse(sessionStorage.getItem("recoil-persist") || "{}"); // 세션 저장소에서 토큰 액세스
+    const user = persistData.userInfo;
+    const userLogoutData = {
       accessToken: user.accessToken,
       refreshToken: user.refreshToken,
     };
-    const logout = useLogout(refreshTokenData);
 
+    // const logout = useLogout(userLogoutData);
+    console.log("어어,", userLogoutData.refreshToken);
     if (error.response) {
-      const errorCode = error.response.data.code;
-      const errorMessage = error.response.data.message;
+      const errorCode = error.response.data.errorCode;
+      const errorMessage = error.response.data.errorMessage;
       let newAccessToken;
+
       switch (errorCode) {
         case "T-001":
-          console.log(errorMessage);
           break;
         case "A-001":
-          console.log(errorMessage);
-          newAccessToken = await fetchToken(refreshTokenData);
+          newAccessToken = await fetchToken(userLogoutData.refreshToken);
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return fetchApi(originalRequest);
         case "A-002":
@@ -58,7 +59,7 @@ fetchApi.interceptors.response.use(
           break;
         case "T-004":
           console.log(errorMessage);
-          logout();
+          // logout();
           break;
         case "T-005":
           console.log(errorMessage);
