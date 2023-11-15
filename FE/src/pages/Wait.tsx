@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { userState, isLoggedInState, naverLogin } from "../states/useUser";
+import { userState, isLoggedInState, useNaverLogin } from "../states/useUser";
 
 const WaitWrapper = styled.div`
   width: 100vw;
@@ -27,12 +27,10 @@ const WaitHeader = styled.div`
 function Wait() {
   const user = useRecoilState(userState);
   const navigate = useNavigate();
-
+  const naverLogin = useNaverLogin();
   const getNaverToken = async () => {
     try {
       await naverLogin();
-      const setLogin = useSetRecoilState(isLoggedInState);
-      setLogin(true);
       if(user[0].nickname === null){
         navigate("/join");
       }
