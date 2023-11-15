@@ -67,12 +67,12 @@ public class DictionaryController {
     public ResponseEntity<WordDetailResponseDto> wordDetail(@PathVariable("id") Long id,
                                     HttpServletRequest httpServletRequest) {
 
+        WordDetailResponseDto wordDetailResponseDto;
         if (httpServletRequest.getHeader("Authorization") == null) {
-            WordDetailResponseDto wordDetailResponseDto = dictionaryService.getWordDetail(id, 0L);
-            return ResponseEntity.ok(wordDetailResponseDto);
+            wordDetailResponseDto = dictionaryService.getWordDetail(id, 0L);
+        } else {
+            wordDetailResponseDto = dictionaryService.getWordDetail(id, getMember(httpServletRequest).getVocaId());
         }
-
-        WordDetailResponseDto wordDetailResponseDto = dictionaryService.getWordDetail(id, getMember(httpServletRequest).getVocaId());
         return ResponseEntity.ok(wordDetailResponseDto);
     }
 
@@ -104,7 +104,7 @@ public class DictionaryController {
     }
 
     @Operation(summary = "오늘의 단어", description = "사전에 있는 단어 중 랜덤으로 1개의 단어를 반환합니다.")
-    @GetMapping("today/word")
+    @GetMapping("v1/today/word")
     public ResponseEntity<Map<String, Long>> todayWord() {
         return ResponseEntity.ok(dictionaryService.todayWord());
     }

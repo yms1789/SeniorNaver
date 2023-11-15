@@ -86,6 +86,13 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
+    @Scheduled (cron = "0 0 7 * * ?", zone = "Asia/Seoul")
+    @Transactional
+    public void deleteWorkList() {
+        employRepository.deleteAll();
+    }
+
+    @Override
     public JobListResponeDto getJobList(JobListSearchRequestDto jobListSearchRequestDto) {
         Pageable pageable = PageRequest.of(jobListSearchRequestDto.getPageNum(), 16, Sort.by("endDate").ascending());
 

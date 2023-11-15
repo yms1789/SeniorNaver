@@ -2,6 +2,8 @@ package com.ssafy.seniornaver.mz.service;
 
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
+import com.ssafy.seniornaver.mz.dto.request.DictionaryWordListRequestDto;
+import com.ssafy.seniornaver.mz.dto.response.DictionaryWordListResponseDto;
 import com.ssafy.seniornaver.mz.entity.*;
 import com.ssafy.seniornaver.mz.repository.TagRepository;
 import com.ssafy.seniornaver.mz.repository.TagToProblemRepository;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,6 +53,12 @@ public class TagServiceImpl implements TagService{
                 .tagId(tag)
                 .problemId(problemId)
                 .build()));
+    }
+
+    @Override
+    public List<DictionaryWordListResponseDto> tagSearch(DictionaryWordListRequestDto dictionaryWordListRequestDto) {
+
+        return null;
     }
 
     // 태그 검색
