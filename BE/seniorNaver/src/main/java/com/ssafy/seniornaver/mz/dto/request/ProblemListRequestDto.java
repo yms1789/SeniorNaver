@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ProblemListRequestDto {
-    int page;
-    String keyword;
+    private int page;
+    private String keyword;
 }
