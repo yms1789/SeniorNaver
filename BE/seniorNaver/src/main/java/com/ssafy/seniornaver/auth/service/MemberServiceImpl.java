@@ -2,6 +2,7 @@ package com.ssafy.seniornaver.auth.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.ssafy.seniornaver.auth.dto.*;
+import com.ssafy.seniornaver.auth.dto.OAuth.TokenResponse;
 import com.ssafy.seniornaver.auth.dto.Request.*;
 import com.ssafy.seniornaver.auth.dto.Response.LogInResponseDto;
 import com.ssafy.seniornaver.auth.dto.Response.MemberResponseDto;
@@ -12,6 +13,7 @@ import com.ssafy.seniornaver.auth.entity.enumType.Role;
 import com.ssafy.seniornaver.auth.jwt.JwtProvider;
 import com.ssafy.seniornaver.auth.repository.KeywordRepository;
 import com.ssafy.seniornaver.auth.repository.MemberRepository;
+import com.ssafy.seniornaver.auth.service.OAuth.NaverRequestServiceImpl;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import com.ssafy.seniornaver.s3.S3Uploader;
@@ -41,8 +43,8 @@ public class MemberServiceImpl implements MemberService{
 	private final JwtProvider jwtProvider;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final S3Uploader s3Uploader;
+	private final NaverRequestServiceImpl naverRequestServiceImpl;
 
-	private final AmazonS3Client amazonS3Client;
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
 
@@ -170,7 +172,17 @@ public class MemberServiceImpl implements MemberService{
 			throw new BadRequestException(ErrorCode.REFRESH_TOKEN_EXPIRED);
 		}
 
-		return jwtProvider.createAccessToken(memberId, AuthProvider.findByCode(provider));
+		if (AuthProvider.NAVER.getAuthProvider().equals(provider.toLowerCase())) {
+			// 네이버 로그인 사용자용 액세스 토큰 재발급 로직
+			String oldRefreshToken = (String) jwtProvider.get(refreshToken).get("refreshToken");
+			TokenResponse tokenResponse = naverRequestServiceImpl.getRefreshToken(provider, oldRefreshToken);
+			// tokenResponse에서 새로운 액세스 토큰을 가져와 반환합니다.
+			String newAccessToken = tokenResponse.getAccessToken();
+			return new TokenDto(newAccessToken, null); // tokenExpirationTime을 null로 설정
+		} else {
+			// 일반 로그인 사용자용 액세스 토큰 재발급 로직
+			return jwtProvider.createAccessToken(memberId, AuthProvider.findByCode(provider));
+		}
 	}
 
 	public Boolean validMemberId(String memberId) {

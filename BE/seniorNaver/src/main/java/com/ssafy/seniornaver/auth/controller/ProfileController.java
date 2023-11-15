@@ -41,6 +41,7 @@ public class ProfileController {
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
 
+
     @PutMapping(value = "/image",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "프로필사진 변경", security = @SecurityRequirement(name = "Bearer"))
     public ResponseEntity<UpdateProfilePictureDto> updateProfile(@RequestPart(value="file", required = false) MultipartFile file, HttpServletRequest httpServletRequest) throws Exception {
