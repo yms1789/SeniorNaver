@@ -58,6 +58,8 @@ public class VocabularyListServiceImpl implements VocabularyListService{
             throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
         });
 
+        log.info("category Num : {}", vocaListRequestDto.getCategory());
+
         Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 5, Sort.by("word").ascending());
 
         // 스크랩 단어 리스트
