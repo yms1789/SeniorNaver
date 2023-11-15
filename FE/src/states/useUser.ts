@@ -68,23 +68,29 @@ export const useLogin = (userFormData: { memberId: string; password: string }) =
 export const useLogout = (userLogoutData: { accessToken: string; refreshToken: string }) => {
   const setUser = useSetRecoilState(userState);
   const setLogin = useSetRecoilState(isLoggedInState);
-  const logout = async () => {
+  async function logout() {
     try {
-      await axios.post("api/auth/logout", userLogoutData);
-      setUser({
-        memberId: "",
-        nickname: "",
-        email: "",
-        mobile: "",
-        accessToken: "",
-        refreshToken: "",
-        refreshTokenExpirationTime: "",
+      const response = await axios.post("api/auth/logout", null, {
+        headers: {
+          Authorization: `Bearer ${userLogoutData.refreshToken}`,
+        },
       });
-      setLogin(false);
+      if (response.status === 200) {
+        setUser({
+          memberId: "",
+          nickname: "",
+          email: "",
+          mobile: "",
+          accessToken: "",
+          refreshToken: "",
+          refreshTokenExpirationTime: "",
+        });
+        setLogin(false);
+      }
     } catch (error) {
       console.error("Error during logout:", error);
     }
-  };
+  }
   return logout;
 };
 
@@ -115,19 +121,16 @@ export const useNaverLogin = () => {
 };
 
 export const fetchToken = async (refreshTokenData: { refreshToken: string }) => {
-  console.log("패치토큰요청?");
-
+  const [userInfo, setUserInfo] = useRecoilState(userState);
   try {
-    const response = await axios.post("api/token/reissue", {
+    const response = await axios.post("api/token/reAccess", null, {
       headers: {
-        Authorization: `Bearer ${refreshTokenData}`,
+        Authorization: `Bearer ${refreshTokenData.refreshToken}`,
       },
     });
     const { accessToken } = response.data;
-    console.log("패치토큰성공?");
-    return {
-      accessToken,
-    };
+    setUserInfo({ ...userInfo, accessToken: accessToken });
+    return accessToken;
   } catch (error) {
     console.error("Error during logout:", error);
   }

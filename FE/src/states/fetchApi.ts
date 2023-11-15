@@ -1,6 +1,5 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosRequestHeaders } from "axios";
-import { useRecoilValue } from "recoil";
-import { fetchToken, useLogout, userState } from "./useUser";
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosRequestHeaders } from "axios";
+import { fetchToken, useLogout } from "./useUser";
 
 interface AdaptAxiosRequestConfig extends AxiosRequestConfig {
   headers: AxiosRequestHeaders;
@@ -8,8 +7,8 @@ interface AdaptAxiosRequestConfig extends AxiosRequestConfig {
 
 interface Ierror {
   httpStatus: string;
-  code: string;
-  message: string;
+  errorCode: string;
+  errorMessage: string;
 }
 
 export const fetchApi: AxiosInstance = axios.create();
@@ -19,9 +18,8 @@ fetchApi.interceptors.request.use(
     const user = persistData.userInfo;
     if (user.accessToken) {
       config.headers = config.headers || {};
-      config.headers.Authorization = `Bearer ${user.accessToken}`; // 현재 토큰을 헤더에 설정
+      config.headers.Authorization = config.headers.Authorization || `Bearer ${user.accessToken}`; // 현재 토큰을 헤더에 설정
     }
-    console.log("헤더설정완료");
     return config;
   },
   (error: AxiosError<Ierror>) => {
@@ -33,16 +31,16 @@ fetchApi.interceptors.response.use(
   response => response,
   async (error: AxiosError<Ierror>) => {
     const originalRequest = error.config as AdaptAxiosRequestConfig;
-    const user = JSON.parse(sessionStorage.getItem("userInfo") || "{}"); // 세션 저장소에서 토큰 액세스
+    const persistData = JSON.parse(sessionStorage.getItem("recoil-persist") || "{}"); // 세션 저장소에서 토큰 액세스
+    const user = persistData.userInfo;
     const refreshTokenData = {
       accessToken: user.accessToken,
       refreshToken: user.refreshToken,
     };
-    const logout = useLogout(refreshTokenData);
 
     if (error.response) {
-      const errorCode = error.response.data.code;
-      const errorMessage = error.response.data.message;
+      const errorCode = error.response.data.errorCode;
+      const errorMessage = error.response.data.errorMessage;
       let newAccessToken;
       switch (errorCode) {
         case "T-001":
@@ -55,11 +53,11 @@ fetchApi.interceptors.response.use(
           return fetchApi(originalRequest);
         case "A-002":
           console.log(errorMessage);
-          // logout();
+          await useLogout(refreshTokenData)();
           break;
         case "T-004":
           console.log(errorMessage);
-          logout();
+          await useLogout(refreshTokenData)();
           break;
         case "T-005":
           console.log(errorMessage);
