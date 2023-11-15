@@ -10,6 +10,10 @@ import com.ssafy.seniornaver.auth.jwt.JwtProvider;
 import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import com.ssafy.seniornaver.auth.service.MemberService;
 import com.ssafy.seniornaver.auth.service.ProfileService;
+import com.ssafy.seniornaver.curation.dto.NewsScrapDto;
+import com.ssafy.seniornaver.curation.dto.PFScrapDto;
+import com.ssafy.seniornaver.curation.dto.TourScrapDto;
+import com.ssafy.seniornaver.curation.service.ScrapService;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -33,8 +37,10 @@ import java.util.List;
 public class ProfileController {
     private final MemberService memberService;
     private final ProfileService profileService;
+    private final ScrapService scrapService;
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
+
 
     @PutMapping(value = "/image",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "프로필사진 변경", security = @SecurityRequirement(name = "Bearer"))
@@ -71,7 +77,26 @@ public class ProfileController {
         return ResponseEntity.ok(profileService.updateKeywords(member.getMemberId(),keywordRequestDto.getKeywords()));
     }
 
+    @GetMapping(value = "/getNewsScrap")
+    @Operation(summary = "뉴스 스크랩 가져오기", security = @SecurityRequirement(name = "Bearer"))
+    public ResponseEntity<List<NewsScrapDto>> getNewsScrap(HttpServletRequest httpServletRequest) {
+        Member member = getMember(httpServletRequest);
+        return ResponseEntity.ok(scrapService.getNewsScrap(member.getMemberId()));
+    }
 
+    @GetMapping(value = "/getPFScrap")
+    @Operation(summary = "공연 스크랩 가져오기", security = @SecurityRequirement(name = "Bearer"))
+    public ResponseEntity<List<PFScrapDto>> getPFScrap(HttpServletRequest httpServletRequest) {
+        Member member = getMember(httpServletRequest);
+        return ResponseEntity.ok(scrapService.getPFScrap(member.getMemberId()));
+    }
+
+    @GetMapping(value = "/getTourScrap")
+    @Operation(summary = "관광 스크랩 가져오기", security = @SecurityRequirement(name = "Bearer"))
+    public ResponseEntity<List<TourScrapDto>> getTourScrap(HttpServletRequest httpServletRequest) {
+        Member member = getMember(httpServletRequest);
+        return ResponseEntity.ok(scrapService.getTourScrap(member.getMemberId()));
+    }
 
     private Member getMember(HttpServletRequest httpServletRequest) {
         String header = httpServletRequest.getHeader("Authorization");

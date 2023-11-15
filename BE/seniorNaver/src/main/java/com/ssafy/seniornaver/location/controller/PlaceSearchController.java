@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Tag(name = "PlaceSearch", description = "장소 검색 (맛집, 관광명소, 병원)")
 @Slf4j
 @RestController

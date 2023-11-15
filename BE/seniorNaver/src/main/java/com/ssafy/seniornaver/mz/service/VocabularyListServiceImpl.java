@@ -52,55 +52,80 @@ public class VocabularyListServiceImpl implements VocabularyListService{
     }
 
     @Override
-    public List<VocaListResponseDto> getScrapWordList(Member member, VocaListRequestDto vocaListRequestDto) {
+    public VocaListResponseDto getVocaList(Member member, VocaListRequestDto vocaListRequestDto) {
 
-        if (member.getVocaId() == null) {
+        VocabularyList vocabularyList = vocabularyListRepository.findByVocaId(member.getVocaId()).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
+        });
 
-        }
+        log.info("category Num : {}", vocaListRequestDto.getCategory());
 
-        Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 10, Sort.by("word").ascending());
+        Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 5, Sort.by("wordId.word").ascending());
 
         // 스크랩 단어 리스트
         if (vocaListRequestDto.getCategory() == 1) {
-            List<VocaListResponseDto> wordList = scrapWordRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
-                    .map(scrapWord -> VocaListResponseDto.builder()
-                            .wordId(scrapWord.getWordId().getWordId())
-                            .word(scrapWord.getWordId().getWord())
+            List<VocaListResponseDto.Item> wordList = scrapWordRepository.findAllByVocaId(vocabularyList, pageable).stream()
+                    .map(scrapWord -> VocaListResponseDto.Item.builder()
+                            .id(scrapWord.getWordId().getWordId())
+                            .title(scrapWord.getWordId().getWord())
+                            .content(scrapWord.getWordId().getMean())
                             .year(scrapWord.getWordId().getUseYear())
                             .build())
                     .collect(Collectors.toList());
 
-            return wordList;
+            return VocaListResponseDto.builder()
+                    .page(vocaListRequestDto.getPage() + 1)
+                    .totalPage(getTotalPage(scrapWordRepository.findAllByVocaId(vocabularyList).stream().count()))
+                    .items(wordList)
+                    .build();
         }
 
         // 저장 문제 리스트
         if (vocaListRequestDto.getCategory() == 2) {
-            List<VocaListResponseDto> problemList = saveProblemRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
-                    .map(scrapWord -> VocaListResponseDto.builder()
-                            .wordId(scrapWord.getWordId().getWordId())
-                            .word(scrapWord.getWordId().getWord())
-                            .year(scrapWord.getWordId().getUseYear())
+            List<VocaListResponseDto.Item> problemList = saveProblemRepository.findAllByVocaId(vocabularyList, pageable).stream()
+                    .map(saveProblem -> VocaListResponseDto.Item.builder()
+                            .id(saveProblem.getProblemId().getProblemId())
+                            .title(saveProblem.getProblemId().getTitle())
+                            .content(saveProblem.getProblemId().getProblemExplanation())
+                            .year(saveProblem.getProblemId().getUseYear())
                             .build())
                     .collect(Collectors.toList());
 
-            return problemList;
-
+            return VocaListResponseDto.builder()
+                    .page(vocaListRequestDto.getPage() + 1)
+                    .totalPage(getTotalPage(saveProblemRepository.findAllByVocaId(vocabularyList).stream().count()))
+                    .items(problemList)
+                    .build();
         }
 
         // 만든 문제 리스트
         if (vocaListRequestDto.getCategory() == 3) {
-            List<VocaListResponseDto> problemList = makeProblemRepository.findAllByVocaId(pageable, member.getVocaId()).stream()
-                    .map(scrapWord -> VocaListResponseDto.builder()
-                            .wordId(scrapWord.getWordId().getWordId())
-                            .word(scrapWord.getWordId().getWord())
-                            .year(scrapWord.getWordId().getUseYear())
+            List<VocaListResponseDto.Item> problemList = makeProblemRepository.findAllByVocaId(vocabularyList, pageable).stream()
+                    .map(makeProblem -> VocaListResponseDto.Item.builder()
+                            .id(makeProblem.getProblemId().getProblemId())
+                            .title(makeProblem.getProblemId().getTitle())
+                            .content(makeProblem.getProblemId().getProblemExplanation())
+                            .year(makeProblem.getProblemId().getUseYear())
                             .build())
                     .collect(Collectors.toList());
 
-            return problemList;
+            return VocaListResponseDto.builder()
+                    .page(vocaListRequestDto.getPage() + 1)
+                    .totalPage(getTotalPage(makeProblemRepository.findAllByVocaId(vocabularyList).stream().count()))
+                    .items(problemList)
+                    .build();
         }
 
         throw new BadRequestException(ErrorCode.NOT_MATCH_CATEGORY);
+    }
+
+    // 전체 페이지 수 구하기
+    private int getTotalPage(long totalCount) {
+        int totalPage = 0;
+        totalPage = (int) (totalCount / 5);
+        if (totalCount % 5 != 0) {
+            totalPage++;
+        }
+        return totalPage;
     }
 }

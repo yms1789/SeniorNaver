@@ -2,10 +2,15 @@ package com.ssafy.seniornaver.auth.controller;
 
 import com.ssafy.seniornaver.auth.dto.Request.*;
 import com.ssafy.seniornaver.auth.dto.Response.LogInResponseDto;
+import com.ssafy.seniornaver.auth.entity.Member;
 import com.ssafy.seniornaver.auth.jwt.JwtProvider;
 import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import com.ssafy.seniornaver.auth.service.MemberService;
+import com.ssafy.seniornaver.error.code.ErrorCode;
+import com.ssafy.seniornaver.error.exception.BadRequestException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,6 +21,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -70,9 +76,10 @@ public class MemberController {
      ** 프론트에서도 store에 저장된 token 정보를 삭제
      */
     @PostMapping("/logout")
-    @Operation(summary = "로그아웃")
-    public String logOut(@RequestBody LogOutRequestDto logOutRequestDto) {
-        memberService.logOut(logOutRequestDto);
+    @Operation(summary = "로그아웃", security = @SecurityRequirement(name = "Bearer"))
+    public String logOut(HttpServletRequest request) {
+        Member member = getMember(request);
+        memberService.logOut(member.getMemberId());
         return "success logout";
     }
     // 유저 아이디 중복체크
@@ -89,8 +96,22 @@ public class MemberController {
         return ResponseEntity.ok(memberService.validNickname(nickname));
     }
 
-    // 유저 프로필 변경
+    private Member getMember(HttpServletRequest httpServletRequest) {
+        String header = httpServletRequest.getHeader("Authorization");
+        String bearer = header.substring(7);
 
+        String memberId;
+        try {
+            memberId = (String) jwtProvider.get(bearer).get("memberId");
+        } catch (ExpiredJwtException e) {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID);
+        }
+
+        Member member = memberRepository.findByMemberId(memberId).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID);
+        });
+        return member;
+    }
 
 
 }

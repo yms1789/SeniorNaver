@@ -9,19 +9,34 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class DictionaryWordListResponseDto {
-    private Long wordId;
-    private String word;
-    private String mean;
-    private List<String> tags;
-    private boolean scrap;
+
+    private int page;
+    private int totalPage;
+    private List<Item> items;
+
+    @Getter
+    public static class Item {
+        private Long wordId;
+        private String word;
+        private String mean;
+        private int year;
+        private boolean scrap;
+
+        @Builder
+        public Item(Long wordId, String word, String mean,
+                                             int year, boolean scrap) {
+            this.wordId = wordId;
+            this.word = word;
+            this.mean = mean;
+            this.year = year;
+            this.scrap = scrap;
+        }
+    }
 
     @Builder
-    public DictionaryWordListResponseDto(Long wordId, String word, String mean,
-                                         List<String> tags, boolean scrap) {
-        this.wordId = wordId;
-        this.word = word;
-        this.mean = mean;
-        this.tags = tags;
-        this.scrap = scrap;
+    public DictionaryWordListResponseDto(int page, int totalPage, List<Item> items) {
+        this.page = page;
+        this.totalPage = totalPage;
+        this.items = items;
     }
 }

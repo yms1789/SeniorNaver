@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface VocabularyListService {
     void createVocaList(Member memberId);
-    List<VocaListResponseDto> getScrapWordList(Member member, VocaListRequestDto vocaListRequestDto);
+    VocaListResponseDto getVocaList(Member member, VocaListRequestDto vocaListRequestDto);
 }

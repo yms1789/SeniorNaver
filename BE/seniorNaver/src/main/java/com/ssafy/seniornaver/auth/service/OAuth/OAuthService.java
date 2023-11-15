@@ -48,7 +48,7 @@ public class OAuthService {
 
         return OAuthSignInResponse.builder()
                 .authProvider(AuthProvider.findByCode(provider.toLowerCase()))
-                .accessToken(accessTokenDto.getAccesstoken())
+                .accessToken(accessTokenDto.getAccessToken())
                 .refreshToken(null)
                 .build();
     }

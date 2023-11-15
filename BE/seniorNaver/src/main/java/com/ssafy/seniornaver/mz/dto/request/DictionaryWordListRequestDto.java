@@ -1,12 +1,12 @@
 package com.ssafy.seniornaver.mz.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 public class DictionaryWordListRequestDto {
     private int page;
+    private Integer year;
     private String keyword;
-    private String tag;
 }

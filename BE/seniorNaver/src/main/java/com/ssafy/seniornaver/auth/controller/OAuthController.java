@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class OAuthController {
     private final OAuthService OAuthService;
 
-    @PostMapping("/login/oauth2/code/{registrationId}")
+    @GetMapping("/login/oauth2/code/{registrationId}")
     @Operation(summary = "네이버 로그인")
     public ResponseEntity<OAuthSignInResponse> redirect(
             @PathVariable("registrationId") String registrationId

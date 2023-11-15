@@ -1,13 +1,17 @@
 package com.ssafy.seniornaver.jobposting.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ssafy.seniornaver.jobposting.dto.request.JobListRequestDto;
+import com.ssafy.seniornaver.jobposting.dto.request.JobListSearchRequestDto;
 import com.ssafy.seniornaver.jobposting.dto.response.JobDetailResponseDto;
-import com.ssafy.seniornaver.jobposting.dto.response.JobListResponseDto;
+import com.ssafy.seniornaver.jobposting.dto.response.JobListResponeDto;
+
+import java.util.List;
 
 public interface JobService {
     JobDetailResponseDto getDetailService(String jobId) throws JsonProcessingException;
-    JobListResponseDto getWorkList(JobListRequestDto jobRequestDto) throws JsonProcessingException;
-    String getListData(JobListRequestDto jobRequestDto, int searchNum);
+    void saveWorkList() throws JsonProcessingException;
+    void deleteWorkList();
+    JobListResponeDto getJobList(JobListSearchRequestDto jobListSearchRequestDto);
+    String getListData(int pageNo);
     String getDetailData(String jobId);
 }

@@ -13,8 +13,8 @@ public class JobDetailResponseDto {
     private String clerk;
     private String clerkContt;
     private String clltPrnnum;
-    private StringBuffer frAcptDd;
-    private StringBuffer toAcptDd;
+    private StringBuilder frAcptDd;
+    private StringBuilder toAcptDd;
     private String detCnts;
     private String etcItm;
     private String homepage;
