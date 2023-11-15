@@ -317,6 +317,7 @@ function DrawerComponent({ setCoordinates, currentCoord, setIsWork }: IDrawerCom
             {categoryButtons.map((button: string) => {
               return (
                 <CategoryButton
+                  key={crypto.randomUUID()}
                   type="button"
                   value={button}
                   onClick={() => {
