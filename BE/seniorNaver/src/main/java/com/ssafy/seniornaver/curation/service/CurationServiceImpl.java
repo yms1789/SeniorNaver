@@ -18,7 +18,6 @@ public class CurationServiceImpl implements CurationService{
     @Override
     public List<MZWordDto> getCarouselMzWords() {
         List<Dictionary> dictionaryList = dictionaryRepository.findAll();
-        Collections.shuffle(dictionaryList);
 
         return dictionaryList.stream()
                 .limit(10)
