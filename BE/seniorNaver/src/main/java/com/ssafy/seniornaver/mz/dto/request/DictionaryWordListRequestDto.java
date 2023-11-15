@@ -7,5 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class DictionaryWordListRequestDto {
     private int page;
+    private Integer year;
     private String keyword;
 }

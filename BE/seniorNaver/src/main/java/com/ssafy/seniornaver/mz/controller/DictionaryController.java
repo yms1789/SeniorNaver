@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @Tag(name = "Dictionary", description = "사전관련 서비스")
 @Slf4j
@@ -97,9 +98,15 @@ public class DictionaryController {
     @DeleteMapping("word/removal/{id}")
     public ResponseEntity deleteWord(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
 
-        dictionaryService.wordDelete(id);
+        dictionaryService.wordDelete(id, getMember(httpServletRequest));
 
         return ResponseEntity.ok("스크랩 취소 성공");
+    }
+
+    @Operation(summary = "오늘의 단어", description = "사전에 있는 단어 중 랜덤으로 1개의 단어를 반환합니다.")
+    @GetMapping("today/word")
+    public ResponseEntity<Map<String, Long>> todayWord() {
+        return ResponseEntity.ok(dictionaryService.todayWord());
     }
 
     private Member getMember(HttpServletRequest httpServletRequest) {

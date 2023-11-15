@@ -3,6 +3,7 @@ package com.ssafy.seniornaver.mz.repository;
 import com.ssafy.seniornaver.mz.entity.Dictionary;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,4 +14,7 @@ public interface DictionaryRepository extends JpaRepository<Dictionary, Long> {
     List<Dictionary> findAllByWordContaining(String word, Pageable pageable);
     List<Dictionary> findAllByWordContaining(String word);
     boolean existsByWord(String word);
+
+    @Query(value = "SELECT * FROM seniornaver.dictionary as sp order by RAND() limit 1", nativeQuery = true)
+    List<Dictionary> findAll();
 }

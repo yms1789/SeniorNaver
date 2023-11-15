@@ -7,8 +7,9 @@ import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import com.ssafy.seniornaver.mz.dto.request.ProblemCreateRequestDto;
 import com.ssafy.seniornaver.mz.dto.request.ProblemListRequestDto;
+import com.ssafy.seniornaver.mz.dto.response.ProblemDetailResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.ProblemListResponseDto;
-import com.ssafy.seniornaver.mz.entity.SituationProblem;
+import com.ssafy.seniornaver.mz.dto.response.RandomProblemResponseDto;
 import com.ssafy.seniornaver.mz.service.SituationProblemService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,7 +55,7 @@ public class SituationProblemController {
     }
 
     @Operation(summary = "문제 리스트 목록", description = "로그인 되어있을경우 푼 문제, 저장한 문제를 구분합니다.")
-    @GetMapping("/list")
+    @GetMapping("/v1/list")
     public ResponseEntity<List<ProblemListResponseDto>> getMemberProblemList(ProblemListRequestDto problemListRequestDto,
                                                                              HttpServletRequest httpServletRequest) {
 
@@ -66,6 +67,18 @@ public class SituationProblemController {
         }
 
         return ResponseEntity.ok(problemListResponseDto);
+    }
+
+    @Operation(summary = "문제 상세", description = "랜덤으로 ProblemId 값을 5개 반환합니다.")
+    @GetMapping("/v1/detail/{id}")
+    public ResponseEntity<ProblemDetailResponseDto> getMemberProblemList(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(situationProblemService.getProblemDetail(id));
+    }
+    
+    @Operation(summary = "랜덤 문제 번호", description = "랜덤으로 ProblemId 값을 5개 반환합니다.")
+    @GetMapping("/v1/random")
+    public ResponseEntity<RandomProblemResponseDto> getMemberProblemList() {
+        return ResponseEntity.ok(situationProblemService.getRandomProblem());
     }
 
     private Member getMember(HttpServletRequest httpServletRequest) {

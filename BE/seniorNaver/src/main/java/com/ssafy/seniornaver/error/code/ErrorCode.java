@@ -94,11 +94,13 @@ public enum ErrorCode {
     DONT_AUTHENTICATION_ROLE(HttpStatus.FORBIDDEN, "D-004", "당신 따위에겐 없는 권한입니다. 썩 물러가십쇼"),
 
     ALREADY_REGISTERED_PROBLEM(HttpStatus.BAD_REQUEST, "SP-001", "이미 등록된 문제 제목입니다."),
+    NOT_EXIST_PROBLEM(HttpStatus.BAD_REQUEST,"SP-002", "문제가 존재하지 않습니다. 문제 ID를 확인해주세요"),
 
     NOT_MATCH_CATEGORY(HttpStatus.BAD_REQUEST, "V-001", "요청 목록과 메서드가 상이합니다."),
 
     // 장소
     DONT_SUCH_PLACE(HttpStatus.BAD_REQUEST, "P-001", "데이터가 부족합니다. 응답 값을 찾을 수 없습니다."),
+    
     DONT_SUCH_JOB_POST(HttpStatus.BAD_REQUEST, "J-001", "존재하지 않는 검색 유형입니다."),
     DONT_PARSE_RESPONSE_DATA(HttpStatus.BAD_GATEWAY, "J-002", "확인할수 없는 데이터입니다."),
 

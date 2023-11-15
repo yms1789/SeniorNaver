@@ -10,7 +10,6 @@ import com.ssafy.seniornaver.mz.dto.response.DictionaryWordListResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.WordDetailResponseDto;
 import com.ssafy.seniornaver.mz.entity.Dictionary;
 import com.ssafy.seniornaver.mz.entity.ScrapWord;
-import com.ssafy.seniornaver.mz.entity.Tag;
 import com.ssafy.seniornaver.mz.entity.VocabularyList;
 import com.ssafy.seniornaver.mz.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -51,25 +49,29 @@ public class DictionaryServiceImpl implements DictionaryService {
 
         Pageable pageable = PageRequest.of(requestDto.getPage(), 5, Sort.by("word").ascending());
 
+        // 키워드 검색시
         if (requestDto.getKeyword() != null) {
-            // 키워드 검색시
-            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllByWordContaining(requestDto.getKeyword(), pageable).stream()
-            .map(word -> DictionaryWordListResponseDto.Item.builder()
-                    .wordId(word.getWordId())
-                    .word(word.getWord())
-                    .mean(word.getMean())
-                    .year(word.getUseYear())
-                    .scrap(scrapWordRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
-                            .anyMatch(scrapWord -> scrapWord.getWordId().getWordId() == word.getWordId()))
-                    .build())
-            .collect(Collectors.toList());
+            // 연도가 있으면
+            if (requestDto.getYear() != null) {
+                return null;
+            } else {
+                List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllByWordContaining(requestDto.getKeyword(), pageable).stream()
+                        .map(word -> DictionaryWordListResponseDto.Item.builder()
+                                .wordId(word.getWordId())
+                                .word(word.getWord())
+                                .mean(word.getMean())
+                                .year(word.getUseYear())
+                                .scrap(scrapWordRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
+                                        .anyMatch(scrapWord -> scrapWord.getWordId().getWordId() == word.getWordId()))
+                                .build())
+                        .collect(Collectors.toList());
 
-            return DictionaryWordListResponseDto.builder()
-                    .page(requestDto.getPage() + 1)
-                    .totalPage(getTotalPage(dictionaryRepository.findAllByWordContaining(requestDto.getKeyword()).size()))
-                    .items(words)
-                    .build();
-
+                return DictionaryWordListResponseDto.builder()
+                        .page(requestDto.getPage() + 1)
+                        .totalPage(getTotalPage(dictionaryRepository.findAllByWordContaining(requestDto.getKeyword()).size()))
+                        .items(words)
+                        .build();
+            }
         } else {
             List<DictionaryWordListResponseDto.Item> wordList = dictionaryRepository.findAll(pageable).stream()
                     .map(word -> DictionaryWordListResponseDto.Item.builder()
@@ -128,16 +130,6 @@ public class DictionaryServiceImpl implements DictionaryService {
                     .items(words)
                     .build();
         }
-    }
-
-    @Override
-    public DictionaryWordListResponseDto getTagMemberWordList(DictionaryWordListRequestDto requestDto, Member member) {
-        return null;
-    }
-
-    @Override
-    public DictionaryWordListResponseDto getTagWordList(DictionaryWordListRequestDto requestDto) {
-        return null;
     }
 
     @Override
@@ -234,6 +226,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
         // 사전 단어 저장
         dictionaryRepository.saveAndFlush(createWord);
+        wordCreateRequestDto.getWordTags().add(createWord.getWord());
 
         // 태그 생성하면서 관계 연결 (단어 태그) -> 태그가 있는지 먼저 확인
         for (int i = 0; i < wordCreateRequestDto.getWordTags().size(); i++) {
@@ -267,6 +260,15 @@ public class DictionaryServiceImpl implements DictionaryService {
         });
 
         dictionaryRepository.delete(word);
+    }
+
+    @Override
+    public Map<String, Long> todayWord() {
+        Map<String, Long> result = new HashMap<>();
+        List<Dictionary> word = dictionaryRepository.findAll();
+        result.put(word.get(0).getWord(), word.get(0).getWordId());
+
+        return result;
     }
 
     // 전체 페이지 수 구하기
