@@ -100,8 +100,8 @@ public class MemberServiceImpl implements MemberService{
 	/*
 	 ** 로그아웃 -> DB에 저장된 리프레쉬 토큰 최신화
 	 */
-	public void logOut(LogOutRequestDto logOutRequestDto) {
-		Member member = memberRepository.findByRefreshToken(logOutRequestDto.getRefreshToken()).get();
+	public void logOut(String token) {
+		Member member = memberRepository.findByRefreshToken(token).get();
 		member.expireRefreshToken(new Date());
 	}
 
