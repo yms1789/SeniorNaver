@@ -9,7 +9,7 @@ import fetchApi from "../states/fetchApi";
 
 const FloatingContainer = styled.div`
   @media screen and (max-width: 450px) {
-    margin: 100px 0px;
+    bottom: 100px;
   }
   position: fixed;
   width: 100px;
