@@ -54,10 +54,9 @@ public class VocabularyListServiceImpl implements VocabularyListService{
     @Override
     public VocaListResponseDto getVocaList(Member member, VocaListRequestDto vocaListRequestDto) {
 
-        if (member.getVocaId() == null) {
+        vocabularyListRepository.findByVocaId(member.getVocaId()).orElseThrow(() -> {
             throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
-
-        }
+        });
 
         Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 5, Sort.by("word").ascending());
 

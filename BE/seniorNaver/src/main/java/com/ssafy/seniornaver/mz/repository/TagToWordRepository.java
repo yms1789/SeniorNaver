@@ -12,13 +12,5 @@ import java.util.List;
 
 public interface TagToWordRepository extends JpaRepository<TagToWord, Long> {
     List<TagToWord> findAllByWordId(Dictionary wordId);
-    @Query("SELECT DISTINCT ttw FROM TagToWord ttw " +
-            "JOIN ttw.tagId tag " +
-            "JOIN ttw.wordId word " +
-            "WHERE tag.tag LIKE %:tagTitle% " +
-            "AND word.useYear >= :year " +
-            "AND word.useYear < :year + 10 " +
-            "ORDER BY tag.tag ASC")
-    List<TagToWord> findByTagIdAndWordYear(String tagTitle, int year, Pageable pageable);
     List<TagToWord> findAllByTagId(Tag tag);
 }
