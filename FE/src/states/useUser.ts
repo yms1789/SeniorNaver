@@ -2,7 +2,6 @@ import { atom } from "recoil";
 import axios from "axios";
 import { recoilPersist } from "recoil-persist";
 import { useSetRecoilState, useRecoilState } from "recoil";
-import fetchApi from "./fetchApi";
 const { persistAtom } = recoilPersist({
   storage: sessionStorage,
 });
