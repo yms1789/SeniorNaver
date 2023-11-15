@@ -13,8 +13,8 @@ const NavigationButtonWrapper = styled.div`
     top: auto;
   }
   position: fixed;
-  top: 60%;
-  right: 0px;
+  right: 0;
+  bottom: 150px;
   display: flex;
   flex-direction: column;
   z-index: 100;
