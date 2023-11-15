@@ -11,6 +11,7 @@ import NavigationBar from "../components/NavigationBar";
 import RenderJobList, { IJob } from "../components/RenderJobList";
 import { useJobsQuery } from "../hooks/useJobsQuery";
 import workplaceState from "../states/workplace";
+import Footer from "../components/Footer";
 
 const JobInput = styled.input`
   @media screen and (max-width: 400px) {
@@ -122,6 +123,10 @@ const JobEmpty = styled.h1`
 `;
 
 const MoreButtonWrapper = styled.div`
+  @media screen and (max-width: 680px) {
+    padding: 20px 0px;
+    margin-bottom: 140px;
+  }
   position: relative;
   top: 50px;
   text-align: center;
@@ -143,6 +148,11 @@ const MoreButton = styled.div`
   &:hover {
     border: 1px solid var(--emerald);
   }
+`;
+
+const FooterWrapper = styled.div`
+  margin-top: 40px;
+  overflow: hidden;
 `;
 
 const places = [
@@ -237,8 +247,11 @@ function Jobs() {
               <MoreButton onClick={() => fetchNextPage()}>더 보기</MoreButton>
             </MoreButtonWrapper>
           )}
+          <FooterWrapper>
+            <Footer />
+          </FooterWrapper>
         </FrameParentRoot>
-        {<NavigationBar />}
+        <NavigationBar />
       </ErrorBoundary>
     </>
   );
