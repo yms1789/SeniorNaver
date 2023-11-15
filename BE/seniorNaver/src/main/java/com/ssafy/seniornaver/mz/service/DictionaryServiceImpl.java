@@ -61,7 +61,7 @@ public class DictionaryServiceImpl implements DictionaryService {
                                 .word(word.getWord())
                                 .mean(word.getMean())
                                 .year(word.getUseYear())
-                                .scrap(scrapWordRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
+                                .scrap(scrapWordRepository.findAllByVocaId(vocabularyList).stream()
                                         .anyMatch(scrapWord -> scrapWord.getWordId().getWordId() == word.getWordId()))
                                 .build())
                         .collect(Collectors.toList());
@@ -78,7 +78,7 @@ public class DictionaryServiceImpl implements DictionaryService {
                             .wordId(word.getWordId())
                             .word(word.getWord())
                             .mean(word.getMean())
-                            .scrap(scrapWordRepository.findAllByVocaId(vocabularyList.getVocaId()).stream()
+                            .scrap(scrapWordRepository.findAllByVocaId(vocabularyList).stream()
                                     .anyMatch(scrapWord -> scrapWord.getWordId().getWordId() == word.getWordId()))
                             .build())
                     .collect(Collectors.toList());
