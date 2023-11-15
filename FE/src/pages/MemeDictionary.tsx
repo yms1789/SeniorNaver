@@ -60,8 +60,9 @@ function MemeDictionary() {
   }, []);
 
   return (
+    <>
+    <HeadBar/>
     <MemeDictionaryWrapper>
-      <HeadBar/>
       <MemeDictionaryNavWrapper>
       <MemeNavigationBarForDesktop/>
       </MemeDictionaryNavWrapper>
@@ -72,6 +73,7 @@ function MemeDictionary() {
       <MemeDictionaryBackground/>
       </MemeDictionaryBoxWrapper>
     </MemeDictionaryWrapper>
+    </>
   )
 }
 

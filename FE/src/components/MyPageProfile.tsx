@@ -2,6 +2,8 @@ import { useState } from "react";
 import styled from "styled-components";
 import profileeditor from "./../assets/images/profileeditor.png";
 import mainscreenpingpingeee from "./../assets/images/mainscreenpingpingeee.png"
+import { useRecoilValue } from "recoil";
+import { userState } from "../states/useUser";
 
 const MyPageProfileWrapper = styled.div`
   margin: auto;
@@ -24,6 +26,25 @@ const MyPageProfileBox = styled.div`
   align-items: center;
   justify-content: center;
   
+`
+const MyPageNicknameHeader = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: "NanumSquareNeoHeavy";
+  font-size: 1.8vw;
+`
+
+const MyPageNicknameText = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: "NanumSquareNeoRegular";
+  font-size: 1.5vw;
+  color: var(--gray02);
+  margin-bottom: 3vh;
 `
 const MyPageHeader = styled.div`
   display: flex;
@@ -60,7 +81,7 @@ const ProfileWrapper = styled.div`
   border-radius: 100%;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
   z-index: 10;  
-  margin-bottom: 10vh;
+  margin-bottom: 5vh;
 
 `
 const ProfileImgae = styled.img`
@@ -96,10 +117,12 @@ const ProfileEditor = styled.img`
 `;
 
 function MyPageProfile() {
+  const userInfo = useRecoilValue(userState);  
   const [profile, setProfile] = useState<{ url: string; file: File; } | null>(null);
 
   const handleChangeProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imageList = e.target.files;
+    console.log(userInfo)
     if (imageList && imageList.length > 0) {
         const imageObj = {
             url: URL.createObjectURL(imageList[0]),
@@ -119,6 +142,8 @@ function MyPageProfile() {
         </ProfileEditorLabel>
         <ProfileImgae src={profile ? profile.url : mainscreenpingpingeee}/>
       </ProfileWrapper>
+      <MyPageNicknameHeader>{userInfo.nickname}</MyPageNicknameHeader>
+      <MyPageText>{userInfo.email}</MyPageText>
       <MyPageProfileBox>
       
       <MyPageHeader>개인정보 재설정</MyPageHeader>
