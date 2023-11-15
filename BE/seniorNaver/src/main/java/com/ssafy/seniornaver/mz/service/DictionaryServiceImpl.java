@@ -40,8 +40,8 @@ public class DictionaryServiceImpl implements DictionaryService {
     private final TagToProblemRepository tagToProblemRepository;
     private final TagRepository tagRepository;
 
-    private static String todayWord;
-    private static Long todayWordId;
+    private static String todayWord = null;
+    private static Long todayWordId = null;
 
     @Override
     @Transactional(readOnly = true)
