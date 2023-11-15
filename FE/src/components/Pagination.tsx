@@ -29,22 +29,18 @@ const PaginationButton = styled.button`
   }
 `
 function Pagination({
-  postsNum,
-  postsPerPage,
+  totalPages,
   setCurrentPage,
-  currentPage
+  currentPage,
 }:{
-  postsNum:number,
-  postsPerPage:number,
+  totalPages:number,
   setCurrentPage:(page: number) => void,
   currentPage:number,
   }) {
 
   const pageList:number[] = [];
   console.log("페이지네이션")
-  console.log(postsNum);
   console.log(currentPage);
-  const totalPages = Math.ceil(postsNum / postsPerPage);
   console.log(totalPages);
   console.log("페이지리스트", pageList);
 
@@ -63,9 +59,7 @@ function Pagination({
     window.scrollTo(0, 0);
   };
 
-  // if (totalPages === 1) {
-  //   return null;
-  // }
+
   return (
     <PaginationBox>
       <PaginationButton onClick={goToPrevPage} disabled={currentPage === 1}>

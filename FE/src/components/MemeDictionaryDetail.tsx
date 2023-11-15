@@ -1,7 +1,15 @@
 import styled from "styled-components";
-import { useRecoilState } from "recoil";
-import { memeMineCurrentWordDetailState } from "../states/useMeme";
+import { useRecoilValue } from "recoil";
+import { memeMineCurrentWordDetailState,  } from "../states/useMeme";
 import {BsFillBookmarksFill} from "react-icons/bs"
+import { deleteScrapWord, scrapWord } from "../hooks/useMemeQuery";
+import { useState, useEffect } from "react";
+import { fetchDetail } from "../hooks/useMemeQuery";
+import { useRecoilState } from "recoil";
+import { isLoggedInState } from "../states/useUser";
+interface IconProps {
+  isScrapped: boolean | undefined; 
+}
 const MemeDictionaryDetailWraaper = styled.div`
   padding: 50px;
   width: 930px;
@@ -23,6 +31,7 @@ const MemeDictionaryDetailWordName = styled.div`
   -webkit-text-stroke: 2px var(--dark01);
 `
 const MemeDictionaryDetailHeader = styled.div`
+  user-select: none;
   margin-top: 20px;
   display: flex;  
   font-family: "NanumSquareNeoExtraBold";
@@ -72,18 +81,19 @@ const MemeDictionaryDetailInfoBox = styled.div`
   margin-bottom: 50px;
 `
 
-const MemeDictionaryDetailInfoIcon = styled.div`
+const MemeDictionaryDetailInfoIcon = styled.div<IconProps>`
   display: flex;
   position: relative;
-  top: 30px;
+  top: 10px;
   left: 330px;
+  color: ${props => props.isScrapped ? 'var(--white)' : 'var(--dark10)'}; 
   cursor: pointer;
   transition: all 0.15s ease;
   &:hover {
-    top: 36px;
+    top: 15px;
   }
   &:active {
-    top: 30px;
+    top: 10px;
   }
 `
 
@@ -128,25 +138,72 @@ const MemeDictionaryDetailInfoLabel = styled.div`
   margin-bottom: 50px;
   color : var(--white);
 `
-const Data = [{index : 192, wordname: "쫌쫌따리", description: "조금씩 매우 적고 하찮은 양을 모으는 모습을 나타내는 신조어. 닭발의 뼈에 붙어있던 아주 적은 양의 살에서 유래하였다.", example : "“쫌쫌따리 모으다보면 나도 언젠간..”"}]
+
+const YearBox = styled.div`
+  position: relative;
+  user-select: none;
+  top: 0px;
+  right: -300px;
+  display: flex;
+  font-family: "NanumSquareNeoExtraBold";
+  font-size: 26px;
+  letter-spacing: -0.05em;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 50px;
+  color: var(--white);
+  background: var(--dark01);
+  border-radius: 30px;
+`
 
 function MemeDictionaryDetail() {
-  const currentWord = useRecoilState(memeMineCurrentWordDetailState);
+  const [wordData, setWordData] = useState<{word: string, mean: string, scrap: boolean, useYear: string, example: string} | null>(null);
+  const currentWord = useRecoilValue(memeMineCurrentWordDetailState);
+  const wordId = Number(Object.values(currentWord));     
+  const [isLoggedIn] = useRecoilState(isLoggedInState);  
+
+
+  const handleScrap = async () => {
+    if (wordId === undefined) return;
+    if (wordData?.scrap) {
+      await deleteScrapWord(wordId);
+      fetchDetailWord();
+
+    } else {
+      await scrapWord(wordId);
+      fetchDetailWord();
+
+    }
+  }
+  const fetchDetailWord = async () => {
+    const data = await fetchDetail(wordId);
+    setWordData(data);
+  };
+  useEffect(() => {
+    if (wordId) {
+      fetchDetailWord();
+    }
+  }, [currentWord]); 
+
   return(
     <MemeDictionaryDetailWraaper>
-      <MemeDictionaryDetailHeader>No.{Data[0].index}</MemeDictionaryDetailHeader>
-      <MemeDictionaryDetailInfoBox>      
+      <MemeDictionaryDetailInfoBox>     
+      <YearBox>{wordData?.useYear}</YearBox>
         <MemeDictionaryDetailWordName>
-          {Data[0].wordname}
+          {wordData?.word}
       </MemeDictionaryDetailWordName>
-      <MemeDictionaryDetailInfoIcon>
-      <BsFillBookmarksFill size="50" color="var(--white)" />
-      </MemeDictionaryDetailInfoIcon>
+      {isLoggedIn && 
+          <MemeDictionaryDetailInfoIcon isScrapped={wordData?.scrap} onClick={handleScrap}>
+            <BsFillBookmarksFill size="50" />
+          </MemeDictionaryDetailInfoIcon>
+        }
       </MemeDictionaryDetailInfoBox>
       <MemeDictionaryDetailHeader>뜻 풀이</MemeDictionaryDetailHeader>
-      <MemeDictionaryDetailContent>{Data[0].description}</MemeDictionaryDetailContent>
+      <MemeDictionaryDetailContent>{wordData?.mean}</MemeDictionaryDetailContent>
       <MemeDictionaryDetailHeader>예문</MemeDictionaryDetailHeader>
-      <MemeDictionaryDetailContent>{Data[0].example}</MemeDictionaryDetailContent>
+      <MemeDictionaryDetailContent>{wordData?.example}</MemeDictionaryDetailContent>
       <MemeDictionaryDetailInfoLabel>
       <MemeDictionaryDetailInfoContentWrapper>
       <MemeDictionaryDetailInfoContent>

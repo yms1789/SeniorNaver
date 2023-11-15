@@ -1,5 +1,7 @@
 import styled from "styled-components";
-import { useWordsQuery } from "../hooks/useMemeQuery";
+import { memeMineCurrentWordDetailState, memeCurrentTapState } from "../states/useMeme";
+import { useSetRecoilState } from "recoil";
+
 const MemeDictionaryBookWraaper = styled.div`
   width: 930px;
   height: 100%;
@@ -16,12 +18,11 @@ const MemeDictionaryBookWordBoxWrapper = styled.div`
   border-radius: 30px;
   margin-bottom: 40px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.25s ease-in-out;
   &:hover {
     box-shadow: 4px 8px 30px rgba(0, 0, 0, 0.1);
     background: linear-gradient(360deg, #bebebe -62.37%, rgba(94, 94, 94, 0) 105.3%);    
-    margin-top: 20px;
-    padding: 25px;
+    padding: 10px;
     color: var(--emerald);
   }
   &:active {
@@ -31,7 +32,7 @@ const MemeDictionaryBookWordBoxWrapper = styled.div`
   `
 const MemeDictionaryBookWordBox = styled.div`
   width: 900px;
-  height: 160px;
+  height: auto;
   margin-bottom: 20px;
   flex-direction: column;
   justify-content: flex-start;
@@ -48,70 +49,63 @@ const MemeDictionaryBookWordBoxLine2 = styled.div`
   width: 900px;
   border: 1px solid var(--dark10);
 `
+const MemeDictionaryBookRowWrapper = styled.div`
+  display : flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+`
 const MemeDictionaryBookHeader = styled.div`
   font-family: "NanumSquareNeoBold";
+  display: flex;
   font-size: 40px;
-  margin-bottom: 20px;
   text-align: start;
   user-select: none;
 `
+
+
 const MemeDictionaryBookContent = styled.div`
   font-family: "NanumSquareNeoRegular";
   font-size: 32px;
+  height: auto;
   color: var(--gray05);
   text-align: start;
   user-select: none;
 `
-const MemeDictionaryBookPage = styled.div`
+const YearBox = styled.div`
   display: flex;
-  height: 600px;
-  font-family: "NanumSquareNeoRegular";
-  font-size: 24px;
+  font-family: "NanumSquareNeoExtraBold";
+  font-size: 26px;
+  letter-spacing: -0.05em;
   text-align: center;
-  user-select: none;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 50px;
+  background: var(--maingradient);
+  border-radius: 30px;
+  margin-left: 15px;
 `
-const data = [{
-  no : "당모치",
-  year : 2000,
-  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
-},
-{
-  no : "갑분싸",
-  year : 2000,
-  content : "'갑자기 분위기 싸해진다.'의 준말. 특정 상황에서 갑자기 분위기가 싸늘해지는 상황을 표현하는 신조어.",
-},
-{
-  no : "당모치",
-  year : 2000,
-  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
-},
-{
-  no : "당모치",
-  year : 2000,
-  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
-},
-{
-  no : "당모치",
-  year : 2000,
-  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
-},
-{
-  no : "당모치",
-  year : 2000,
-  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
-},
-]
 
 function MemeDictionaryBookList({currentPosts}:{currentPosts:any;}) {
-  // const { data, refetch, hasNextPage, fetchNextPage, remove } = useWordsQuery(page, input);
+  const setCurrentTab = useSetRecoilState(memeCurrentTapState);
+  const setcurrentWord = useSetRecoilState(memeMineCurrentWordDetailState);
+
+  const handleSetState = (index : number) =>{
+    setCurrentTab({currentPage : 4});
+    setcurrentWord({currentWord : index});
+  }
 
   return (
     <MemeDictionaryBookWraaper>
              {currentPosts.map((e:any, index:any) => (
-              <MemeDictionaryBookWordBoxWrapper>
+              <MemeDictionaryBookWordBoxWrapper onClick={()=>handleSetState(e.wordId)}>
               <MemeDictionaryBookWordBox key={index}> 
-                <MemeDictionaryBookHeader>{e.no}</MemeDictionaryBookHeader>
-                <MemeDictionaryBookContent>{e.content}</MemeDictionaryBookContent>
+              <MemeDictionaryBookRowWrapper>
+                <MemeDictionaryBookHeader>{e.word}</MemeDictionaryBookHeader>
+                <YearBox>{e.year}</YearBox>
+                </MemeDictionaryBookRowWrapper>
+                <MemeDictionaryBookContent>{e.mean}</MemeDictionaryBookContent>
               </MemeDictionaryBookWordBox>
               <MemeDictionaryBookWordBoxLine/>
               <MemeDictionaryBookWordBoxLine2/>
