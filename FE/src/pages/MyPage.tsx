@@ -24,6 +24,7 @@ const MyPageRowWrapper = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: row;
+  align-items: center;
 `;
 
 const MyPageHeadBarWrapper= styled.div`

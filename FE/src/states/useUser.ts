@@ -2,7 +2,6 @@ import { atom } from "recoil";
 import axios from "axios";
 import { recoilPersist } from "recoil-persist";
 import { useSetRecoilState, useRecoilState } from "recoil";
-import fetchApi from "./fetchApi";
 const { persistAtom } = recoilPersist({
   storage: sessionStorage,
 });
@@ -89,28 +88,30 @@ export const useLogout = (userLogoutData: { accessToken: string; refreshToken: s
   return logout;
 };
 
-export const naverLogin = async () => {
+export const useNaverLogin = () => {
   const code = new URLSearchParams(window.location.search).get("code");
   const state = new URLSearchParams(window.location.search).get("state");
   const setUser = useSetRecoilState(userState);
   const setLogin = useSetRecoilState(isLoggedInState);
   const registrationId = "naver";
-  const response = await axios.post(
-    `${BaseURL}/oauth/login/oauth2/code/${registrationId}?code=${code}&state=${state}`,
-  );
-  const { memberId, email, mobile, accessToken } = response.data;
-  axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-
-  setUser({
-    memberId,
-    email,
-    mobile,
-    accessToken: "",
-    refreshToken: "",
-    refreshTokenExpirationTime: "",
-    nickname: "",
-  });
-  setLogin(true);
+  const naverLogin = async () => {
+    const response = await axios.post(
+      `${BaseURL}/oauth/login/oauth2/code/${registrationId}?code=${code}&state=${state}`,
+    );
+    const { memberId, email, mobile, accessToken } = response.data;
+    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    setUser({
+      memberId,
+      email,
+      mobile,
+      accessToken: "",
+      refreshToken: "",
+      refreshTokenExpirationTime: "",
+      nickname: "",
+    });
+    setLogin(true);
+  };
+  return naverLogin;
 };
 
 export const fetchToken = async (refreshTokenData: { refreshToken: string }) => {
