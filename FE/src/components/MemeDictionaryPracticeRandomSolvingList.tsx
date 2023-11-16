@@ -1,13 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,Dispatch, SetStateAction} from "react";
 import styled from "styled-components";
 import posefileformbutton from "./../assets/images/posefileformbutton.png"
-
+import { fetchProblemDetail,postResult, postTotalResult} from "../hooks/useMemeQuery";
+import { useSetRecoilState } from "recoil";
+import { memeFinalResult } from "../states/useMeme";
 
 const MemeDictionaryPracticeWraaper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  transition: all 0.15s ease;
+
 `
 const LockedNextButton = styled.div`
   margin-top: 60px;
@@ -19,6 +23,7 @@ const LockedNextButton = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
 const NextButton = styled.div`
   margin-top: 60px;
   width: 550px;
@@ -48,13 +53,13 @@ const NextButtonText = styled.div`
   color: #ffffff;
 `;
 
-
 const MemeDictionaryPracticeOptionsInput = styled.div<{ isSelected: boolean }>`
   width: 980px;
   height: 60px;
   font-family: "NanumSquareNeoBold";
   font-size: 28px;
-  border: 1px solid var(--dark10);
+  display: flex;
+  align-items: center;
   border-radius: 20px;
   padding: 15px;
   background: ${props => props.isSelected ? 'var(--maingradient)' : 'white'};
@@ -77,6 +82,7 @@ const MemeDictionaryPracticeFileFormArea = styled.div`
   background: var(--gray03);
   margin-bottom: 50px;
   overflow: hidden;
+  transition: all 0.15s ease;
 
 `
 const MemeDictionaryPracticeOptionsCircle = styled.div<{ isSelected: boolean }>`
@@ -94,25 +100,28 @@ const MemeDictionaryPracticeOptionsCircle = styled.div<{ isSelected: boolean }>`
   margin-right: 10px;
   cursor: pointer;
 `
-const MemeDictionaryPracticeProblemExplanatioInput = styled.div`
+const MemeDictionaryPracticeProblemExplanation = styled.div`
   width: 1100px;
-  height: 60px;
+  height: auto;
   text-align: center;
   font-family: "NanumSquareNeoExtraBold";
   font-size: 32px;
   border-radius: 20px;
   padding: 15px;
+  text-overflow: ellipsis;
+  align-items: center;
   margin-bottom: 20px;
 `
 const MemeDictionaryPracticeFileFormImage = styled.img`
   width: 100%;
   height: 100%;
+  transition: all 0.15s ease;
   object-fit: cover;
 `
 const MemeDictionaryProblemWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 500px;
+  margin-right: 700px;
 `
 const MemeDictionaryProblemBox = styled.div`
   display: flex;
@@ -126,19 +135,27 @@ const MemeDictionaryProblemBox = styled.div`
   border-radius: 20px;
 `
 const MemeDictionaryProblemTitle = styled.div`
-  margin-left: 15px;
-  display: flex;
-  justify-content: center;
+  margin-left: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   align-items: center;
   font-family: "NanumSquareNeoRegular";
-  font-size: 28px;
+  font-size: 32px;
 `
-
-function MemeDictionaryPracticeRandomSolvingList({useYear}:{useYear:number}) {
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+interface IProblemListType {
+  problemList: number[];
+}
+interface IListProps {
+  useYear: number;
+  problemList: IProblemListType;
+  setRandomCurrentStep: Dispatch<SetStateAction<number>>;
+}
+function MemeDictionaryPracticeRandomSolvingList({useYear, problemList, setRandomCurrentStep}:IListProps) {
+  const setFinalResult = useSetRecoilState(memeFinalResult);
   const [completed, setCompleted] = useState(true); 
-  const [currentStep, setCurrentStep] = useState(1); 
-  const [newProblem, setProblem] = useState({
+  const [currentProblem, setCurrentProblem] = useState({
+      problemId: "",
       title: "",
       image: "",
       answer: 0,
@@ -149,65 +166,121 @@ function MemeDictionaryPracticeRandomSolvingList({useYear}:{useYear:number}) {
       tags: [""],
       choices: [
         {
-          choiceId: 0,
           choiceNum: 0,
           content: ""
         },
         {
-          choiceId: 1,
           choiceNum: 1,
           content: ""
         },
         {
-          choiceId: 2,
           choiceNum: 2,
           content: ""
         }
       ]
     });
- 
-  const handleSubmit= (e:any)=>{
-      e.preventDefault();
-      setCurrentStep(2);
+    const [problemIndex, setProblemIndex] = useState(0); // 현재 문제의 인덱스를 추적하기 위한 상태
+    const [isLastProblem, setIsLastProblem] = useState(false); // 마지막 문제인지 확인하기 위한 상태
+    const [choiceResult, setChoiceResult] = useState({
+      problemId : "",
+      title:"",
+      answer : 0,
+      choice : 0
+    })
+
+    const handleChoice = (index:number) =>{
+      setCompleted(true);
+      setChoiceResult({...choiceResult, choice: index})
     }
-  
-  useEffect(()=>{
-    window.scrollTo(0, 0);
-  },[currentStep])
+
+    const handleSubmit = async (e: any) => {
+      e.preventDefault();
+      const result = await postResult(choiceResult.problemId,choiceResult.title,choiceResult.answer, choiceResult.choice); // 문제 결과를 저장합니다.
+      if (result) {
+        if (problemIndex === problemList.problemList.length - 1) { // 마지막 문제인지 확인
+          setIsLastProblem(true);
+        } else {
+          setProblemIndex(problemIndex + 1); // 다음 문제로 이동
+        }
+      }
+    }
+
+    const handleFinalSubmit = () => {
+      postTotalResult().then((data)=>{
+        console.log(data)
+        setFinalResult(data) 
+        setRandomCurrentStep(2);
+      })
+    }
+
+    useEffect(()=>{
+      setChoiceResult({...choiceResult,     problemId : currentProblem.problemId,
+        title:currentProblem.title,
+        answer : currentProblem.answer})
+    },[currentProblem])
+
+  useEffect(() => {
+    window.scrollTo(0, 200);
+    const problemId = problemList.problemList[problemIndex];
+    setCompleted(false);
+    setChoiceResult({...choiceResult, choice: 0})
+    const fetchProblem = async () => {
+      const problem = await fetchProblemDetail(problemId);
+      setCurrentProblem(problem);
+    }
+
+    fetchProblem();
+  }, [problemIndex]);
 
 
       return (
         <MemeDictionaryPracticeWraaper>
-          <MemeDictionaryProblemWrapper>
-          <MemeDictionaryProblemBox>문제01</MemeDictionaryProblemBox>
-          <MemeDictionaryProblemTitle>우짤래미와 타노스</MemeDictionaryProblemTitle>
-          </MemeDictionaryProblemWrapper>
-          <MemeDictionaryPracticeFileFormArea>
-            <MemeDictionaryPracticeFileFormImage src={newProblem.image ? newProblem.image : posefileformbutton}/>
-          </MemeDictionaryPracticeFileFormArea>
-            <MemeDictionaryPracticeProblemExplanatioInput placeholder="문제 설명을 입력해주세요" >{newProblem.problemExplanation}asdasd</MemeDictionaryPracticeProblemExplanatioInput>
-        <MemeDictionaryPracticeOptionsWrapper>
-            <MemeDictionaryPracticeOptionsCircle isSelected={newProblem.answer === 1} onClick={() => setProblem({...newProblem, answer: 1})}>1</MemeDictionaryPracticeOptionsCircle>
-            <MemeDictionaryPracticeOptionsInput isSelected={newProblem.answer === 1} >{newProblem.choices[0]?.content || ""}</MemeDictionaryPracticeOptionsInput>
-        </MemeDictionaryPracticeOptionsWrapper>
-        <MemeDictionaryPracticeOptionsWrapper>
-            <MemeDictionaryPracticeOptionsCircle isSelected={newProblem.answer === 2} onClick={() => setProblem({...newProblem, answer: 2})}>2</MemeDictionaryPracticeOptionsCircle>
-            <MemeDictionaryPracticeOptionsInput isSelected={newProblem.answer === 2} >{newProblem.choices[0]?.content || ""}</MemeDictionaryPracticeOptionsInput>
-        </MemeDictionaryPracticeOptionsWrapper>
-        <MemeDictionaryPracticeOptionsWrapper>
-            <MemeDictionaryPracticeOptionsCircle isSelected={newProblem.answer === 3} onClick={() => setProblem({...newProblem, answer: 3})}>3</MemeDictionaryPracticeOptionsCircle>
-            <MemeDictionaryPracticeOptionsInput isSelected={newProblem.answer === 3} >{newProblem.choices[0]?.content || ""}</MemeDictionaryPracticeOptionsInput>
-        </MemeDictionaryPracticeOptionsWrapper>
-        {completed ? (
-              <NextButton onClick={handleSubmit}>
-                <NextButtonText>정답제출</NextButtonText>
-              </NextButton>
+  
+        
+        {isLastProblem ? ( 
+          <>      
+            <MemeDictionaryPracticeProblemExplanation>모든 문제를 풀이하셨습니다.</MemeDictionaryPracticeProblemExplanation>
+          <NextButton onClick={handleFinalSubmit}>
+        <NextButtonText>최종 결과 보기</NextButtonText> 
+          </NextButton>
+          </>  
             ) : (
-              <LockedNextButton >
-                <NextButtonText >정답제출</NextButtonText>
-              </LockedNextButton>
+              <>
+              <MemeDictionaryProblemWrapper>
+                <MemeDictionaryProblemBox>문제0{problemIndex+1}</MemeDictionaryProblemBox> 
+                <MemeDictionaryProblemTitle>{currentProblem.title}</MemeDictionaryProblemTitle>
+                </MemeDictionaryProblemWrapper>
+                <MemeDictionaryPracticeFileFormArea>
+                  <MemeDictionaryPracticeFileFormImage src={currentProblem.image ? currentProblem.image : posefileformbutton}/>
+                </MemeDictionaryPracticeFileFormArea>
+                  <MemeDictionaryPracticeProblemExplanation>{currentProblem.problemExplanation}</MemeDictionaryPracticeProblemExplanation>
+              <MemeDictionaryPracticeOptionsWrapper>
+                  <MemeDictionaryPracticeOptionsCircle isSelected={choiceResult.choice === 1} onClick={() => handleChoice(1)}>1</MemeDictionaryPracticeOptionsCircle>
+                  <MemeDictionaryPracticeOptionsInput isSelected={choiceResult.choice === 1} >{currentProblem.choices[0]?.content || ""}</MemeDictionaryPracticeOptionsInput>
+              </MemeDictionaryPracticeOptionsWrapper>
+              <MemeDictionaryPracticeOptionsWrapper>
+                  <MemeDictionaryPracticeOptionsCircle isSelected={choiceResult.choice === 2} onClick={() => handleChoice(2)}>2</MemeDictionaryPracticeOptionsCircle>
+                  <MemeDictionaryPracticeOptionsInput isSelected={choiceResult.choice === 2} >{currentProblem.choices[1]?.content || ""}</MemeDictionaryPracticeOptionsInput>
+              </MemeDictionaryPracticeOptionsWrapper>
+              <MemeDictionaryPracticeOptionsWrapper>
+                  <MemeDictionaryPracticeOptionsCircle isSelected={choiceResult.choice === 3} onClick={() => handleChoice(3)}>3</MemeDictionaryPracticeOptionsCircle>
+                  <MemeDictionaryPracticeOptionsInput isSelected={choiceResult.choice === 3} >{currentProblem.choices[2]?.content || ""}</MemeDictionaryPracticeOptionsInput>
+              </MemeDictionaryPracticeOptionsWrapper>
+                {completed ? (
+                  <NextButton onClick={handleSubmit}>
+                    <NextButtonText>
+                      정답제출
+                    </NextButtonText>
+                  </NextButton>
+                ) : (
+                  <LockedNextButton >
+                    <NextButtonText>정답제출</NextButtonText>
+                  </LockedNextButton>
+                )}
+                </>
             )}
-        </MemeDictionaryPracticeWraaper>
+          </MemeDictionaryPracticeWraaper>
       )
-  }
+    }
+
 export default MemeDictionaryPracticeRandomSolvingList;

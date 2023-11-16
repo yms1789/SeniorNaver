@@ -113,9 +113,15 @@ function MemeDictionaryTodayMeme() {
   const fetchToday = async () => {
     const data = await fetchTodayWord();
     const wordId = Number(Object.values(data)[0]);     
-    console.log(wordId) 
     setWordId(wordId);
   };
+
+  const fetchDetailWord = async () => {
+    if(wordId){
+      const data = await fetchDetail(wordId);
+      setWordData(data);
+    }
+  }
 
   const handleScrap = async () => {
     if (wordId === undefined) return;
@@ -129,22 +135,15 @@ function MemeDictionaryTodayMeme() {
 
     }
   }
-
   useEffect(() => {
     fetchToday();
   }, []);
-  
+
   useEffect(() => {
-    if (wordId) {
-      console.log(typeof(wordId))
-      const fetchDetailWord = async () => {
-        const data = await fetchDetail(wordId);
-        setWordData(data);
-      };
       fetchDetailWord();
     }
-  }, [wordId]); 
-  
+    ,[wordId]); 
+      
 
   return (
     <MemeDictionaryTodayMemeWraaper>

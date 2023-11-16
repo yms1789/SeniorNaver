@@ -1,8 +1,6 @@
 import styled from "styled-components";
-import { useRecoilState,useSetRecoilState } from "recoil";
-import MemeDictionaryMineSelector from "./MemeDictionaryMineSelector";
+import { useRecoilState } from "recoil";
 import { memeMineCurrentCategoryState } from "../states/useMeme";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 
 
 const MemeDictionaryMineWraaper = styled.div`

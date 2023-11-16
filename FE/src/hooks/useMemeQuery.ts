@@ -11,7 +11,7 @@ export interface IWords {
 export async function fetchTodayWord() {
   try {
     const response = await fetchApi.get("/api/dictionary/v1/today/word");
-    console.log("오늘의 단어단어", response.data);
+    console.log("오늘의 단어", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -64,7 +64,7 @@ export async function fetchWords(pageNum: number, input: string, yearinput: numb
       keyword: input,
       year: yearinput,
     });
-    console.log("단어", response.data);
+    console.log("전체 단어", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -91,7 +91,7 @@ export async function fetchMyWords(pageNum: number, category: number) {
 // 출제가 가능한 단어인지 검사
 export async function validWord(word: string, year: number) {
   try {
-    const response = await fetchApi.post(`/api/problem/valid/${word}${year}`);
+    const response = await fetchApi.post(`/api/problem/valid/${word}/${year}`);
     console.log("단어 사용 가능!", response.data);
     return true;
   } catch (error) {
@@ -111,6 +111,66 @@ export async function postProblem(newProblem: object) {
     return response.data;
   } catch (error) {
     console.log("문제등록 실패");
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data);
+    }
+  }
+}
+
+// 연도별 랜덤 문제 불러오기
+export async function fetchRandomProblem(year: number) {
+  try {
+    const response = await fetchApi.get(`/api/problem/v1/random/${year}`);
+    console.log("랜덤문제 받아오기", response.data);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data);
+    }
+  }
+}
+
+// 문제 디테일 조회
+export async function fetchProblemDetail(problemId: number) {
+  try {
+    const response = await fetchApi.get(`/api/problem/v1/detail/${problemId}`);
+    console.log("개별 문제 디테일", response.data);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data);
+    }
+  }
+}
+
+// 개별 문제 저장
+export async function postResult(problemId: string, title: string, answer: number, choice: number) {
+  try {
+    const response = await fetchApi.post(`/api/problem/register/result`, {
+      problemId: problemId,
+      title: title,
+      answer: answer,
+      choice: choice,
+    });
+    console.log("개별 문제 풀이 저장", response.data);
+    return true;
+  } catch (error) {
+    console.log("개별 문제 풀이 저장 실패");
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data);
+    }
+    return false;
+  }
+}
+
+// 최종 문제 저장
+export async function postTotalResult() {
+  try {
+    const response = await fetchApi.post(`/api/problem/total/result`);
+    console.log("최종 문제 풀이 저장", response.data);
+    return response.data;
+  } catch (error) {
+    console.log("최종 문제 풀이 저장 실패");
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data);
     }

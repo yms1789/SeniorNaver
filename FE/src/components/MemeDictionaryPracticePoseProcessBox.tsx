@@ -213,7 +213,6 @@ function MemeDictionaryPracticePoseProcessBox({useYear}:{useYear:number}) {
   const [currentStep, setCurrentStep] = useState(0); 
   const [newProblem, setProblem] = useState({
     title: "",
-    image: "",
     answer: 0,
     review: "",
     problemExplanation: "",
@@ -222,17 +221,14 @@ function MemeDictionaryPracticePoseProcessBox({useYear}:{useYear:number}) {
     tags: [""],
     choices: [
       {
-        choiceId: 0,
         choiceNum: 0,
         content: ""
       },
       {
-        choiceId: 1,
         choiceNum: 1,
         content: ""
       },
       {
-        choiceId: 2,
         choiceNum: 2,
         content: ""
       }
@@ -285,15 +281,24 @@ function MemeDictionaryPracticePoseProcessBox({useYear}:{useYear:number}) {
         url: URL.createObjectURL(imageList[0]),
         file: imageList[0],
       };
-      setProblem({...newProblem, image: imageObj.url});
       setProblemFile(imageObj);
     }
   };
 
   const handleSubmit= (e:any)=>{
+    const formData = new FormData();
+    if(problemFile){
+      formData.append("multipartFile", problemFile.file)
+      formData.append(
+      "requestDto ",
+      new Blob([JSON.stringify(newProblem)], { type: "application/json" })
+    );
+
     e.preventDefault();
-    postProblem(newProblem);
+    postProblem(formData);
     setCurrentStep(2);
+    }
+    
   }
 
 

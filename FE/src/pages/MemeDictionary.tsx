@@ -2,6 +2,7 @@ import HeadBar from "../components/HeadBar"
 import styled from "styled-components";
 import MemeNavigationBarForDesktop from "../components/MemeNavigationBarForDesktop";
 import MemeDictionaryProcessBox from "../components/MemeDictionaryProcessBox";
+import NavigationBar from "../components/NavigationBar";
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -53,7 +54,6 @@ function MemeDictionary() {
       delay: 50,
       anchorPlacement: "bottom-top",
     });
-
     return () => {
       AOS.refresh();
     };
@@ -73,6 +73,8 @@ function MemeDictionary() {
       <MemeDictionaryBackground/>
       </MemeDictionaryBoxWrapper>
     </MemeDictionaryWrapper>
+    <NavigationBar />
+
     </>
   )
 }
