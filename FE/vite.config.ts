@@ -4,6 +4,9 @@ import EnvironmentPlugin from "vite-plugin-environment";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), EnvironmentPlugin("all")],
+  esbuild: {
+    drop: ["console", "debugger"],
+  },
   server: {
     proxy: {
       "/naver": {
