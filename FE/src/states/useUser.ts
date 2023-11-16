@@ -1,7 +1,6 @@
-import { atom } from "recoil";
 import axios from "axios";
+import { atom, useSetRecoilState } from "recoil";
 import { recoilPersist } from "recoil-persist";
-import { useSetRecoilState, useRecoilState } from "recoil";
 const { persistAtom } = recoilPersist({
   storage: sessionStorage,
 });
@@ -68,25 +67,29 @@ export const useLogin = (userFormData: { memberId: string; password: string }) =
 export const useLogout = (userLogoutData: { accessToken: string; refreshToken: string }) => {
   const setUser = useSetRecoilState(userState);
   const setLogin = useSetRecoilState(isLoggedInState);
-  const logout = async () => {
+  async function logout() {
     try {
-      await axios.post("api/auth/logout", null, {
-        headers: { Authorization: `Bearer ${userLogoutData.refreshToken}` },
+      const response = await axios.post("api/auth/logout", null, {
+        headers: {
+          Authorization: `Bearer ${userLogoutData.refreshToken}`,
+        },
       });
-      setUser({
-        memberId: "",
-        nickname: "",
-        email: "",
-        mobile: "",
-        accessToken: "",
-        refreshToken: "",
-        refreshTokenExpirationTime: "",
-      });
-      setLogin(false);
+      if (response.status === 200) {
+        setUser({
+          memberId: "",
+          nickname: "",
+          email: "",
+          mobile: "",
+          accessToken: "",
+          refreshToken: "",
+          refreshTokenExpirationTime: "",
+        });
+        setLogin(false);
+      }
     } catch (error) {
       console.error("Error during logout:", error);
     }
-  };
+  }
   return logout;
 };
 
@@ -118,17 +121,13 @@ export const useNaverLogin = () => {
 
 export const fetchToken = async (refreshTokenData: { refreshToken: string }) => {
   try {
-    console.log("리프리프", refreshTokenData);
-    const response = await axios.post("api/token/reAccess", {
+    const response = await axios.post("api/token/reAccess", null, {
       headers: {
-        Authorization: `Bearer ${refreshTokenData}`,
+        Authorization: `Bearer ${refreshTokenData.refreshToken}`,
       },
     });
-    const { accesstoken } = response.data;
-    console.log("패치토큰성공?");
-    return {
-      accesstoken,
-    };
+    const { accessToken } = response.data;
+    return accessToken;
   } catch (error) {
     console.error("Error during logout:", error);
   }
