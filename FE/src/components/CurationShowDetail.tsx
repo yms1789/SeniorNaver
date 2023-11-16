@@ -2,8 +2,8 @@ import { styled } from "styled-components";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import LoadingForCuration from "./LoadingForCuration";
 import { onErrorImg } from "../utils/utils";
+import LoadingForCuration from "./LoadingForCuration";
 import Footer from "./Footer";
 import HeadBar from "./HeadBar";
 
@@ -23,13 +23,11 @@ const ShowDetailResponsiveWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5vw;
-  margin: 10vw 0vw;
+  margin: 10rem 0;
   transition: all 0.3s ease-in-out;
-
   @media (max-width: 1280px) {
     width: 90%;
   }
-
   @media (max-width: 768px) {
     width: 95%;
   }
@@ -88,8 +86,8 @@ const ShowGroupTextWrapper = styled.div`
   display: flex;
   padding: 0.1vw 0.5vw;
   font-size: 1.1vw;
-  color: var(--white);
-  background-color: var(--aqua);
+  color: var(--dark01);
+  background: var(--transgradient);
   @media (max-width: 1280px) {
     font-size: 2vw;
   }
@@ -136,9 +134,9 @@ const ShowStateWrapper = styled.div<{ state: string }>`
   border-radius: 0.3vw;
   font-size: 1vw;
   white-space: nowrap;
-  color: var(--dark50);
-  background-color: ${props => (props.state === "공연중" ? "var(--aqua02)" : "var(--gray03)")};
-  font-family: "NanumSquareNeoExtraBold";
+  color: var(--dark02);
+  background: ${props => (props.state === "공연중" ? "var(--maingradient)" : "var(--gray03)")};
+  font-family: "NanumSquareNeoBold";
   @media (max-width: 1280px) {
     font-size: 1.5vw;
     padding: 0.1vw 0.5vw;

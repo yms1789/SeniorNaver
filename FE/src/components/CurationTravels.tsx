@@ -162,7 +162,7 @@ function CurationTravels() {
   }, [travelsData]);
 
   useEffect(() => {
-    setVisibleData(dataTravels.slice(0, (page === 0 ? 1 : page) * 10));
+    setVisibleData(dataTravels.slice(0, (page === 0 ? 1 : page + 1) * 10));
   }, [dataTravels, page]);
 
   useEffect(() => {
