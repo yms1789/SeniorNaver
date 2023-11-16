@@ -5,12 +5,19 @@ const LoadingWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-size: 2vw;
+  @media (max-width: 768px) {
+    font-size: 7vw;
+  }
 `;
 const LoadingTextWrapper = styled.div`
-  font: var(--dark50) 1vw NanumSquareNeoBold;
+  font: var(--dark50) 2vw NanumSquareNeoBold;
 `;
 const LoadingImage = styled.img`
   width: 5vw;
+  @media (max-width: 768px) {
+    width: 20vw;
+  }
 `;
 
 function LoadingForCuration() {

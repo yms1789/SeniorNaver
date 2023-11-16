@@ -15,22 +15,21 @@ import HeadBar from "../components/HeadBar";
 import NavigationBar from "../components/NavigationBar";
 import Footer from "../components/Footer";
 import { IoIosArrowUp } from "react-icons/io";
-import React from "react";
 
 const TotalWrapper = styled.div`
   overflow-x: hidden;
 `;
 const HomeWrapper = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  padding: 11vh 2vh 0vw;
+  padding: 16vh 0vw 0vw;
   gap: 6vw;
   font-size: 1vw;
-  font-family: "NanumSquare Neo ExtraBold";
+  font-family: "NanumSquareNeoBold";
   overflow-x: hidden;
   color: var(--dark02);
 `;
@@ -50,6 +49,9 @@ const CurationWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 3vw;
+  @media (max-width: 768px) {
+    gap: 6vw;
+  }
 `;
 const UpButton = styled.div`
   cursor: pointer;
@@ -70,6 +72,9 @@ const UpButton = styled.div`
   transition: all 0.3s ease-in-out;
   &:hover {
     margin: 25.5rem 0.4rem;
+  }
+  @media (max-width: 450px) {
+    margin: 11.5rem 1.3rem;
   }
 `;
 

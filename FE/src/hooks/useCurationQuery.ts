@@ -41,7 +41,9 @@ export const useCurationShowsQuery = () => {
       throw new Error("Failed to fetch shows data");
     }
   };
-  const curationShowsQuery = useQuery(["shows", selectedCategory], () => fetchShows());
+  const curationShowsQuery = useQuery(["shows", selectedCategory], () => fetchShows(), {
+    refetchOnWindowFocus: false,
+  });
   return curationShowsQuery;
 };
 
@@ -61,7 +63,9 @@ export const useCurationTravelsQuery = () => {
     }
   };
   const curationTravelsQuery = useQuery(["travels", selectedCategory], () =>
-    fetchTravels(Object.keys(selectedCategory).filter(key => selectedCategory[key])[0]),
+    fetchTravels(Object.keys(selectedCategory).filter(key => selectedCategory[key])[0]), {
+      refetchOnWindowFocus: false,
+    }
   );
   return curationTravelsQuery;
 };
@@ -87,7 +91,9 @@ export const useCurationNewsQuery = () => {
     }
   };
   const curationNewsQuery = useQuery(["news", selectedCategory], () =>
-    fetchNews(Object.keys(selectedCategory).filter(key => selectedCategory[key])[0]),
+    fetchNews(Object.keys(selectedCategory).filter(key => selectedCategory[key])[0]), {
+      refetchOnWindowFocus: false,
+    }
   );
   return curationNewsQuery;
 };
