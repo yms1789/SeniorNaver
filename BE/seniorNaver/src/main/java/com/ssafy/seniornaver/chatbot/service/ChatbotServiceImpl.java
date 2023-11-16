@@ -303,7 +303,8 @@ public class ChatbotServiceImpl implements ChatbotService{
 // 현재 시간을 시간 단위로 가져옵니다.
         LocalTime nowTime = LocalTime.now().truncatedTo(ChronoUnit.HOURS);
         String targetFcstTime = nowTime.getMinute() < 30 ? String.format("%02d00", nowTime.getHour()) : String.format("%02d00", nowTime.getHour() + 1);
-
+        log.info("현재시간: " + nowTime);
+        log.info("현재시간2: " + targetFcstTime);
         String targetTime = "0600";
         for (JsonElement je : jitems.getAsJsonArray()) {
             String fcstDate = je.getAsJsonObject().get("fcstDate").getAsString();
@@ -316,8 +317,6 @@ public class ChatbotServiceImpl implements ChatbotService{
                     if ("TMX".equals(category)) {
                         tmx = fcstValue;
                     } else {
-                        LocalTime currentFcstTime = LocalTime.of(Integer.parseInt(fcstTime.substring(0, 2)), Integer.parseInt(fcstTime.substring(2)));
-
                         // 현재 시간과 가장 가까운 예보 시간을 찾습니다.
                         if (fcstTime.equals(targetFcstTime)) {
                             switch (category) {

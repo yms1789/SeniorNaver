@@ -10,7 +10,6 @@ public enum ErrorCode {
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "A-001", "토큰이 만료되었습니다."),
     NOT_VALID_TOKEN(HttpStatus.UNAUTHORIZED, "A-002", "해당 토큰은 유효한 토큰이 아닙니다."),
     REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "A-003", "해당 refresh token은 만료됐습니다."),
-    NOT_FOUND_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "A-004", "refresh token을 찾지 못했습니다."),
 
     // 유저
     NOT_EXISTS_USER_ID(HttpStatus.BAD_REQUEST, "U-001", "존재하지 않는 유저 아이디입니다."),
