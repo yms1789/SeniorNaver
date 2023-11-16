@@ -11,9 +11,12 @@ export interface TCarouselData {
 
 export interface TSelectedNewsCategory {
   [key: string]: boolean;
-  속보: boolean;
+  전체: boolean;
   정치: boolean;
   경제: boolean;
+  부동산: boolean;
+  주식: boolean;
+  건강: boolean;
   스포츠: boolean;
   연예: boolean;
   지역: boolean;

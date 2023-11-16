@@ -1,4 +1,5 @@
 import defaultimage from "../assets/images/defaultimage.png";
+import fetchApi from "../states/fetchApi";
 
 const placeholderImage = (number: number) => {
   return `https://picsum.photos/1920/1000/?image=${number}`;
@@ -132,11 +133,11 @@ export const handleSelect: ThandleSelect = (
         } else {
           newCategory = { ...initialSelectedCategory, 서울: false, [value]: !prev[value] };
         }
-      } else if (first === "속보") {
-        if (value === "속보") {
+      } else if (first === "전체") {
+        if (value === "전체") {
           newCategory = initialSelectedCategory;
         } else {
-          newCategory = { ...initialSelectedCategory, 속보: false, [value]: !prev[value] };
+          newCategory = { ...initialSelectedCategory, 전체: false, [value]: !prev[value] };
         }
       }
     } else if (mode === 2) {
@@ -160,4 +161,13 @@ export const handleSelect: ThandleSelect = (
 export const onErrorImg: React.ReactEventHandler<HTMLImageElement> = e => {
   const target = e.target as HTMLImageElement;
   target.src = defaultimage;
+};
+
+export const fetchUserDatas = async () => {
+  try {
+    const response = await fetchApi.get("/api/profile/myProfile");
+    return response.data.region;
+  } catch (error) {
+    throw new Error("Failed to fetch user data");
+  }
 };

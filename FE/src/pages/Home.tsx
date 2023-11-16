@@ -50,28 +50,31 @@ const CurationWrapper = styled.div`
   flex-direction: column;
   gap: 3vw;
 `;
-const UpButton = styled.div<{ $isHovered: boolean }>`
+const UpButton = styled.div`
+  cursor: pointer;
   position: fixed;
   right: 0;
   bottom: 0;
   height: 3.5rem;
-  width: 3.5rem;
+  width: 4.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: ${props => (props.$isHovered ? "20.5rem" : "20rem")} 3rem;
+  margin: 25rem 0.4rem;
   z-index: 100;
   font-size: 2.5rem;
   border: 3px solid var(--gray04);
   border-radius: 0.7vw;
   background-color: var(--white90);
   transition: all 0.3s ease-in-out;
+  &:hover {
+    margin: 25.5rem 0.4rem;
+  }
 `;
 
 function Home() {
   const activeCategory = useRecoilValue(curationCategoryState);
   const [upButton, setUpButton] = useRecoilState(upButtonState);
-  const [upIsHovered, setUpIsHovered] = useState(false);
   const [isTop, setIsTop] = useState(true);
 
   const { data: dataCarousel, isLoading } = useCurationCarouselQuery();
@@ -106,18 +109,13 @@ function Home() {
   return (
     <TotalWrapper>
       <HeadBar />
+      <NavigationBar />
       {!isTop && upButton && (
-        <UpButton
-          onMouseEnter={() => setUpIsHovered(true)}
-          onMouseLeave={() => setUpIsHovered(false)}
-          $isHovered={upIsHovered}
-          onClick={scrollToTop}
-        >
+        <UpButton onClick={scrollToTop}>
           <IoIosArrowUp />
         </UpButton>
       )}
       <HomeWrapper>
-        <NavigationBar />
         {dataCarousel && (
           <Carousel
             curations={dataCarousel.curations}
