@@ -58,6 +58,9 @@ const TravelGroupWrapper = styled.div`
     margin-top: 0.5vw;
     margin-bottom: 0.5vw;
   }
+  @media (max-width: 768px) {
+    width: 90vw;
+  }
 `;
 const TravelSubAddressWrapper = styled.div`
   font-size: 1.8vw;
@@ -66,7 +69,7 @@ const TravelSubAddressWrapper = styled.div`
     font-size: 2.5vw;
   }
   @media (max-width: 768px) {
-    font-size: 3vw;
+    font-size: 5vw;
   }
 `;
 const TravelTitleWrapper = styled.div`
@@ -77,7 +80,7 @@ const TravelTitleWrapper = styled.div`
     font-size: 5vw;
   }
   @media (max-width: 768px) {
-    font-size: 6vw;
+    font-size: 8vw;
   }
 `;
 const TravelRowWrapper = styled.div`
@@ -93,7 +96,7 @@ const TravelAddressWrapper = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    font-size: 2.5vw;
+    font-size: 4vw;
   }
 `;
 const TravelZipcodeWrapper = styled.div`
@@ -103,7 +106,7 @@ const TravelZipcodeWrapper = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    font-size: 2.5vw;
+    font-size: 4vw;
   }
 `;
 const TravelOverviewWrapper = styled.div`
@@ -114,6 +117,9 @@ const TravelOverviewWrapper = styled.div`
   overflow-y: scroll;
   color: var(--dark70);
   background-color: var(--white50);
+  @media (max-width: 768px) {
+    height: 50vw;
+  }
 `;
 const TravelOverviewTextWrapper = styled.div`
   font-size: 1.1vw;
@@ -127,7 +133,8 @@ const TravelOverviewTextWrapper = styled.div`
     font-size: 1.5vw;
   }
   @media (max-width: 768px) {
-    font-size: 1.7vw;
+    letter-space: 4vw;
+    font-size: 4.5vw;
   }
 `;
 const TravelRowBetweenWrapper = styled.div`
@@ -152,12 +159,19 @@ const TravelLinkWrapper = styled.div`
     font-size: 1.5vw;
   }
   @media (max-width: 768px) {
-    font-size: 2vw;
+    padding: 3vw;
+    font-size: 4vw;
   }
 `;
 const TravelTelWrapper = styled.div`
   margin-bottom: 1vw;
   font-size: 1.1vw;
+  @media (max-width: 1280px) {
+    font-size: 1.5vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 4vw;
+  }
 `;
 const TravelMapMarkerWrapper = styled.div`
   cursor: pointer;
@@ -210,6 +224,9 @@ const TravelImageWrapper = styled.div`
   width: fit-content;
   overflow: hidden;
   border-radius: 2vw;
+  @media (max-width: 768px) {
+    height: 50vw;
+  }
 `;
 const TravelImage = styled.img`
   flex-shrink: 0;
@@ -294,7 +311,7 @@ function CurationTravelDetail({ navermaps }: { navermaps: typeof naver.maps }) {
                         (line: string) =>
                           line.trim() && (
                             <TravelOverviewTextWrapper key={self.crypto.randomUUID()}>
-                              {line.trim()}
+                              {line.replace(/<\/?b>|<br\s*\/?>/gi, "")}
                             </TravelOverviewTextWrapper>
                           ),
                       )}

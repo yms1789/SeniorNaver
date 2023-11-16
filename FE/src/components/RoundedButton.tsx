@@ -15,6 +15,7 @@ const ButtonTextWrapper = styled.div<{ $isActive: boolean }>`
   color: ${props => (props.$isActive ? "var(--white)" : "var(--dark30)")};
   background: ${props => (props.$isActive ? "var(--maingradient)" : "var(--white)")};
   transition: all 0.2s ease-in-out;
+  font-family: "NanumSquareNeoBold";
   &:hover {
     transform: scale(1.1);
   }
@@ -22,8 +23,8 @@ const ButtonTextWrapper = styled.div<{ $isActive: boolean }>`
     font-size: 1.5vw;
   }
   @media (max-width: 768px) {
-    font-size: 3.1vw;
-    padding: 0.3vw 1vw;
+    font-size: 4.5vw;
+    padding: 0.3vw 2vw;
   }
 `;
 

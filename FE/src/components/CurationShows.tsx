@@ -13,6 +13,8 @@ import RoundedButton from "./RoundedButton";
 const CurationShowWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 4vw;
 `;
 const ShowCategoryWrapper = styled.div`
@@ -21,9 +23,10 @@ const ShowCategoryWrapper = styled.div`
   align-items: center;
   gap: 1vw;
   @media (max-width: 768px) {
-    width: 100vw;
+    width: 90vw;
     display: flex;
     flex-wrap: wrap;
+    gap: 2.5vw;
   }
 `;
 const ShowGridWrapper = styled.div`
@@ -39,7 +42,8 @@ const ShowGridWrapper = styled.div`
     grid-template-columns: repeat(3, 30vw);
   }
   @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 46vw);
+    gap: 8vw;
+    grid-template-columns: repeat(1, 90vw);
   }
 `;
 const DataShowsWrapper = styled.div`
@@ -115,7 +119,7 @@ const ShowTitleWrapper = styled.div`
   }
   @media (max-width: 768px) {
     height: 18vw;
-    font-size: 4vw;
+    font-size: 5.5vw;
   }
 `;
 const ShowTheater = styled.div`
@@ -129,7 +133,7 @@ const ShowTheater = styled.div`
     font-size: 1.3vw;
   }
   @media (max-width: 768px) {
-    font-size: 3vw;
+    font-size: 5vw;
   }
 `;
 const ShowDateWrapper = styled.div`
@@ -139,13 +143,11 @@ const ShowDateWrapper = styled.div`
   font-size: 0.9vw;
   color: var(--gray02);
   font-family: "NanumSquareNeoRegular";
-
   @media (max-width: 1280px) {
     font-size: 1.3vw;
   }
-
   @media (max-width: 768px) {
-    font-size: 3vw;
+    font-size: 4.5vw;
   }
 `;
 const ShowDateTextWrapper = styled.div``;
@@ -154,6 +156,9 @@ const NoDataWrapper = styled.div`
   padding: 10vw 10vw 20vw 0vw;
   font-size: 2vw;
   text-align: center;
+  @media (max-width: 768px) {
+    font-size: 4vw;
+  }
 `;
 const BottomBoundaryRef = styled.div`
   height: 1px;

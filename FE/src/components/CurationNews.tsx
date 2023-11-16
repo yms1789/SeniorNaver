@@ -12,13 +12,23 @@ import { upButtonState } from "../states/upButton";
 const CurationNewsWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 4vw;
+  font-family: "NanumSquareNeoExtraBold";
 `;
 const NewsCategoryWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
   gap: 1vw;
+  @media (max-width: 768px) {
+    width: 80vw;
+    gap: 2.5vw;
+    display: flex;
+    flex-wrap: wrap;
+  }
 `;
 const NewsGridWrapper = styled.div`
   width: 100%;
@@ -32,6 +42,7 @@ const NewsGridWrapper = styled.div`
   @media (max-width: 1280px) {
     grid-template-columns: repeat(1, 95vw);
   }
+
 `;
 const DataNewsWrapper = styled.a`
   cursor: pointer;
@@ -62,8 +73,8 @@ const NewsTitleWrapper = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    height: 12vw;
-    font-size: 4vw;
+    height: 15vw;
+    font-size: 5vw;
   }
 `;
 const NewsImageWrapper = styled.div`
@@ -83,6 +94,9 @@ const NewsImage = styled.img`
   width: 100%;
   object-fit: contain;
   z-index: 5;
+  @media (max-width: 768px) {
+    height: 60vw;
+  }
 `;
 const NewsBlurImage = styled.img`
   position: absolute;
@@ -93,6 +107,9 @@ const NewsBlurImage = styled.img`
   object-fit: cover;
   opacity: 0.9;
   filter: blur(10px);
+  @media (max-width: 768px) {
+    height: 60vw;
+  }
 `;
 const NewsDateWrapper = styled.div`
   width: 100%;

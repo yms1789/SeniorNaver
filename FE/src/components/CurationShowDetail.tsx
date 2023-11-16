@@ -47,7 +47,7 @@ const ShowContextDetailWrapper = styled.div`
     gap: 3vw;
   }
   @media (max-width: 768px) {
-    font-size: 3.5vw;
+    font-size: 4.5vw;
     gap: 4vw;
   }
 `;
@@ -64,7 +64,7 @@ const ShowGenreWrapper = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    font-size: 3.5vw;
+    font-size: 4.5vw;
   }
 `;
 const ShowTitleWrapper = styled.div`
@@ -75,7 +75,7 @@ const ShowTitleWrapper = styled.div`
     font-size: 3vw;
   }
   @media (max-width: 768px) {
-    font-size: 5vw;
+    font-size: 6vw;
   }
 `;
 const ShowGroupWrapper = styled.div`
@@ -92,7 +92,7 @@ const ShowGroupTextWrapper = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    font-size: 3.5vw;
+    font-size: 5vw;
     padding: 0.1vw 1vw;
   }
 `;
@@ -142,7 +142,7 @@ const ShowStateWrapper = styled.div<{ state: string }>`
     padding: 0.1vw 0.5vw;
   }
   @media (max-width: 768px) {
-    font-size: 3vw;
+    font-size: 3.5vw;
     padding: 0.1vw 1vw;
   }
 `;
@@ -170,7 +170,7 @@ const ShowMiddleTextWrapper = styled.div`
     font-size: 2.5vw;
   }
   @media (max-width: 768px) {
-    font-size: 4vw;
+    font-size: 5.5vw;
   }
 `;
 const ShowDetailImageWrapper = styled.div`

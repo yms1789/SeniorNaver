@@ -9,6 +9,9 @@ const CurationCategoryButtonWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 3.5vw;
+  @media (max-width: 768px) {
+    gap: 7vw;
+  }
 `;
 const ButtonWrapper = styled.div`
   cursor: pointer;
@@ -27,7 +30,7 @@ const ButtonWrapper = styled.div`
     height: 9.5vw;
   }
   @media (max-width: 768px) {
-    height: 18vw;
+    height: 24vw;
   }
 `;
 const Image = styled.img<{ size: number }>`
@@ -39,14 +42,15 @@ const Image = styled.img<{ size: number }>`
     width: ${props => props.size * 1.2}vw;
   }
   @media (max-width: 768px) {
-    height: ${props => props.size * 2}vw;
-    width: ${props => props.size * 2}vw;
+    height: ${props => props.size * 2.5}vw;
+    width: ${props => props.size * 2.5}vw;
   }
 `;
 const Text = styled.div<{ $active: boolean }>`
   position: relative;
   font-size: 1.5vw;
   padding-bottom: 0.5vw;
+  font-family: "NanumSquareNeoBold";
   &::after {
     content: "";
     display: block;
@@ -63,7 +67,7 @@ const Text = styled.div<{ $active: boolean }>`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    font-size: 4vw;
+    font-size: 5.2vw;
   }
 `;
 

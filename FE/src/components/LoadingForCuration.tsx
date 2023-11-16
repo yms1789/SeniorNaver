@@ -15,6 +15,9 @@ const LoadingTextWrapper = styled.div`
 `;
 const LoadingImage = styled.img`
   width: 5vw;
+  @media (max-width: 768px) {
+    width: 20vw;
+  }
 `;
 
 function LoadingForCuration() {

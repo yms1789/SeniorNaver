@@ -29,7 +29,7 @@ const FrameContainerWrapper = styled.div`
   }
   @media (max-width: 768px) {
     grid-template-columns: repeat(3, 30vw);
-    grid-template-rows: repeat(1, 50vw) repeat(1, 10vw) repeat(2, 50vw) repeat(1, 10vw);
+    grid-template-rows: repeat(1, 50vw) repeat(1, 16vw) repeat(2, 50vw) repeat(1, 10vw);
   }
 `;
 const FrameCurationContainerWrapper = styled.div`
@@ -73,25 +73,29 @@ const CurationImageWrapper = styled.a`
   overflow: hidden;
   justify-content: center;
   align-items: center;
-  &:hover {
-    &::after {
-      content: "뉴스 바로가기↗";
-      position: absolute;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1vw;
-      font-size: 2vw;
-      white-space: nowrap;
-      color: var(--dark01);
-      background: var(--maingradient);
-      z-index: 1000;
-      @media (max-width: 768px) {
-        font-size: 6vw;
-      }
+  &::after {
+    content: "뉴스 바로가기↗";
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1vw;
+    font-size: 2vw;
+    white-space: nowrap;
+    color: var(--dark01);
+    background: var(--maingradient);
+    z-index: 1000;
+    opacity: 0;
+    transition: all 0.5s ease;
+    @media (max-width: 768px) {
+      font-size: 6vw;
     }
   }
+  &:hover::after {
+    opacity: 1;
+  }
 `;
+
 const CurationImage = styled.img`
   width: auto;
   height: 100%;
@@ -149,7 +153,8 @@ const CurationText = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    font-size: 5vw;
+    white-space: wrap;
+    font-size: 5.5vw;
   }
 `;
 const FrameOtherWrapper = styled.div`
@@ -198,26 +203,33 @@ const MzWrapper = styled.li`
   gap: 2vw;
   padding: 2vh;
   background: var(--reversegradient);
-  &:hover {
-    background: var(--maingradient);
-    &::after {
-      content: "설명 바로가기↗";
-      position: absolute;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1vw;
-      font-size: 2vw;
-      white-space: nowrap;
-      color: var(--white);
-      background: var(--dark02);
-      z-index: 1000;
-      @media (max-width: 768px) {
-        font-size: 6vw;
-      }
+  position: relative;
+  &::after {
+    content: "설명 바로가기↗";
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1vw;
+    font-size: 2vw;
+    white-space: nowrap;
+    color: var(--white);
+    background: var(--dark02);
+    z-index: 1000;
+    opacity: 0;
+    transition: all 0.5s ease;
+    @media (max-width: 768px) {
+      font-size: 6vw;
     }
   }
+  &:hover::after {
+    opacity: 1;
+  }
+  &:hover {
+    background: var(--maingradient);
+  }
 `;
+
 const MzDictionaryWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -281,23 +293,26 @@ const PlaceContainerWrapper = styled.a`
   width: 100%;
   display: flex;
   flex: none;
-  &:hover {
-    &::after {
-      content: "지도 바로가기↗";
-      position: absolute;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1vw;
-      font-size: 2vw;
-      white-space: nowrap;
-      color: var(--dark01);
-      background: var(--maingradient);
-      z-index: 1000;
-      @media (max-width: 768px) {
-        font-size: 6vw;
-      }
+  &::after {
+    content: "지도 바로가기↗";
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1vw;
+    font-size: 2vw;
+    white-space: nowrap;
+    color: var(--dark01);
+    background: var(--maingradient);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    @media (max-width: 768px) {
+      font-size: 6vw;
     }
+  }
+  &:hover::after {
+    opacity: 1;
   }
 `;
 const PlaceContainerOuterWrapper = styled.div`

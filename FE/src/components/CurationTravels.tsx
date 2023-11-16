@@ -16,6 +16,9 @@ const CurationTravelWrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 4vw;
+  @media (max-width: 768px) {
+    gap: 8vw;
+  }
 `;
 const TravelCategoryWrapper = styled.div`
   width: 50vw;
@@ -29,14 +32,12 @@ const TravelCategoryWrapper = styled.div`
   }
   @media (max-width: 768px) {
     width: 90vw;
+    gap: 2.5vw;
   }
 `;
 const TravelGridWrapper = styled.div`
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   display: grid;
   grid-template-columns: repeat(3, 23.5vw);
   gap: 4vw;
@@ -45,6 +46,9 @@ const TravelGridWrapper = styled.div`
   }
   @media (max-width: 768px) {
     grid-template-columns: repeat(1, 90vw);
+  }
+  @media (max-width: 768px) {
+    gap: 10vw;
   }
 `;
 const DataTravelsWrapper = styled.div`
@@ -77,7 +81,7 @@ const TravelSubAddressWrapper = styled.div`
     font-size: 1.5vw;
   }
   @media (max-width: 768px) {
-    font-size: 3vw;
+    font-size: 4.5vw;
   }
 `;
 const TravelTitleWrapper = styled.div`
@@ -86,7 +90,7 @@ const TravelTitleWrapper = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    font-size: 4vw;
+    font-size: 6.5vw;
   }
 `;
 const TravelAddressWrapper = styled.div`
@@ -97,16 +101,22 @@ const TravelAddressWrapper = styled.div`
     font-size: 1.8vw;
   }
   @media (max-width: 768px) {
-    font-size: 3vw;
+    font-size: 4.5vw;
   }
 `;
 const TravelImageWrapper = styled.div<{ hovered: string }>`
-  height: 16vw;
+  height: 20vw;
   width: 100%;
   position: relative;
   overflow: hidden;
   border-radius: ${props => (props.hovered === "true" ? "2vw" : "")};
   transition: all 0.5s ease-in-out;
+  @media (max-width: 1280px) {
+    height: 30vw;
+  }
+  @media (max-width: 768px) {
+    height: 55vw;
+  }
 `;
 const TravelImage = styled.img`
   flex-shrink: 0;
