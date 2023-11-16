@@ -15,35 +15,35 @@ public interface DictionaryRepository extends JpaRepository<Dictionary, Long> {
     List<Dictionary> findAllByWordContaining(String word);
     boolean existsByWord(String word);
 
-    @Query(value = "SELECT DISTINCT dict.*" +
-    "FROM tag_to_word as ttw" +
-    "JOIN dictionary as dict ON ttw.word_id_word_id = dict.word_id" +
-    "JOIN tag on ttw.tag_id_tag_id = tag.tag_id" +
-    "where tag.tag Like 'keyword'" +
-    "and use_year >= year" +
+    @Query(value = "SELECT DISTINCT dict.* " +
+    "FROM tag_to_word as ttw " +
+    "JOIN dictionary as dict ON ttw.word_id_word_id = dict.word_id " +
+    "JOIN tag on ttw.tag_id_tag_id = tag.tag_id " +
+    "where tag.tag Like 'keyword' " +
+    "and use_year >= year " +
     "and use_year < year+10", nativeQuery = true)
     List<Dictionary> findAllByTagTagLike(String keyword, int year, Pageable pageable);
 
-    @Query(value = "SELECT DISTINCT dict.*" +
-            "FROM tag_to_word as ttw" +
-            "JOIN dictionary as dict ON ttw.word_id_word_id = dict.word_id" +
-            "JOIN tag on ttw.tag_id_tag_id = tag.tag_id" +
-            "where tag.tag Like 'keyword'" +
-            "and use_year >= year" +
+    @Query(value = "SELECT DISTINCT dict.* " +
+            "FROM tag_to_word as ttw " +
+            "JOIN dictionary as dict ON ttw.word_id_word_id = dict.word_id " +
+            "JOIN tag on ttw.tag_id_tag_id = tag.tag_id " +
+            "where tag.tag Like 'keyword' " +
+            "and use_year >= year " +
             "and use_year < year+10", nativeQuery = true)
     List<Dictionary> findAllByTagTagLike(String keyword, int year);
 
-    @Query(value = "SELECT DISTINCT dict.*" +
-            "FROM tag_to_word as ttw" +
-            "JOIN dictionary as dict ON ttw.word_id_word_id = dict.word_id" +
-            "JOIN tag on ttw.tag_id_tag_id = tag.tag_id" +
+    @Query(value = "SELECT DISTINCT dict.* " +
+            "FROM tag_to_word as ttw " +
+            "JOIN dictionary as dict ON ttw.word_id_word_id = dict.word_id " +
+            "JOIN tag on ttw.tag_id_tag_id = tag.tag_id " +
             "where tag.tag Like 'keyword'", nativeQuery = true)
     List<Dictionary> findAllByTagTagLike(String keyword, Pageable pageable);
 
-    @Query(value = "SELECT DISTINCT dict.*" +
-            "FROM tag_to_word as ttw" +
-            "JOIN dictionary as dict ON ttw.word_id_word_id = dict.word_id" +
-            "JOIN tag on ttw.tag_id_tag_id = tag.tag_id" +
+    @Query(value = "SELECT DISTINCT dict.* " +
+            "FROM tag_to_word as ttw " +
+            "JOIN dictionary as dict ON ttw.word_id_word_id = dict.word_id " +
+            "JOIN tag on ttw.tag_id_tag_id = tag.tag_id " +
             "where tag.tag Like 'keyword'", nativeQuery = true)
     List<Dictionary> findAllByTagTagLike(String keyword);
 
