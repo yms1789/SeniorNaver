@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
-import fetchApi from "../states/fetchApi";
+import { fetchApi } from "../states/useAxiosInterceptor";
 export interface IWords {
   page: number;
   keyword: string;

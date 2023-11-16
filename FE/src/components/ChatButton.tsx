@@ -5,8 +5,8 @@ import { BsFillMicFill, BsRecordCircle } from "react-icons/bs";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { styled } from "styled-components";
 import records from "../states/records";
-import fetchApi from "../states/fetchApi";
 import { isLoggedInState } from "../states/useUser";
+import { fetchApi } from "../states/useAxiosInterceptor";
 
 const FloatingContainer = styled.div`
   @media screen and (max-width: 450px) {

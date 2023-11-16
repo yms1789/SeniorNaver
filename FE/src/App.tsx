@@ -20,6 +20,8 @@ import Places from "./pages/Places";
 import SignUp from "./pages/SignUp";
 import Wait from "./pages/Wait";
 import records from "./states/records";
+import { useAxiosInterceptor } from "./states/useAxiosInterceptor";
+import ScrollToTop from "./utils/ScrollToTop";
 
 const Recording = React.lazy(() => import("./pages/Recording"));
 
@@ -30,9 +32,13 @@ const AppWrapper = styled.div<{ $isRecord: boolean }>`
 function App() {
   const navermaps = useNavermaps();
   const isRecord = useRecoilValue(records);
+
+  useAxiosInterceptor();
+
   return (
     <>
       <AppWrapper $isRecord={isRecord}>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Intro />} />
           <Route path="/login" element={<Login />} />

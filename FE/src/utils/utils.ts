@@ -1,5 +1,5 @@
 import defaultimage from "../assets/images/defaultimage.png";
-import fetchApi from "../states/fetchApi";
+import { fetchApi } from "../states/useAxiosInterceptor";
 
 const placeholderImage = (number: number) => {
   return `https://picsum.photos/1920/1000/?image=${number}`;
@@ -14,7 +14,6 @@ const getDateDiff = (d1: string) => {
 
   const diffDate = date1.getTime() - today.getTime();
   const day = Math.floor(diffDate / (1000 * 60 * 60 * 24)) + 1;
-  console.log(day);
   return day < 0 ? "마감" : "D - " + day;
 };
 
