@@ -4,6 +4,14 @@ import EnvironmentPlugin from "vite-plugin-environment";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), EnvironmentPlugin("all")],
+  build: {
+    rollupOptions: {
+      output: {
+        // 콘솔 로그 비활성화
+        intro: "console.clear();",
+      },
+    },
+  },
   server: {
     proxy: {
       "/naver": {

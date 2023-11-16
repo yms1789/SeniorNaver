@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosRequestHeaders } from "axios";
-import { fetchToken, useLogout } from "./useUser";
+import { fetchToken } from "./useUser";
 
 interface AdaptAxiosRequestConfig extends AxiosRequestConfig {
   headers: AxiosRequestHeaders;
@@ -7,8 +7,6 @@ interface AdaptAxiosRequestConfig extends AxiosRequestConfig {
 
 interface Ierror {
   httpStatus: string;
-  errorCode: string;
-  errorMessage: string;
   errorCode: string;
   errorMessage: string;
 }

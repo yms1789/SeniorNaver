@@ -45,9 +45,12 @@ export const travelCategoryState = atom({
 export const newsCategoryState = atom({
   key: "newsCategoryState",
   default: {
-    속보: true,
+    전체: true,
     정치: false,
     경제: false,
+    부동산: false,
+    주식: false,
+    건강: false,
     스포츠: false,
     연예: false,
     지역: false,
