@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import MemeDictionaryPracticeRandomSolvingList from "./MemeDictionaryPracticeRandomSolvingList";
-// import { memeMineCurrentPracticeState } from "../states/useMeme";
-// import { useRecoilState,useSetRecoilState } from "recoil";
 import posefileformbutton from "./../assets/images/posefileformbutton.png"
 
 
@@ -11,44 +8,6 @@ const MemeDictionaryPracticeWraaper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`
-// case 0
-const MemeDictionaryPracticeText = styled.div`
-  display: flex;
-  font-family: "NanumSquareNeoBold";
-  font-size: 36px;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-`
-const MemeDictionaryPracticeStartText = styled.div`
-  display: flex;
-  font-family: "NanumSquareNeoExtraBold";
-  font-size: 40px;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-  color: var(--white);
-  margin-top: 100px;
-`
-
-const MemeDictionaryPracticeTextWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
-const MemeDictionaryPracticeHeader = styled.div`
-  display: flex;
-  font-family: "NanumSquareNeoHeavy";
-  font-size: 50px;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 50px;
-  user-select: none;
-
 `
 const LockedNextButton = styled.div`
   margin-top: 60px;
@@ -89,38 +48,6 @@ const NextButtonText = styled.div`
   color: #ffffff;
 `;
 
-/// case 1
-const MemeDictionaryPracticeInfoWrapper = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`
-
-const MemeDictionaryPracticeInfoBox = styled.div`
-  width: 900px;
-  height: 800px;
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--decogradient01);
-  margin-bottom: 130px;
-  transition: all 0.15s ease;
-  cursor: pointer;
-  &:hover {
-    border: 2px solid transparent;
-    background: linear-gradient(97.76deg, #3fd5de 3.15%, #2deea8 76.87%) transparent;
-    opacity: 0.5;
-    border-radius: 30%;
-
-  }
-  &:active {
-    border: 3px solid rgba(0, 0, 0, 0.3);
-    border-radius: 30px;
-
-  }
-`
 
 const MemeDictionaryPracticeOptionsInput = styled.div<{ isSelected: boolean }>`
   width: 980px;
@@ -138,8 +65,7 @@ const MemeDictionaryPracticeOptionsWrapper = styled.div`
   justify-content: center;
   margin-bottom: 10px;
 `
-const ProblemEditorLabel = styled.label`
-`
+
 const MemeDictionaryPracticeFileFormArea = styled.div`
   margin-top: 20px;
   width: 1100px;
@@ -183,19 +109,30 @@ const MemeDictionaryPracticeFileFormImage = styled.img`
   height: 100%;
   object-fit: cover;
 `
-//case2
-const MemeDictionaryPracticeCompletedProblem = styled.div`
-display: flex;
-font-family: "NanumSquareNeoExtraBold";
-font-size: 62px;
-text-align: center;
-justify-content: center;
-align-items: center;
-color : var(--emerald);
-margin-bottom: 100px;
+const MemeDictionaryProblemWrapper = styled.div`
+  display: flex;
+`
+const MemeDictionaryProblemBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 140px;
+  height: 55px;
+  font-family: "NanumSquareNeoHeavy";
+  font-size: 30px;
+  background: #3BD9D3;
+  border-radius: 20px;
+`
+const MemeDictionaryProblemTitle = styled.div`
+  margin-left: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "NanumSquareNeoRegular";
+  font-size: 28px;
 `
 
-function MemeDictionaryPracticeRandomSolvingProcessBox({useYear}:{useYear:number}) {
+function MemeDictionaryPracticeRandomSolvingList({useYear}:{useYear:number}) {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [completed, setCompleted] = useState(true); 
   const [currentStep, setCurrentStep] = useState(1); 
@@ -236,32 +173,39 @@ function MemeDictionaryPracticeRandomSolvingProcessBox({useYear}:{useYear:number
     window.scrollTo(0, 0);
   },[currentStep])
 
-  switch (currentStep) {
-  case 0:
-    return (
-      <MemeDictionaryPracticeWraaper> 
-        <MemeDictionaryPracticeInfoWrapper>
-          <MemeDictionaryPracticeInfoBox>
-          <MemeDictionaryPracticeTextWrapper>
-          <MemeDictionaryPracticeHeader>문제 랜덤 풀이</MemeDictionaryPracticeHeader>
-          <MemeDictionaryPracticeText>선택하신 연도의 단어 문제가 무작위로 출제됩니다.</MemeDictionaryPracticeText>
-          <MemeDictionaryPracticeText>문제풀이는 총 1세트 1문제로 진행됩니다.</MemeDictionaryPracticeText>
-          <MemeDictionaryPracticeText>제시된 문제와 그림을 잘 보고, </MemeDictionaryPracticeText>
-          <MemeDictionaryPracticeText>가장 적절한 답을 골라주세요.</MemeDictionaryPracticeText>
-          <MemeDictionaryPracticeStartText>준비가 됐으면 눌러주세요!</MemeDictionaryPracticeStartText>
-          </MemeDictionaryPracticeTextWrapper>
-          </MemeDictionaryPracticeInfoBox>
-        </MemeDictionaryPracticeInfoWrapper>
-      </MemeDictionaryPracticeWraaper>
-    )
-    case 1:
+
       return (
         <MemeDictionaryPracticeWraaper>
-          <MemeDictionaryPracticeRandomSolvingList useYear={useYear}></MemeDictionaryPracticeRandomSolvingList>
+          <MemeDictionaryProblemWrapper>
+          <MemeDictionaryProblemBox>문제01</MemeDictionaryProblemBox>
+          <MemeDictionaryProblemTitle>우짤래미와 타노스</MemeDictionaryProblemTitle>
+          </MemeDictionaryProblemWrapper>
+          <MemeDictionaryPracticeFileFormArea>
+            <MemeDictionaryPracticeFileFormImage src={newProblem.image ? newProblem.image : posefileformbutton}/>
+          </MemeDictionaryPracticeFileFormArea>
+            <MemeDictionaryPracticeProblemExplanatioInput placeholder="문제 설명을 입력해주세요" >{newProblem.problemExplanation}asdasd</MemeDictionaryPracticeProblemExplanatioInput>
+        <MemeDictionaryPracticeOptionsWrapper>
+            <MemeDictionaryPracticeOptionsCircle isSelected={newProblem.answer === 1} onClick={() => setProblem({...newProblem, answer: 1})}>1</MemeDictionaryPracticeOptionsCircle>
+            <MemeDictionaryPracticeOptionsInput isSelected={newProblem.answer === 1} >{newProblem.choices[0]?.content || ""}</MemeDictionaryPracticeOptionsInput>
+        </MemeDictionaryPracticeOptionsWrapper>
+        <MemeDictionaryPracticeOptionsWrapper>
+            <MemeDictionaryPracticeOptionsCircle isSelected={newProblem.answer === 2} onClick={() => setProblem({...newProblem, answer: 2})}>2</MemeDictionaryPracticeOptionsCircle>
+            <MemeDictionaryPracticeOptionsInput isSelected={newProblem.answer === 2} >{newProblem.choices[0]?.content || ""}</MemeDictionaryPracticeOptionsInput>
+        </MemeDictionaryPracticeOptionsWrapper>
+        <MemeDictionaryPracticeOptionsWrapper>
+            <MemeDictionaryPracticeOptionsCircle isSelected={newProblem.answer === 3} onClick={() => setProblem({...newProblem, answer: 3})}>3</MemeDictionaryPracticeOptionsCircle>
+            <MemeDictionaryPracticeOptionsInput isSelected={newProblem.answer === 3} >{newProblem.choices[0]?.content || ""}</MemeDictionaryPracticeOptionsInput>
+        </MemeDictionaryPracticeOptionsWrapper>
+        {completed ? (
+              <NextButton onClick={handleSubmit}>
+                <NextButtonText>정답제출</NextButtonText>
+              </NextButton>
+            ) : (
+              <LockedNextButton >
+                <NextButtonText >정답제출</NextButtonText>
+              </LockedNextButton>
+            )}
         </MemeDictionaryPracticeWraaper>
       )
-    default:
-      break;
-    }
-}
-export default MemeDictionaryPracticeRandomSolvingProcessBox;
+  }
+export default MemeDictionaryPracticeRandomSolvingList;

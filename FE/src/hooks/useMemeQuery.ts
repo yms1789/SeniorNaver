@@ -59,12 +59,10 @@ export async function deleteScrapWord(wordId: number) {
 // 전체 단어 조회 (페이지네이션)
 export async function fetchWords(pageNum: number, input: string, yearinput: number) {
   try {
-    const response = await fetchApi.get("/api/dictionary/v1/word/list", {
-      params: {
-        page: pageNum,
-        keyword: input,
-        year: yearinput,
-      },
+    const response = await fetchApi.post("/api/dictionary/v1/word/list", {
+      page: pageNum,
+      keyword: input,
+      year: yearinput,
     });
     console.log("단어", response.data);
     return response.data;

@@ -54,6 +54,14 @@ const SavedWordsListBoxWordName = styled.div`
   text-align: center;
   user-select: none;
 `
+const SavedWordsListBoxNumber = styled.div`
+  margin-right: 50px;
+  display: flex;
+  font-family: "NanumSquareNeoExtraBold";
+  font-size: 24px;
+  text-align: center;
+  user-select: none;
+`
 
 const SavedWordsListBoxYear = styled.div`
   margin-left: 50px;
@@ -116,11 +124,12 @@ function MemeDictionaryMineSavedWordsList({currentPosts}:{currentPosts:any;}) {
               <SavedWordsListWrapper key={index}> 
               <SavedWordsListInnerWrapper>
                 <SavedWordsListBox onClick={()=>handleSetState(e.id)}>
+                <SavedWordsListBoxNumber>No.{e.id}</SavedWordsListBoxNumber>
                 <SavedWordsListBoxWordName>{e.title}</SavedWordsListBoxWordName>
                 <SavedWordsListBoxYear>{e.year}</SavedWordsListBoxYear>
-                <SavedWordsListBoxHeart>                
+                {/* <SavedWordsListBoxHeart>                
                   <AiOutlineHeart size="50" color="var(--red)"/>
-                </SavedWordsListBoxHeart>
+                </SavedWordsListBoxHeart> */}
                 </SavedWordsListBox>
                 </SavedWordsListInnerWrapper>
               </SavedWordsListWrapper>

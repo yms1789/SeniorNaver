@@ -59,7 +59,8 @@ function MemeDictionaryPracticeRandomSolving() {
 
   const setcurrentPage = useRecoilState(memeMineCurrentPracticeState);
   const [clicked, setClicked] = useState(false); 
-  
+  const useYear = setcurrentPage[0].currentYear
+
   return (
     <MemeDictionaryPracticeWraaper>
       <PoseHeadeWraaper>
@@ -69,7 +70,7 @@ function MemeDictionaryPracticeRandomSolving() {
         </MemeDictionaryPracticeSelectorHeader>
       </PoseHeadeWraaper>
       <MemeDictionaryHeadline/>
-      <MemeDictionaryPracticeRandomSolvingProcessBox/>
+      <MemeDictionaryPracticeRandomSolvingProcessBox useYear={useYear}/>
     </MemeDictionaryPracticeWraaper>
   )
 }

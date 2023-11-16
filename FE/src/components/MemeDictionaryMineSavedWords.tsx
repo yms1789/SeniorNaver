@@ -46,6 +46,7 @@ const MemeDictionaryMineRowWraaper = styled.div`
   align-items: center;
 `
 const PaginationWrapper = styled.div`
+  margin-top: 100px;
   height: 100px;
   display: flex;
   justify-content: center;
