@@ -2,9 +2,7 @@ import axios from "axios";
 import { atom, useSetRecoilState } from "recoil";
 import { recoilPersist } from "recoil-persist";
 import { useCookies } from "react-cookie";
-const { persistAtom } = recoilPersist({
-  storage: sessionStorage,
-});
+const { persistAtom } = recoilPersist();
 
 const BaseURL = "/api";
 interface UserInterface {
