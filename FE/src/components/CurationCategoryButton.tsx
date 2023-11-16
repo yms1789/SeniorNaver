@@ -51,7 +51,7 @@ const Text = styled.div<{ $active: boolean }>`
     display: block;
     width: ${props => (props.$active ? "100%" : "0")};
     height: 0.5vw;
-    background-color: var(--aqua);
+    background: var(--maingradient);
     position: absolute;
     bottom: 0;
     left: 100%;

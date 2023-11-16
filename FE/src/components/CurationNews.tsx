@@ -45,11 +45,11 @@ const DataNewsWrapper = styled.a`
   padding: 1.1vw;
   gap: 0.7vw;
   color: var(--dark02);
-  background-color: var(--aqua01);
+  background: var(--aqua01);
   transition: all 0.2s ease-in-out;
   &:hover {
     scale: 1.05;
-    background-color: var(--aqua);
+    background: var(--transgradient);
   }
 `;
 const NewsTitleWrapper = styled.div`
@@ -85,6 +85,7 @@ const NewsDateWrapper = styled.div`
   display: flex;
   justify-content: end;
   font-size: 1vw;
+  color: var(--dark01);
 `;
 const BottomBoundaryRef = styled.div`
   height: 1px;
@@ -130,7 +131,7 @@ function CurationNews() {
   }, [page]);
 
   useEffect(() => {
-    setVisibleData(dataNews.slice(0, (page === 0 ? 1 : page) * 10));
+    setVisibleData(dataNews.slice(0, (page === 0 ? 1 : page + 1) * 10));
   }, [dataNews, page]);
 
   useEffect(() => {

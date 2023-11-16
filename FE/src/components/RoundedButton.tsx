@@ -12,7 +12,7 @@ const ButtonTextWrapper = styled.div<{ $isActive: boolean }>`
   font-size: 1.15vw;
   white-space: nowrap;
   color: ${props => (props.$isActive ? "var(--white)" : "var(--dark30)")};
-  background-color: ${props => (props.$isActive ? "var(--aqua)" : "var(--white)")};
+  background: ${props => (props.$isActive ? "var(--maingradient)" : "var(--white)")};
   transition: all 0.2s ease-in-out;
   &:hover {
     transform: scale(1.1);

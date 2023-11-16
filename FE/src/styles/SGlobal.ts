@@ -97,6 +97,8 @@ export const GlobalStyle = createGlobalStyle`
 --aqua02: #98E3E8;
 --emerald: #2deea8;
 --maingradient: linear-gradient(100deg, #3fd5de, #2deea8);
+--reversegradient: linear-gradient(100deg, #2deea8, #3fd5de);
+--transgradient: linear-gradient(100deg, rgba(45, 238, 168, 0.5), rgba(63, 213, 222, 0.5));
 --decogradient01: linear-gradient(152.33deg, #cc85f5 6.96%, #ff7171 88.63%);
 --decogradient02: linear-gradient(152.33deg, #d46fff 6.96%, #ecff21 88.63%);
   }

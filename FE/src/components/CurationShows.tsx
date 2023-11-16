@@ -50,11 +50,11 @@ const DataShowsWrapper = styled.div`
   justify-content: center;
   padding: 1.1vw;
   gap: 0.7vw;
-  background-color: var(--aqua01);
+  background: var(--aqua01);
   transition: all 0.2s ease-in-out;
   &:hover {
     scale: 1.05;
-    background-color: var(--aqua);
+    background: var(--transgradient);
   }
 `;
 const ShowPosterWrapper = styled.div`
@@ -89,7 +89,7 @@ const ShowStateWrapper = styled.div<{ $state: string }>`
   font-size: 1vw;
   white-space: nowrap;
   color: ${props => (props.$state === "공연중" ? "var(--white)" : "var(--aqua)")};
-  background-color: ${props => (props.$state === "공연중" ? "var(--aqua)" : "var(--gray04)")};
+  background: ${props => (props.$state === "공연중" ? "var(--transgradient)" : "var(--gray04)")};
   font-family: "NanumSquareNeoRegular";
 `;
 const StateWrapper = styled.div`
@@ -205,7 +205,7 @@ function CurationShows() {
       }
       return selectedCategory[show.genre];
     });
-    setVisibleData(filteredShows.slice(0, (page === 0 ? 1 : page) * 10));
+    setVisibleData(filteredShows.slice(0, (page === 0 ? 1 : page + 1) * 10));
     if (visibleData.length === 0) {
       setNoData(true);
     }
@@ -288,7 +288,7 @@ function CurationShows() {
                       />
                     </ShowImageWrapper>
                     <ShowStateWrapper $state={show.pfState}>
-                      {Array(6)
+                      {Array(10)
                         .fill(show.pfState)
                         .map(state => {
                           return (
@@ -298,7 +298,7 @@ function CurationShows() {
                     </ShowStateWrapper>
                   </ShowPosterWrapper>
                   <ShowTextWrapper>
-                    <ShowTitleWrapper>{show.performenceName}</ShowTitleWrapper>
+                    <ShowTitleWrapper>{show.performenceName.slice(0, 46)}</ShowTitleWrapper>
                     <ShowTheater>{show.theaterName}</ShowTheater>
                     <ShowDateWrapper>
                       <ShowDateTextWrapper>{show.startDate}</ShowDateTextWrapper>

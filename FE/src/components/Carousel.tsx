@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { useSetRecoilState } from "recoil";
+import { memeMineCurrentWordDetailState, memeCurrentTapState } from "../states/useMeme";
 import { onErrorImg } from "../utils/utils";
 import { IoIosArrowBack, IoIosArrowForward, IoIosPause, IoIosPlay } from "react-icons/io";
 
@@ -65,6 +67,21 @@ const CurationImageWrapper = styled.a`
   justify-content: center;
   overflow: hidden;
   object-fit: contain;
+  &:hover {
+    &::after {
+      content: "뉴스 바로가기↗";
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1vw;
+      font-size: 2vw;
+      white-space: nowrap;
+      color: var(--dark01);
+      background: var(--maingradient);
+      z-index: 1000;
+    }
+  }
 `;
 const CurationImage = styled.img`
   flex-shrink: 0;
@@ -147,6 +164,22 @@ const MzWrapper = styled.li`
   gap: 2vw;
   padding: 2vh;
   background: var(--maingradient);
+  &:hover {
+    background: var(--reversegradient);
+    &::after {
+      content: "설명 바로가기↗";
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1vw;
+      font-size: 2vw;
+      white-space: nowrap;
+      color: var(--white);
+      background: var(--dark02);
+      z-index: 1000;
+    }
+  }
 `;
 const MzDictionaryWrapper = styled.div`
   display: flex;
@@ -208,7 +241,21 @@ const PlaceContainerWrapper = styled.a`
   width: 100%;
   display: flex;
   flex: none;
-  background: var(--maingradient);
+  &:hover {
+    &::after {
+      content: "지도 바로가기↗";
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1vw;
+      font-size: 2vw;
+      white-space: nowrap;
+      color: var(--dark01);
+      background: var(--maingradient);
+      z-index: 1000;
+    }
+  }
 `;
 const PlaceContainerOuterWrapper = styled.div`
   height: 100%;
@@ -275,18 +322,19 @@ const CarouselControlWrapper = styled.div`
   align-items: end;
   justify-content: end;
 `;
-const ArrowButton = styled.button<{ $hovered: boolean }>`
+const ArrowButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.2vw;
   margin: 0 0 0 0.5vw;
   border-radius: 99vw;
-  border: solid 0.15vw ${props => (props.$hovered ? "transparent" : "var(--gray03)")};
-  background-color: ${props => (props.$hovered ? "var(--aqua)" : "")};
+  border: solid 0.15vw var(--gray03);
   transition: transform 0.3s ease-in-out;
   &:hover {
     transform: scale(1.1);
+    border: solid 0.15vw transparent;
+    background: var(--transgradient);
   }
 `;
 const DotWrapper = styled.div`
@@ -302,7 +350,7 @@ const Dot = styled.div<{ $active: boolean }>`
   height: 0.5vw;
   width: 3vw;
   margin: 0.5vw;
-  background-color: ${props => (props.$active ? "var(--aqua02)" : "var(--gray03)")};
+  background: ${props => (props.$active ? "var(--transgradient)" : "var(--gray03)")};
   transition: all 0.7s ease-in-out;
 `;
 interface TResponseData {
@@ -316,6 +364,9 @@ interface TResponseData {
   }[];
 }
 function Carousel({ curations, mzWords, places }: TResponseData) {
+  const setCurrentTab = useSetRecoilState(memeCurrentTapState);
+  const setcurrentWord = useSetRecoilState(memeMineCurrentWordDetailState);
+
   // 이미지를 좌우로 이동시키기 위한 현재 인덱스
   const [currentIndex, setCurrentIndex] = useState(1);
 
@@ -338,6 +389,12 @@ function Carousel({ curations, mzWords, places }: TResponseData) {
   const carouselGroup = [curations, mzWords, places];
   const setCurrentFunctions = [setCurrentCuration, setCurrentMzWords, setCurrentPlaces];
   const refs = [curationImagesRef, curationTextsRef, mzRef, placeRef];
+
+  const handleSetState = (index: number) => {
+    setCurrentTab({ currentPage: 4 });
+    setcurrentWord({ currentWord: index });
+    window.open("/meme", "_blank");
+  };
 
   const setTransform = (ref: React.RefObject<HTMLElement>, value: string): void => {
     if (ref.current !== null) {
@@ -442,7 +499,6 @@ function Carousel({ curations, mzWords, places }: TResponseData) {
     icon: JSX.Element,
   ) => (
     <ArrowButton
-      $hovered={hovered[direction]}
       onMouseEnter={() => handleHover(direction, true)}
       onMouseLeave={() => handleHover(direction, false)}
       onClick={action}
@@ -495,7 +551,10 @@ function Carousel({ curations, mzWords, places }: TResponseData) {
             <OtherContainerWrapper ref={mzRef}>
               {currentMzWords?.map(word => {
                 return (
-                  <MzWrapper key={self.crypto.randomUUID()}>
+                  <MzWrapper
+                    key={self.crypto.randomUUID()}
+                    onClick={() => handleSetState(parseInt(word[1]))}
+                  >
                     <MzDictionaryWrapper>
                       <MzDictionaryText>MZ 사전</MzDictionaryText>
                     </MzDictionaryWrapper>
@@ -517,6 +576,7 @@ function Carousel({ curations, mzWords, places }: TResponseData) {
                     <PlaceContainerWrapper
                       key={self.crypto.randomUUID()}
                       href={`travel/${place[3]}`}
+                      target="_blank"
                     >
                       <PlaceImage
                         src={place[0]}

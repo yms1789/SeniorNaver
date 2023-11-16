@@ -136,6 +136,7 @@ const TravelRowBetweenWrapper = styled.div`
   align-items: end;
 `;
 const TravelLinkWrapper = styled.div`
+  cursor: pointer;
   width: fit-content;
   padding: 1vw;
   border-radius: 99vw;
@@ -179,10 +180,9 @@ const TravelMapAreaWrapper = styled.div`
 const TravelMapMarker = styled.img`
   position: absolute;
   height: 6vw;
-  width: fit-content;
+  width: 4.5vw;
   z-index: 2;
   animation: floatAnimation 2s ease-in-out infinite;
-
   @keyframes floatAnimation {
     50% {
       transform: translateY(-2vw);
@@ -190,6 +190,7 @@ const TravelMapMarker = styled.img`
   }
 `;
 const TravelImageMarkerWrapper = styled.div<{ hovered: boolean }>`
+  cursor: pointer;
   position: absolute;
   bottom: 3vh;
   right: 3vw;
@@ -198,7 +199,9 @@ const TravelImageMarkerWrapper = styled.div<{ hovered: boolean }>`
   gap: 1vw;
   transition: all 0.3s ease-in-out;
   opacity: ${props => (props.hovered ? 1 : 0)};
-  z-index: 10;
+  @media (max-width: 768px) {
+    opacity: 1;
+  }
 `;
 const TravelImageWrapper = styled.div`
   height: 20vw;
@@ -212,7 +215,8 @@ const TravelImage = styled.img`
   width: 100%;
   object-fit: cover;
 `;
-const BackButtonWrapper = styled.div<{ hovered: boolean }>`
+const BackButtonWrapper = styled.div`
+  cursor: pointer;
   height: 3rem;
   width: 3rem;
   position: absolute;
@@ -224,8 +228,18 @@ const BackButtonWrapper = styled.div<{ hovered: boolean }>`
   border-radius: 0.5rem;
   font-size: 3rem;
   transition: all 0.3s ease-in-out;
-  background-color: ${props => (props.hovered ? "var(--aqua)" : "var(--white50)")};
-  cursor: pointer;
+  background: var(--white50);
+  z-index: 50;
+  &:hover {
+    background: var(--transgradient);
+  }
+`;
+const LoadingWrapper = styled.div`
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 function CurationTravelDetail({ navermaps }: { navermaps: typeof naver.maps }) {
@@ -241,7 +255,6 @@ function CurationTravelDetail({ navermaps }: { navermaps: typeof naver.maps }) {
   });
 
   const [isPinHovered, setPinIsHovered] = useState(false);
-  const [isCloseHovered, setCloseIsHovered] = useState(false);
 
   return (
     <>
@@ -315,17 +328,18 @@ function CurationTravelDetail({ navermaps }: { navermaps: typeof naver.maps }) {
               </TravelImageWrapper>
             </TravelImageMarkerWrapper>
             <BackButtonWrapper
-              onClick={() => navigate(-1)}
-              onMouseEnter={() => setCloseIsHovered(true)}
-              onMouseLeave={() => setCloseIsHovered(false)}
-              hovered={isCloseHovered}
+              onClick={() => {
+                navigate("/home");
+              }}
             >
               <IoMdClose />
             </BackButtonWrapper>
           </ShowDetailResponsiveWrapper>
         </ShowDetailWrapper>
       ) : (
-        <LoadingForCuration />
+        <LoadingWrapper>
+          <LoadingForCuration />
+        </LoadingWrapper>
       )}
     </>
   );
