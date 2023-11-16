@@ -15,6 +15,7 @@ import HeadBar from "../components/HeadBar";
 import NavigationBar from "../components/NavigationBar";
 import Footer from "../components/Footer";
 import { IoIosArrowUp } from "react-icons/io";
+import React from "react";
 
 const TotalWrapper = styled.div`
   overflow-x: hidden;
@@ -76,7 +77,6 @@ function Home() {
   const activeCategory = useRecoilValue(curationCategoryState);
   const [upButton, setUpButton] = useRecoilState(upButtonState);
   const [isTop, setIsTop] = useState(true);
-
   const { data: dataCarousel, isLoading } = useCurationCarouselQuery();
 
   const handleScroll = () => {

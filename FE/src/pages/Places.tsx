@@ -27,7 +27,6 @@ function Places({ navermaps }: { navermaps: typeof naver.maps }) {
 
   useEffect(() => {
     if (location.loaded) {
-      console.log(location.coordinates);
       setcurrentCoord({
         mapX: "" + location.coordinates?.lng,
         mapY: "" + location.coordinates?.lat,
