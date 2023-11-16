@@ -1,10 +1,11 @@
 import { useState } from "react";
 import styled from "styled-components";
-import profileeditor from "./../assets/images/profileeditor.png";
-import mainscreenpingpingeee from "./../assets/images/mainscreenpingpingeee.png"
 import { useRecoilValue } from "recoil";
 import { userState } from "../states/useUser";
 import { KeywordsData } from "./KeywordsData";
+import fetchApi from "../states/fetchApi";
+import { useSetRecoilState } from "recoil";
+import { myPageCategoryState } from "../states/useMyPage";
 
 const MyPageProfileWrapper = styled.div`
   margin: auto;
@@ -138,20 +139,19 @@ interface IKeywordData {
 
 
 function MyPageKeywordsChange() {
-  const userInfo = useRecoilValue(userState);  
-  const [profile, setProfile] = useState<{ url: string; file: File; } | null>(null);
   const [keywords,setKeywords] = useState<string[]>([]);
-  const handleChangeProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const imageList = e.target.files;
-    console.log(userInfo)
-    if (imageList && imageList.length > 0) {
-        const imageObj = {
-            url: URL.createObjectURL(imageList[0]),
-            file: imageList[0],
-        };
-        setProfile(imageObj);
-        }
-  };
+  const setcurrentCategory = useSetRecoilState(myPageCategoryState)
+
+  const handleChangeKeywords = () => {
+    if(keywords){
+      fetchApi.put("api/profile/keywords",{keywords: keywords}).then(() => {
+        setcurrentCategory({ currentCategory: 0 })
+      })
+    }
+    else{
+      return;
+    }
+  }
 
   const handleKeywordsCardClick = (card : IKeywordData) => {
     if (keywords.includes(card.keywords)) {
@@ -180,8 +180,7 @@ function MyPageKeywordsChange() {
             </KeywordCardWrapper>
           ))}
         </KeywordsContainer>
-        <NextButton>변경 완료</NextButton>
-
+        <NextButton onClick={handleChangeKeywords}>변경 완료</NextButton>
     </MyPageProfileWrapper>
   )
 }

@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useSetRecoilState } from "recoil";
+import { myPageCategoryState } from "../states/useMyPage";
 import styled from "styled-components";
-import { useRecoilValue } from "recoil";
-import { userState } from "../states/useUser";
+import fetchApi from "../states/fetchApi";
 import koreamap from "./../assets/images/koreamap.png"
 
 const MyPageProfileWrapper = styled.div`
@@ -96,9 +97,22 @@ const RegionImgae = styled.img`
 function MyPageRegionChange() {
   const [isRegionClicked,setIsRegionClicked] = useState(false);
   const [region,setRegion] = useState("");
+  const setcurrentCategory = useSetRecoilState(myPageCategoryState)
   const handleDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRegion(e.target.value);
   };
+
+  const handleChangeRegion = () => {
+    if(region){
+      fetchApi.put("api/profile/region",{region: region}).then(() => {
+        setcurrentCategory({ currentCategory: 0 })
+      })
+    }
+    else{
+      return;
+    }
+  }
+  
   return (
     <MyPageProfileWrapper>
       <MyPageNicknameHeader>지역 재설정</MyPageNicknameHeader>
@@ -130,7 +144,7 @@ function MyPageRegionChange() {
             <RegionImgae src={koreamap} onClick={()=>{setIsRegionClicked(true)}}/>
             </RegionWrapper>
           )}
-          <NextButton>변경 완료</NextButton>
+          <NextButton onClick={handleChangeRegion}>변경 완료</NextButton>
 
     </MyPageProfileWrapper>
   )
