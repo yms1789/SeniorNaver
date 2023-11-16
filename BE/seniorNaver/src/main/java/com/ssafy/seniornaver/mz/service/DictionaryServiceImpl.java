@@ -56,8 +56,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
         // 키워드 + 년도 검색시
         if (requestDto.getKeyword() != null && requestDto.getYear() != null) {
-            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllCustom
-                            (requestDto.getKeyword(), requestDto.getYear(), pageable).stream()
+            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findDistinctByTagTagLikeAndUseYearBetween                            ("%"+requestDto.getKeyword()+"%", requestDto.getYear(), pageable).stream()
                     .map(word -> DictionaryWordListResponseDto.Item.builder()
                             .wordId(word.getWordId())
                             .word(word.getWord())
@@ -70,7 +69,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
             return DictionaryWordListResponseDto.builder()
                     .page(requestDto.getPage() + 1)
-                    .totalPage(getTotalPage(dictionaryRepository.findAllCustom
+                    .totalPage(getTotalPage(dictionaryRepository.findDistinctByTagTagLikeAndUseYearBetween
                                     (requestDto.getKeyword(), requestDto.getYear()).size()))
                     .items(words)
                     .build();
@@ -141,9 +140,10 @@ public class DictionaryServiceImpl implements DictionaryService {
     public DictionaryWordListResponseDto getWordList(DictionaryWordListRequestDto requestDto) {
         Pageable pageable = PageRequest.of(requestDto.getPage(), 5, Sort.by("word").ascending());
 
-        if (requestDto.getKeyword() != null) {
+        if (requestDto.getKeyword() != null && requestDto.getYear() != null) {
             // 키워드 검색시
-            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllCustom                            (requestDto.getKeyword(), requestDto.getYear(), pageable).stream()
+            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findDistinctByTagTagLikeAndUseYearBetween
+                            (requestDto.getKeyword(), requestDto.getYear(), pageable).stream()
                     .map(word -> DictionaryWordListResponseDto.Item.builder()
                             .wordId(word.getWordId())
                             .word(word.getWord())
@@ -155,11 +155,12 @@ public class DictionaryServiceImpl implements DictionaryService {
 
             return DictionaryWordListResponseDto.builder()
                     .page(requestDto.getPage() + 1)
-                    .totalPage(getTotalPage(dictionaryRepository.findAllCustom
+                    .totalPage(getTotalPage(dictionaryRepository.findDistinctByTagTagLikeAndUseYearBetween
                             (requestDto.getKeyword(), requestDto.getYear()).size()))
                     .items(words)
                     .build();
         }
+        // 키워드만 있는경우
         if (requestDto.getKeyword() != null) {
             List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllByTagTagLike
                             (requestDto.getKeyword(), pageable).stream()
@@ -215,7 +216,6 @@ public class DictionaryServiceImpl implements DictionaryService {
                 .totalPage(getTotalPage(dictionaryRepository.findAll().size()))
                 .items(wordList)
                 .build();
-
     }
 
     @Override
