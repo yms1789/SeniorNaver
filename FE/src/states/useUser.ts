@@ -1,7 +1,6 @@
-import { atom } from "recoil";
 import axios from "axios";
+import { atom, useSetRecoilState } from "recoil";
 import { recoilPersist } from "recoil-persist";
-import { useSetRecoilState, useRecoilState } from "recoil";
 const { persistAtom } = recoilPersist({
   storage: sessionStorage,
 });
@@ -121,7 +120,6 @@ export const useNaverLogin = () => {
 };
 
 export const fetchToken = async (refreshTokenData: { refreshToken: string }) => {
-  const [userInfo, setUserInfo] = useRecoilState(userState);
   try {
     const response = await axios.post("api/token/reAccess", null, {
       headers: {
@@ -129,7 +127,6 @@ export const fetchToken = async (refreshTokenData: { refreshToken: string }) => 
       },
     });
     const { accessToken } = response.data;
-    setUserInfo({ ...userInfo, accessToken: accessToken });
     return accessToken;
   } catch (error) {
     console.error("Error during logout:", error);

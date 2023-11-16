@@ -37,27 +37,32 @@ fetchApi.interceptors.response.use(
       accessToken: user.accessToken,
       refreshToken: user.refreshToken,
     };
-
     if (error.response) {
       const errorCode = error.response.data.errorCode;
       const errorMessage = error.response.data.errorMessage;
-      let newAccessToken;
       switch (errorCode) {
         case "T-001":
           console.log(errorMessage);
           break;
         case "A-001":
-          console.log(errorMessage);
-          newAccessToken = await fetchToken(refreshTokenData);
+          const newAccessToken = await fetchToken(refreshTokenData);
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          sessionStorage.setItem(
+            "recoil-persist",
+            JSON.stringify({
+              ...persistData,
+              userInfo: {
+                ...user,
+                accessToken: newAccessToken,
+              },
+            }),
+          );
           return fetchApi(originalRequest);
         case "A-002":
           console.log(errorMessage);
-          await useLogout(refreshTokenData)();
           break;
         case "T-004":
           console.log(errorMessage);
-          await useLogout(refreshTokenData)();
           break;
         case "T-005":
           console.log(errorMessage);
