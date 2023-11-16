@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { useRecoilValue } from "recoil";
 import { userState } from "../states/useUser";
 import { KeywordsData } from "./KeywordsData";
-import fetchApi from "../states/fetchApi";
 import { useSetRecoilState } from "recoil";
 import { myPageCategoryState } from "../states/useMyPage";
+import { fetchApi } from "../states/useAxiosInterceptor";
 
 const MyPageProfileWrapper = styled.div`
   margin: auto;
@@ -14,8 +14,7 @@ const MyPageProfileWrapper = styled.div`
   flex-direction: column;
   justify-content: start;
   align-items: center;
-`
-
+`;
 
 const MyPageNicknameHeader = styled.div`
   display: flex;
@@ -24,82 +23,80 @@ const MyPageNicknameHeader = styled.div`
   text-align: center;
   font-family: "NanumSquareNeoHeavy";
   font-size: 1.8vw;
-`
+`;
 const KeywordTextWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
   margin-bottom: 50px;
-`
+`;
 const KeywordsHeader = styled.div`
   font-family: "NanumSquareNeoBold";
   font-size: 36px;
   color: var(--dark01);
   text-align: center;
   margin-bottom: 10px;
-`
+`;
 const KeywordsInfoText = styled.div`
   font-family: "NanumSquareNeoRegular";
   font-size: 20px;
   text-align: center;
   color: var(--gray01);
-`
+`;
 const KeywordsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap:15px;
+  gap: 15px;
   margin-bottom: 80px;
-
 `;
 
 const KeywordCardWrapper = styled.div<IbackgroundColor>`
   display: flex;
   flex-direction: column;
-  width: 160px;  
+  width: 160px;
   height: 180px;
   border-radius: 20px;
-  background: ${props => props.clicked ? 'var(--dark01)' : 'var(--maingradient)'};
-  margin-bottom: 5px; 
+  background: ${props => (props.clicked ? "var(--dark01)" : "var(--maingradient)")};
+  margin-bottom: 5px;
   justify-content: center;
   align-items: center;
-  box-shadow: ${props => props.clicked ? '2px 4px 4px rgba(0, 0, 0, 0.5);' : ''}; 
+  box-shadow: ${props => (props.clicked ? "2px 4px 4px rgba(0, 0, 0, 0.5);" : "")};
   cursor: pointer;
   transition: all 0.35s ease;
 
   &:hover {
     user-select: none;
-    width: 175px;  
+    width: 175px;
     height: 190px;
     border: 2px solid transparent;
-    background: var(--gray01)
+    background: var(--gray01);
   }
   &:active {
     user-select: none;
     border: 3px solid rgba(0, 0, 0, 0.3);
   }
-
-`
+`;
 const KeywordCardImageWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 90px;
-  height: 90px;    
-  overflow-x  : hidden;
-  overflow-y  : hidden;
+  height: 90px;
+  overflow-x: hidden;
+  overflow-y: hidden;
   margin-bottom: 5px;
-`
+`;
 const KeywordCardImage = styled.img`
   width: 100%;
   height: 100%;
-`
+`;
 const KeywordCardText = styled.div`
   font-size: 28px;
   font-family: "NanumSquareNeoExtraBold";
   color: var(--white);
-`
+`;
 const NextButton = styled.div`
   user-select: none;
   margin-top: 50px;
@@ -127,7 +124,7 @@ const NextButton = styled.div`
   }
 `;
 
-interface IbackgroundColor{
+interface IbackgroundColor {
   clicked?: boolean;
   backgroundColor?: string;
 }
@@ -137,23 +134,21 @@ interface IKeywordData {
   imagepath: string;
 }
 
-
 function MyPageKeywordsChange() {
-  const [keywords,setKeywords] = useState<string[]>([]);
-  const setcurrentCategory = useSetRecoilState(myPageCategoryState)
+  const [keywords, setKeywords] = useState<string[]>([]);
+  const setcurrentCategory = useSetRecoilState(myPageCategoryState);
 
   const handleChangeKeywords = () => {
-    if(keywords){
-      fetchApi.put("api/profile/keywords",{keywords: keywords}).then(() => {
-        setcurrentCategory({ currentCategory: 0 })
-      })
-    }
-    else{
+    if (keywords) {
+      fetchApi.put("api/profile/keywords", { keywords: keywords }).then(() => {
+        setcurrentCategory({ currentCategory: 0 });
+      });
+    } else {
       return;
     }
-  }
+  };
 
-  const handleKeywordsCardClick = (card : IKeywordData) => {
+  const handleKeywordsCardClick = (card: IKeywordData) => {
     if (keywords.includes(card.keywords)) {
       setKeywords(keywords.filter(keyword => keyword !== card.keywords));
     } else {
@@ -167,21 +162,23 @@ function MyPageKeywordsChange() {
         <KeywordsHeader>키워드 설정</KeywordsHeader>
         <KeywordsInfoText>관심있는 분야를 선택하세요!</KeywordsInfoText>
         <KeywordsInfoText>설정하신 분야와 관련한 정보를 제공해드리겠습니다</KeywordsInfoText>
-        </KeywordTextWrapper>
-        <KeywordsContainer>
-          {KeywordsData.map((card, index) => (
-            <KeywordCardWrapper key={index}
-              clicked={keywords.includes(card.keywords)}
-              onClick={() => handleKeywordsCardClick(card)}>
-              <KeywordCardImageWrapper>
-              <KeywordCardImage src={card.imagepath}/>
-              </KeywordCardImageWrapper>
-              <KeywordCardText>{card.keywords}</KeywordCardText>
-            </KeywordCardWrapper>
-          ))}
-        </KeywordsContainer>
-        <NextButton onClick={handleChangeKeywords}>변경 완료</NextButton>
+      </KeywordTextWrapper>
+      <KeywordsContainer>
+        {KeywordsData.map((card, index) => (
+          <KeywordCardWrapper
+            key={index}
+            clicked={keywords.includes(card.keywords)}
+            onClick={() => handleKeywordsCardClick(card)}
+          >
+            <KeywordCardImageWrapper>
+              <KeywordCardImage src={card.imagepath} />
+            </KeywordCardImageWrapper>
+            <KeywordCardText>{card.keywords}</KeywordCardText>
+          </KeywordCardWrapper>
+        ))}
+      </KeywordsContainer>
+      <NextButton onClick={handleChangeKeywords}>변경 완료</NextButton>
     </MyPageProfileWrapper>
-  )
+  );
 }
 export default MyPageKeywordsChange;
