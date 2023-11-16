@@ -56,7 +56,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
         // 키워드 + 년도 검색시
         if (requestDto.getKeyword() != null && requestDto.getYear() != null) {
-            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllByTagTagLike
+            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllCustom
                             (requestDto.getKeyword(), requestDto.getYear(), pageable).stream()
                     .map(word -> DictionaryWordListResponseDto.Item.builder()
                             .wordId(word.getWordId())
@@ -70,7 +70,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
             return DictionaryWordListResponseDto.builder()
                     .page(requestDto.getPage() + 1)
-                    .totalPage(getTotalPage(dictionaryRepository.findAllByTagTagLike
+                    .totalPage(getTotalPage(dictionaryRepository.findAllCustom
                                     (requestDto.getKeyword(), requestDto.getYear()).size()))
                     .items(words)
                     .build();
@@ -143,8 +143,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
         if (requestDto.getKeyword() != null) {
             // 키워드 검색시
-            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllByTagTagLike
-                            (requestDto.getKeyword(), requestDto.getYear(), pageable).stream()
+            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllCustom                            (requestDto.getKeyword(), requestDto.getYear(), pageable).stream()
                     .map(word -> DictionaryWordListResponseDto.Item.builder()
                             .wordId(word.getWordId())
                             .word(word.getWord())
@@ -156,7 +155,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
             return DictionaryWordListResponseDto.builder()
                     .page(requestDto.getPage() + 1)
-                    .totalPage(getTotalPage(dictionaryRepository.findAllByTagTagLike
+                    .totalPage(getTotalPage(dictionaryRepository.findAllCustom
                             (requestDto.getKeyword(), requestDto.getYear()).size()))
                     .items(words)
                     .build();
