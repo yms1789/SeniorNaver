@@ -25,7 +25,14 @@ const IntroAdvertisement = styled.div`
   justify-content: center;
   margin-bottom: 50px;
 `;
-
+const IntroAdvertisement2 = styled.div`
+  width: 100vw;
+  height: 300px;
+  background: var(--dark30);
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 50px;
+`;
 const IntroHeaderText = styled.div`
   display: flex;
   font-family: "NanumSquareNeoBold";
@@ -72,7 +79,7 @@ const IntroEmpty = styled.div`
   height: 30vh;
 `;
 const IntroLast = styled.div`
-  height: 100px;
+  height: 200px;
 `;
 const IntroRouterWrapper = styled.div`
   display: flex;
@@ -118,22 +125,25 @@ function Intro() {
         style={{ transform: `translateX(${position / -8}px)`, opacity: position / 1500 }}
       />
       <IntroEmpty />
+      <IntroAdvertisement2/>
       <StyledImage
         src={item3}
         alt=""
         style={{ transform: `translateX(${position / 12}px)`, opacity: position / 3000 }}
       />
       <IntroEmpty />
+      <IntroAdvertisement/>
       <StyledImage
         src={item4}
         alt=""
-        style={{ transform: `translateX(${position / -16}px)`, opacity: position / 4000 }}
+        style={{ transform: `translateX(${position / -16}px)`, opacity: position / 3500 }}
       />
       <IntroEmpty />
+      <IntroAdvertisement2/>
       <StyledImage
         src={item5}
         alt=""
-        style={{ transform: `translateX(${position / 20}px)`, opacity: position / 5000 }}
+        style={{ transform: `translateX(${position / 20}px)`, opacity: position / 4000 }}
       />
       <IntroLast />
       <IntroRouterWrapper>

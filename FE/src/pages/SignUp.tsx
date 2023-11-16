@@ -34,14 +34,16 @@ const SignUpInnerBox = styled.div`
 `;
 function SignUp() {
   return (
+    <>
+    <HeadBar />
     <SignUpWrapper>
-      <HeadBar />
       <SignUpBox>
         <SignUpInnerBox>
           <SignUpProcessBox />
         </SignUpInnerBox>
       </SignUpBox>
     </SignUpWrapper>
+    </>
   );
 }
 export default SignUp;

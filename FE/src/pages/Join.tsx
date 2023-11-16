@@ -45,14 +45,16 @@ function Join() {
     }
   }, []);
   return (
+    <>
+    <HeadBar />
     <JoinInWrapper>
-      <HeadBar />
       <JoinInBox>
         <JoinInInnerBox>
           <JoinProcessBox />
         </JoinInInnerBox>
       </JoinInBox>
     </JoinInWrapper>
+    </>
   );
 }
 export default Join;

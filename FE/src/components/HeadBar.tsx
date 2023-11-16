@@ -228,9 +228,9 @@ function HeadBar() {
   const location = useLocation();
   let backgroundColor;
   if (location.pathname === "/signup") {
-    backgroundColor = "var(--gray03);";
+    backgroundColor = "var(--white);";
   } else if (location.pathname === "/join") {
-    backgroundColor = "var(--gray03);";
+    backgroundColor = "var(--white);";
   } else if (location.pathname === "/login") {
     backgroundColor = "var(--white);";
   } else if (location.pathname === "/") {
@@ -240,7 +240,6 @@ function HeadBar() {
   } else if (location.pathname === "/mypage") {
     backgroundColor = "var(--white);";
   }
-
   switch (isLoggedIn) {
     case true:
       return (
