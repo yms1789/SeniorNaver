@@ -34,6 +34,7 @@ const NewsGridWrapper = styled.div`
   }
 `;
 const DataNewsWrapper = styled.a`
+  cursor: pointer;
   position: relative;
   width: 100%;
   height: 100%;
@@ -68,17 +69,30 @@ const NewsTitleWrapper = styled.div`
 const NewsImageWrapper = styled.div`
   width: 100%;
   height: fit-content;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  background-color: #fff;
 `;
 const NewsImage = styled.img`
   flex-shrink: 0;
   height: 22vw;
   width: 100%;
+  object-fit: contain;
+  z-index: 5;
+`;
+const NewsBlurImage = styled.img`
+  position: absolute;
+  flex-shrink: 0;
+  height: 22vw;
+  width: 100%;
+  scale: 1.05;
   object-fit: cover;
+  opacity: 0.9;
+  filter: blur(10px);
 `;
 const NewsDateWrapper = styled.div`
   width: 100%;
@@ -101,9 +115,19 @@ interface TNewsData {
 }
 
 function CurationNews() {
-  const [keywords, _] = useState(["속보", "정치", "경제", "스포츠", "연예", "지역"]);
+  const [keywords, _] = useState([
+    "전체",
+    "정치",
+    "경제",
+    "부동산",
+    "주식",
+    "건강",
+    "스포츠",
+    "연예",
+    "지역",
+  ]);
 
-  const initialSelectedCategory = initSelectedCategory<TSelectedNewsCategory>(keywords, "속보");
+  const initialSelectedCategory = initSelectedCategory<TSelectedNewsCategory>(keywords, "전체");
   const [selectedCategory, setSelectedCategory] =
     useRecoilState<TSelectedNewsCategory>(newsCategoryState);
   const [__, setUpButton] = useRecoilState(upButtonState);
@@ -200,8 +224,14 @@ function CurationNews() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <NewsTitleWrapper>{news.title}</NewsTitleWrapper>
+                <NewsTitleWrapper>{news.title.replace(/<\/?b>|<br\s*\/?>/gi, "")}</NewsTitleWrapper>
                 <NewsImageWrapper>
+                  <NewsBlurImage
+                    src={news.imageUrl}
+                    alt="NewsImage"
+                    onError={onErrorImg}
+                    referrerPolicy="no-referrer"
+                  />
                   <NewsImage
                     src={news.imageUrl}
                     alt="NewsImage"
