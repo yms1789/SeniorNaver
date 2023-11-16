@@ -134,7 +134,7 @@ const MemeDictionaryProblemTitle = styled.div`
   font-size: 28px;
 `
 
-function MemeDictionaryPracticeRandomSolvingList({useYear}:{useYear:number}) {
+function MemeDictionaryPracticeRandomSolvingReviewDetail({useYear}:{useYear:number}) {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [completed, setCompleted] = useState(true); 
   const [currentStep, setCurrentStep] = useState(1); 
@@ -210,4 +210,4 @@ function MemeDictionaryPracticeRandomSolvingList({useYear}:{useYear:number}) {
         </MemeDictionaryPracticeWraaper>
       )
   }
-export default MemeDictionaryPracticeRandomSolvingList;
+export default MemeDictionaryPracticeRandomSolvingReviewDetail;

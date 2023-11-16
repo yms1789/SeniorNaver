@@ -89,9 +89,9 @@ export async function fetchMyWords(pageNum: number, category: number) {
   }
 }
 // 출제가 가능한 단어인지 검사
-export async function validWord(word: string) {
+export async function validWord(word: string, year: number) {
   try {
-    const response = await fetchApi.post(`/api/problem/valid/${word}`);
+    const response = await fetchApi.post(`/api/problem/valid/${word}${year}`);
     console.log("단어 사용 가능!", response.data);
     return true;
   } catch (error) {

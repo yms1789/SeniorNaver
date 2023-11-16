@@ -298,7 +298,7 @@ function MemeDictionaryPracticePoseProcessBox({useYear}:{useYear:number}) {
 
 
   const handleWordSearch = async ()=>{  
-    const response = await validWord(newProblem.word); 
+    const response = await validWord(newProblem.word, useYear); 
     if(response === true){
       Swal.fire({
         position: "center",
@@ -336,7 +336,6 @@ function MemeDictionaryPracticePoseProcessBox({useYear}:{useYear:number}) {
     case 0:
   return (
     <MemeDictionaryPracticeWraaper>
-
 
       {valid ? (
          <> 
