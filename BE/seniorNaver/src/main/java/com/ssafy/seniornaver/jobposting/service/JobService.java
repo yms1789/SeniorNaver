@@ -5,8 +5,6 @@ import com.ssafy.seniornaver.jobposting.dto.request.JobListSearchRequestDto;
 import com.ssafy.seniornaver.jobposting.dto.response.JobDetailResponseDto;
 import com.ssafy.seniornaver.jobposting.dto.response.JobListResponeDto;
 
-import java.util.List;
-
 public interface JobService {
     JobDetailResponseDto getDetailService(String jobId) throws JsonProcessingException;
     void saveWorkList() throws JsonProcessingException;

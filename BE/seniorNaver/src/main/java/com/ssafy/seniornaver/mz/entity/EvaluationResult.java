@@ -16,22 +16,22 @@ public class EvaluationResult {
     private Long resultId;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private VocabularyList vocaId;
 
-    @Column
+    @Column(nullable = false)
     private Long problemId;
 
-    @Column
+    @Column(nullable = false)
     private String title;
 
-    @Column
+    @Column(nullable = false)
     private LocalDate createAt;
 
-    @Column
+    @Column(nullable = false)
     private int choice;
 
-    @Column
+    @Column(nullable = false)
     private boolean answer;
 
     @PrePersist
