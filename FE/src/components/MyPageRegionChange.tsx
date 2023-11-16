@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { myPageCategoryState } from "../states/useMyPage";
 import styled from "styled-components";
-import fetchApi from "../states/fetchApi";
-import koreamap from "./../assets/images/koreamap.png"
+import koreamap from "./../assets/images/koreamap.png";
+import { fetchApi } from "../states/useAxiosInterceptor";
 
 const MyPageProfileWrapper = styled.div`
   margin: auto;
@@ -12,7 +12,7 @@ const MyPageProfileWrapper = styled.div`
   flex-direction: column;
   justify-content: start;
   align-items: center;
-`
+`;
 
 const MyPageNicknameHeader = styled.div`
   display: flex;
@@ -22,21 +22,21 @@ const MyPageNicknameHeader = styled.div`
   font-family: "NanumSquareNeoHeavy";
   font-size: 1.8vw;
   margin-bottom: 5vh;
-`
+`;
 
 const KeywordsInfoText = styled.div`
   font-family: "NanumSquareNeoRegular";
   font-size: 20px;
   text-align: center;
   color: var(--gray01);
-`
+`;
 
 const RegionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
   margin-bottom: 25px;
-`
+`;
 
 const RegionDropdown = styled.select`
   display: flex;
@@ -54,14 +54,14 @@ const RegionDropdown = styled.select`
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
 
   option {
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  background: var(--white);
-  color: var(--);
-  padding: 3px 0;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    background: var(--white);
+    color: var(--);
+    padding: 3px 0;
   }
-`
+`;
 const NextButton = styled.div`
   user-select: none;
   margin-top: 50px;
@@ -95,58 +95,63 @@ const RegionImgae = styled.img`
 `;
 
 function MyPageRegionChange() {
-  const [isRegionClicked,setIsRegionClicked] = useState(false);
-  const [region,setRegion] = useState("");
-  const setcurrentCategory = useSetRecoilState(myPageCategoryState)
+  const [isRegionClicked, setIsRegionClicked] = useState(false);
+  const [region, setRegion] = useState("");
+  const setcurrentCategory = useSetRecoilState(myPageCategoryState);
   const handleDropdown = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRegion(e.target.value);
   };
 
   const handleChangeRegion = () => {
-    if(region){
-      fetchApi.put("api/profile/region",{region: region}).then(() => {
-        setcurrentCategory({ currentCategory: 0 })
-      })
-    }
-    else{
+    if (region) {
+      fetchApi.put("api/profile/region", { region: region }).then(() => {
+        setcurrentCategory({ currentCategory: 0 });
+      });
+    } else {
       return;
     }
-  }
-  
+  };
+
   return (
     <MyPageProfileWrapper>
       <MyPageNicknameHeader>지역 재설정</MyPageNicknameHeader>
-          {isRegionClicked&& (
-            <RegionWrapper>
-              <RegionDropdown value={region} onChange={handleDropdown}>
-              <option value='서울'selected>서울</option>
-              <option value='부산'>부산</option>
-              <option value='대구'>대구</option>
-              <option value='인천'>인천</option>
-              <option value='광주'>광주</option>
-              <option value='대전'>대전</option>
-              <option value='울산'>울산</option>
-              <option value='강원'>강원</option>
-              <option value='경기'>경기</option>
-              <option value='경남'>경남</option>
-              <option value='경북'>경북</option>
-              <option value='전남'>전남</option>
-              <option value='전북'>전북</option>
-              <option value='제주'>제주</option>
-              <option value='충남'>충남</option>
-              <option value='충북'>충북</option>
-              </RegionDropdown>
-            </RegionWrapper>
-          )}
-          {!isRegionClicked&& (
-            <RegionWrapper>
-            <KeywordsInfoText>지역별 정보를 제공해드리겠습니다.</KeywordsInfoText>
-            <RegionImgae src={koreamap} onClick={()=>{setIsRegionClicked(true)}}/>
-            </RegionWrapper>
-          )}
-          <NextButton onClick={handleChangeRegion}>변경 완료</NextButton>
-
+      {isRegionClicked && (
+        <RegionWrapper>
+          <RegionDropdown value={region} onChange={handleDropdown}>
+            <option value="서울" selected>
+              서울
+            </option>
+            <option value="부산">부산</option>
+            <option value="대구">대구</option>
+            <option value="인천">인천</option>
+            <option value="광주">광주</option>
+            <option value="대전">대전</option>
+            <option value="울산">울산</option>
+            <option value="강원">강원</option>
+            <option value="경기">경기</option>
+            <option value="경남">경남</option>
+            <option value="경북">경북</option>
+            <option value="전남">전남</option>
+            <option value="전북">전북</option>
+            <option value="제주">제주</option>
+            <option value="충남">충남</option>
+            <option value="충북">충북</option>
+          </RegionDropdown>
+        </RegionWrapper>
+      )}
+      {!isRegionClicked && (
+        <RegionWrapper>
+          <KeywordsInfoText>지역별 정보를 제공해드리겠습니다.</KeywordsInfoText>
+          <RegionImgae
+            src={koreamap}
+            onClick={() => {
+              setIsRegionClicked(true);
+            }}
+          />
+        </RegionWrapper>
+      )}
+      <NextButton onClick={handleChangeRegion}>변경 완료</NextButton>
     </MyPageProfileWrapper>
-  )
+  );
 }
 export default MyPageRegionChange;
