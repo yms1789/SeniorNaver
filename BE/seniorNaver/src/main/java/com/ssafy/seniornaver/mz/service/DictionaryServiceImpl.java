@@ -276,10 +276,15 @@ public class DictionaryServiceImpl implements DictionaryService {
         });
 
         if (!scrapWordRepository.existsByWordIdAndVocaId(word, vocabularyList)) {
-            scrapWordRepository.save(ScrapWord.builder()
+
+
+            ScrapWord scrapWord = scrapWordRepository.saveAndFlush(ScrapWord.builder()
                     .vocaId(vocabularyList)
                     .wordId(word)
                     .build());
+
+            vocabularyList.getScrapWords().add(scrapWord);
+            word.getScrapWordList().add(scrapWord);
         }
     }
 
@@ -309,8 +314,6 @@ public class DictionaryServiceImpl implements DictionaryService {
                 .example(wordCreateRequestDto.getExample())
                 .useYear(wordCreateRequestDto.getYear())
                 .build();
-
-        System.out.println(createWord.toString());
 
         // 사전 단어 저장
         dictionaryRepository.saveAndFlush(createWord);

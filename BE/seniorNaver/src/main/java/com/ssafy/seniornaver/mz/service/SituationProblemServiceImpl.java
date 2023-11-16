@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,6 +40,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
     private final SaveProblemRepository saveProblemRepository;
     private final ChoiceRepository choiceRepository;
     private final EvaluationRepository evaluationRepository;
+    private final MakeProblemRepository makeProblemRepository;
 
     private final TagRepository tagRepository;
     private final TagService tagService;
@@ -85,6 +87,15 @@ public class SituationProblemServiceImpl implements SituationProblemService{
             choiceRepository.saveAndFlush(choice);
             situationProblem.getChoiceList().add(choice);
         }
+
+        VocabularyList vocabularyList = vocabularyListRepository.findByVocaId(member.getVocaId()).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_WORD);
+        });
+
+        vocabularyList.getMakeProblems().add(makeProblemRepository.save(MakeProblem.builder()
+                        .problemId(situationProblem)
+                        .vocaId(vocabularyList)
+                .build()));
 
         return situationProblem;
     }
@@ -255,6 +266,24 @@ public class SituationProblemServiceImpl implements SituationProblemService{
            throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
         });
 
+        SituationProblem situationProblem = situationRepository.findByProblemIdAndTitle(problemEvaluationRequestDto.getProblemId(),
+                problemEvaluationRequestDto.getTitle()).orElseThrow(() -> {
+                    throw new BadRequestException(ErrorCode.NOT_EXIST_PROBLEM);
+        });
+
+        if (problemEvaluationRequestDto.getChoice() == 0 || problemEvaluationRequestDto.getAnswer() == 0) {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_ANSWER);
+        }
+
+        if (problemEvaluationRequestDto.getAnswer() == problemEvaluationRequestDto.getChoice()) {
+            CompleteProblem completeProblem = completeProblemRepository.save(CompleteProblem.builder()
+                    .problemId(situationProblem)
+                    .vocaId(vocabularyList)
+                    .build());
+            vocabularyList.getCompleteProblems().add(completeProblem);
+            situationProblem.getCompleteVocaList().add(completeProblem);
+        }
+
         vocabularyList.getEvaluationResults().add(evaluationRepository.saveAndFlush(EvaluationResult.builder()
                         .problemId(problemEvaluationRequestDto.getProblemId())
                         .vocabularyList(vocabularyList)
@@ -272,7 +301,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
 
         return TotalEvaluationResponseDto.builder()
                 .problemList(evaluationRepository.findAllByVocaId(vocabularyList).stream()
-                        .sorted(Comparator.comparing(EvaluationResult::getCreateAt).reversed())
+                        .sorted(Comparator.comparing(EvaluationResult::getResultId).reversed())
                         .limit(5)
                         .map(evaluationResult -> TotalEvaluationResponseDto.Problem.builder()
                                 .id(evaluationResult.getProblemId())

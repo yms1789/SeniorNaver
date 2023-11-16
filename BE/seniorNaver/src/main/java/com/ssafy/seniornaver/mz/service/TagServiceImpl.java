@@ -36,17 +36,23 @@ public class TagServiceImpl implements TagService{
 
     @Override
     public void relationWordTag(Dictionary wordId, Tag tag) {
-        tagToWordRepository.save(TagToWord.builder()
+        TagToWord tagToWord =tagToWordRepository.save(TagToWord.builder()
                         .tagId(tag)
                         .wordId(wordId)
                 .build());
+
+        wordId.getWordTags().add(tagToWord);
+        tag.getWordList().add(tagToWord);
     }
 
     @Override
     public void relationProblemTag(SituationProblem problemId, Tag tag) {
-        tagToProblemRepository.saveAndFlush(TagToProblem.builder()
-                    .tagId(tag)
-                    .problemId(problemId)
+        TagToProblem tagToProblem = tagToProblemRepository.saveAndFlush(TagToProblem.builder()
+                .tagId(tag)
+                .problemId(problemId)
                 .build());
+
+        problemId.getTags().add(tagToProblem);
+        tag.getProblemList().add(tagToProblem);
     }
 }

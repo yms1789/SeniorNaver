@@ -19,16 +19,16 @@ public class VocabularyList {
     @Column(nullable = false)
     private Long memberId;
 
-    @OneToMany(mappedBy = "scrapId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "scrapId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     List<ScrapWord> scrapWords = new ArrayList<>();
 
-    @OneToMany(mappedBy = "problemId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "problemId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     List<SaveProblem> saveProblems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "problemId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "problemId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     List<CompleteProblem> completeProblems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "problemId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "problemId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     List<MakeProblem> makeProblems = new ArrayList<>();
 
     @OneToMany(mappedBy = "vocaId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)

@@ -36,9 +36,6 @@ public class Dictionary {
     private LocalDateTime updateAt;
 
     @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
-    private List<TagToProblem> ProblemTags = new ArrayList<>();
-
-    @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private List<TagToWord> wordTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "scrapId", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
