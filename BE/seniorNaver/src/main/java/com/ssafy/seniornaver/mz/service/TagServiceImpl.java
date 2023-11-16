@@ -1,7 +1,6 @@
 package com.ssafy.seniornaver.mz.service;
 
 import com.ssafy.seniornaver.mz.entity.*;
-import com.ssafy.seniornaver.mz.repository.DictionaryRepository;
 import com.ssafy.seniornaver.mz.repository.TagRepository;
 import com.ssafy.seniornaver.mz.repository.TagToProblemRepository;
 import com.ssafy.seniornaver.mz.repository.TagToWordRepository;
@@ -20,7 +19,6 @@ public class TagServiceImpl implements TagService{
     private final TagRepository tagRepository;
     private final TagToWordRepository tagToWordRepository;
     private final TagToProblemRepository tagToProblemRepository;
-    private final DictionaryRepository dictionaryRepository;
 
     @Override
     @Transactional

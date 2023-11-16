@@ -148,7 +148,6 @@ public class VocabularyListServiceImpl implements VocabularyListService{
                 .build();
     }
 
-
     // 전체 페이지 수 구하기
     private int getTotalPage(long totalCount) {
         int totalPage = 0;

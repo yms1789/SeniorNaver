@@ -55,7 +55,7 @@ public class DictionaryServiceImpl implements DictionaryService {
         Pageable pageable = PageRequest.of(requestDto.getPage(), 5, Sort.by("word").ascending());
 
         // 키워드 + 년도 검색시
-        if (requestDto.getKeyword() != null && requestDto.getYear() != null) {
+        if (requestDto.getKeyword() != null && requestDto.getYear() != 0) {
             List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findDistinctByTagTagLikeAndUseYearBetween                            ("%"+requestDto.getKeyword()+"%", requestDto.getYear(), pageable).stream()
                     .map(word -> DictionaryWordListResponseDto.Item.builder()
                             .wordId(word.getWordId())
@@ -96,7 +96,7 @@ public class DictionaryServiceImpl implements DictionaryService {
                     .build();
         }
         // 연도 검색만 있는경우
-        if (requestDto.getYear() != null) {
+        if (requestDto.getYear() != 0) {
             List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllByUseYearBetween
                             (requestDto.getYear(), requestDto.getYear() + 10, pageable).stream()
                     .map(word -> DictionaryWordListResponseDto.Item.builder()
@@ -140,7 +140,7 @@ public class DictionaryServiceImpl implements DictionaryService {
     public DictionaryWordListResponseDto getWordList(DictionaryWordListRequestDto requestDto) {
         Pageable pageable = PageRequest.of(requestDto.getPage(), 5, Sort.by("word").ascending());
 
-        if (requestDto.getKeyword() != null && requestDto.getYear() != null) {
+        if (requestDto.getKeyword() != null && requestDto.getYear() != 0) {
             // 키워드 검색시
             List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findDistinctByTagTagLikeAndUseYearBetween
                             (requestDto.getKeyword(), requestDto.getYear(), pageable).stream()
@@ -181,7 +181,7 @@ public class DictionaryServiceImpl implements DictionaryService {
         }
 
         // 연도 검색만 있는경우
-        if (requestDto.getYear() != null) {
+        if (requestDto.getYear() != 0) {
             List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findAllByUseYearBetween
                             (requestDto.getYear(), requestDto.getYear() + 10, pageable).stream()
                     .map(word -> DictionaryWordListResponseDto.Item.builder()

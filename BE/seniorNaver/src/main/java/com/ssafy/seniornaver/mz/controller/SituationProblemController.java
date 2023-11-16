@@ -79,9 +79,9 @@ public class SituationProblemController {
     }
     
     @Operation(summary = "랜덤 문제 번호", description = "랜덤으로 ProblemId 값을 5개 반환합니다.")
-    @GetMapping("v1/random")
-    public ResponseEntity<RandomProblemResponseDto> getMemberProblemList() {
-        return ResponseEntity.ok(situationProblemService.getRandomProblem());
+    @GetMapping("v1/random/{year}")
+    public ResponseEntity<RandomProblemResponseDto> getMemberProblemList(@PathVariable("year") int year) {
+        return ResponseEntity.ok(situationProblemService.getRandomProblem(year));
     }
 
     @Operation(summary = "문제 저장", description = "랜덤 문제 간 추후에 풀어보고 싶은 문제를 개별로 저장합니다.")

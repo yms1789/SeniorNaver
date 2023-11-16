@@ -19,7 +19,7 @@ public interface SituationProblemService {
     List<ProblemListResponseDto> getMemberProblemList(ProblemListRequestDto problemListRequestDto, Member member);
     List<ProblemListResponseDto> getProblemList(ProblemListRequestDto problemListRequestDto);
     ProblemDetailResponseDto getProblemDetail(Long problemId);
-    RandomProblemResponseDto getRandomProblem();
+    RandomProblemResponseDto getRandomProblem(int year);
     void saveProblem(Long id, Member member);
     void cancelProblem(Long id, Member member);
     void deleteProblem(Long id, Member member);

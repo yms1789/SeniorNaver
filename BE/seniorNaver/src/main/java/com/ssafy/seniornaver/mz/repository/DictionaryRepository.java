@@ -12,9 +12,6 @@ import java.util.Optional;
 public interface DictionaryRepository extends JpaRepository<Dictionary, Long> {
     Optional<Dictionary> findByWordId(Long wordId);
     Optional<Dictionary> findByWord(String word);
-    List<Dictionary> findAllByWordContaining(String word, Pageable pageable);
-    List<Dictionary> findAllByWordContaining(String word);
-    boolean existsByWord(String word);
 
     @Query(value = "SELECT DISTINCT dict.* " +
             "FROM dictionary as dict " +

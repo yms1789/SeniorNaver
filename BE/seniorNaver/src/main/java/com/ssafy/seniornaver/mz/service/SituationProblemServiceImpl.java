@@ -192,9 +192,9 @@ public class SituationProblemServiceImpl implements SituationProblemService{
     }
 
     @Override
-    public RandomProblemResponseDto getRandomProblem() {
+    public RandomProblemResponseDto getRandomProblem(int year) {
         return RandomProblemResponseDto.builder()
-                .problemList(situationRepository.findAll().stream()
+                .problemList(situationRepository.findCustom(year).stream()
                         .map(problem -> problem.getProblemId())
                         .collect(Collectors.toList()))
                 .build();
