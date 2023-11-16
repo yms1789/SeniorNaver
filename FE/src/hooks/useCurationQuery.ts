@@ -13,7 +13,7 @@ import {
   TSelectedTravelCategory,
   TTravelData,
 } from "../utils/types";
-import { cityCodes } from "../utils/utils";
+import { cityCodes, fetchUserDatas } from "../utils/utils";
 import fetchApi from "../states/fetchApi";
 
 export const useCurationCarouselQuery = () => {
@@ -32,8 +32,12 @@ export const useCurationCarouselQuery = () => {
 export const useCurationShowsQuery = () => {
   const selectedCategory = useRecoilValue<TSelectedShowCategory>(showCategoryState);
   const fetchShows = async () => {
-    const response = await axios.get("/api/curation/v1/performance");
-    return response.data;
+    try {
+      const response = await axios.get("/api/curation/v1/performance");
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch shows data");
+    }
   };
   const curationShowsQuery = useQuery(["shows", selectedCategory], () => fetchShows());
   return curationShowsQuery;
@@ -43,12 +47,16 @@ export const useCurationTravelsQuery = () => {
   const selectedCategory = useRecoilValue<TSelectedTravelCategory>(travelCategoryState);
   const fetchTravels = async (code: string) => {
     const sendBE = cityCodes[code] || 1;
-    const response = await axios.get(`/api/curation/v1/tourdt/${sendBE}`);
-    const data = response.data.map((travel: TTravelData) => ({
-      ...travel,
-      hovered: false,
-    }));
-    return data;
+    try {
+      const response = await axios.get(`/api/curation/v1/tourdt/${sendBE}`);
+      const data = response.data.map((travel: TTravelData) => ({
+        ...travel,
+        hovered: false,
+      }));
+      return data;
+    } catch (error) {
+      throw new Error("Failed to fetch travels data");
+    }
   };
   const curationTravelsQuery = useQuery(["travels", selectedCategory], () =>
     fetchTravels(Object.keys(selectedCategory).filter(key => selectedCategory[key])[0]),
@@ -59,11 +67,22 @@ export const useCurationTravelsQuery = () => {
 export const useCurationNewsQuery = () => {
   const selectedCategory = useRecoilValue<TSelectedNewsCategory>(newsCategoryState);
   const fetchNews = async (category: string) => {
-    if (category === "속보") {
+    if (category === "전체") {
       category = "뉴스";
     }
-    const response = await axios.get(`/api/curation/v1/news/${category}`);
-    return response.data;
+    if (category === "지역") {
+      try {
+        category = await fetchUserDatas();
+      } catch (error) {
+        category = "지역";
+      }
+    }
+    try {
+      const response = await axios.get(`/api/curation/v1/news/${category}`);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch news data");
+    }
   };
   const curationNewsQuery = useQuery(["news", selectedCategory], () =>
     fetchNews(Object.keys(selectedCategory).filter(key => selectedCategory[key])[0]),
