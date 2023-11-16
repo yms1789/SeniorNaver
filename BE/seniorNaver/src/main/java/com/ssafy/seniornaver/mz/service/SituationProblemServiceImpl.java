@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
             throw new BadRequestException(ErrorCode.NOT_EXIST_WORD);
         });
 
-        return dict.getUseYear() == year;
+        return dict.getUseYear() >= year && dict.getUseYear() < year + 10;
     }
 
     @Override
@@ -261,6 +262,8 @@ public class SituationProblemServiceImpl implements SituationProblemService{
 
         return TotalEvaluationResponseDto.builder()
                 .problemList(evaluationRepository.findAllByVocaId(vocabularyList).stream()
+                        .sorted(Comparator.comparing(EvaluationResult::getCreateAt).reversed())
+                        .limit(5)
                         .map(evaluationResult -> TotalEvaluationResponseDto.Problem.builder()
                                 .id(evaluationResult.getProblemId())
                                 .title(evaluationResult.getTitle())

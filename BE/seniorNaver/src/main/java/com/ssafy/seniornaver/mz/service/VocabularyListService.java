@@ -5,8 +5,6 @@ import com.ssafy.seniornaver.mz.dto.request.VocaListRequestDto;
 import com.ssafy.seniornaver.mz.dto.response.ProblemEvaluationListResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.VocaListResponseDto;
 
-import java.util.List;
-
 public interface VocabularyListService {
     void createVocaList(Member memberId);
     VocaListResponseDto getVocaList(Member member, VocaListRequestDto vocaListRequestDto);

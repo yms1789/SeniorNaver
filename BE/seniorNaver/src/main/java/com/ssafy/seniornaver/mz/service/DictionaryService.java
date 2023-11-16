@@ -6,7 +6,6 @@ import com.ssafy.seniornaver.mz.dto.request.WordCreateRequestDto;
 import com.ssafy.seniornaver.mz.dto.response.DictionaryWordListResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.WordDetailResponseDto;
 
-import java.util.List;
 import java.util.Map;
 
 public interface DictionaryService {

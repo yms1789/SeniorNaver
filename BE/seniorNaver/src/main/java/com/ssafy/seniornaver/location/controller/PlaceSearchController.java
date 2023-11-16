@@ -35,8 +35,7 @@ public class PlaceSearchController {
     })
     @Operation(summary = "키워드 검색", description = "키워드를 통해 검색합니다.")
     @GetMapping("/keyword")
-    public ResponseEntity<SearchResponseDto> keywordSearch(// HttpServletRequest httpServletRequest,
-                                                           KeywordSearchRequestDto requestSearchDto) {
+    public ResponseEntity<SearchResponseDto> keywordSearch(KeywordSearchRequestDto requestSearchDto) {
 
         SearchResponseDto responseSearchDto = searchService.keywordSearch(requestSearchDto);
 
@@ -49,8 +48,7 @@ public class PlaceSearchController {
     })
     @Operation(summary = "카테고리 검색", description = "자신의 지역기반으로 검색합니다.")
     @GetMapping("/category")
-    public ResponseEntity<SearchResponseDto> categorySearch(// HttpServletRequest httpServletRequest,
-                                                        CategorySearchRequestDto requestSearchDto) {
+    public ResponseEntity<SearchResponseDto> categorySearch(CategorySearchRequestDto requestSearchDto) {
 
         SearchResponseDto responseSearchDto = searchService.categorySearch(requestSearchDto);
 
