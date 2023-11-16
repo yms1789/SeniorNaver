@@ -22,7 +22,7 @@ const ShowCategoryWrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 1vw;
-  @media (max-width: 768px) {
+  @media (max-width: 450px) {
     width: 90vw;
     display: flex;
     flex-wrap: wrap;
@@ -42,6 +42,9 @@ const ShowGridWrapper = styled.div`
     grid-template-columns: repeat(3, 30vw);
   }
   @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 45vw);
+  }
+  @media (max-width: 450px) {
     gap: 8vw;
     grid-template-columns: repeat(1, 90vw);
   }
@@ -118,6 +121,10 @@ const ShowTitleWrapper = styled.div`
     font-size: 1.5vw;
   }
   @media (max-width: 768px) {
+    height: 10vw;
+    font-size: 3vw;
+  }
+  @media (max-width: 450px) {
     height: 18vw;
     font-size: 5.5vw;
   }
@@ -133,6 +140,9 @@ const ShowTheater = styled.div`
     font-size: 1.3vw;
   }
   @media (max-width: 768px) {
+    font-size: 2.5vw;
+  }
+  @media (max-width: 450px) {
     font-size: 5vw;
   }
 `;
@@ -147,6 +157,9 @@ const ShowDateWrapper = styled.div`
     font-size: 1.3vw;
   }
   @media (max-width: 768px) {
+    font-size: 2.5vw;
+  }
+  @media (max-width: 450px) {
     font-size: 4.5vw;
   }
 `;

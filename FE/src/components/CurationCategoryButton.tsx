@@ -30,6 +30,9 @@ const ButtonWrapper = styled.div`
     height: 9.5vw;
   }
   @media (max-width: 768px) {
+    height: 13vw;
+  }
+  @media (max-width: 450px) {
     height: 24vw;
   }
 `;
@@ -42,6 +45,10 @@ const Image = styled.img<{ size: number }>`
     width: ${props => props.size * 1.2}vw;
   }
   @media (max-width: 768px) {
+    height: ${props => props.size * 1.5}vw;
+    width: ${props => props.size * 1.5}vw;
+  }
+  @media (max-width: 450px) {
     height: ${props => props.size * 2.5}vw;
     width: ${props => props.size * 2.5}vw;
   }
@@ -50,7 +57,7 @@ const Text = styled.div<{ $active: boolean }>`
   position: relative;
   font-size: 1.5vw;
   padding-bottom: 0.5vw;
-  font-family: "NanumSquareNeoBold";
+  font-family: "NanumSquareNeoExtraBold";
   &::after {
     content: "";
     display: block;
@@ -67,7 +74,10 @@ const Text = styled.div<{ $active: boolean }>`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    font-size: 5.2vw;
+    font-size: 3.5vw;
+  }
+  @media (max-width: 450px) {
+    font-size: 5.5vw;
   }
 `;
 

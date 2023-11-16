@@ -28,6 +28,9 @@ const FrameContainerWrapper = styled.div`
     grid-template-rows: repeat(4, 8vw) repeat(2, 3vw);
   }
   @media (max-width: 768px) {
+    grid-template-rows: repeat(4, 8vw) repeat(2, 5vw);
+
+  @media (max-width: 450px) {
     grid-template-columns: repeat(3, 30vw);
     grid-template-rows: repeat(1, 50vw) repeat(1, 16vw) repeat(2, 50vw) repeat(1, 10vw);
   }
@@ -43,7 +46,7 @@ const FrameCurationContainerWrapper = styled.div`
   flex: 1;
   flex-direction: column;
   overflow: hidden;
-  @media (max-width: 768px) {
+  @media (max-width: 450px) {
     grid-column-start: 1;
     grid-column-end: 4;
     grid-row-start: 1;
@@ -87,7 +90,7 @@ const CurationImageWrapper = styled.a`
     z-index: 1000;
     opacity: 0;
     transition: all 0.5s ease;
-    @media (max-width: 768px) {
+    @media (max-width: 450px) {
       font-size: 6vw;
     }
   }
@@ -121,7 +124,7 @@ const FrameCurationText = styled.div`
   display: flex;
   padding: 0;
   overflow: hidden;
-  @media (max-width: 768px) {
+  @media (max-width: 450px) {
     grid-column-start: 1;
     grid-column-end: 4;
     grid-row-start: 2;
@@ -153,6 +156,9 @@ const CurationText = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
+    font-size: 3vw;
+  }
+  @media (max-width: 450px) {
     white-space: wrap;
     font-size: 5.5vw;
   }
@@ -168,7 +174,7 @@ const FrameOtherWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 2vw;
-  @media (max-width: 768px) {
+  @media (max-width: 450px) {
     grid-column-start: 1;
     grid-column-end: 4;
     grid-row-start: 3;
@@ -218,7 +224,7 @@ const MzWrapper = styled.li`
     z-index: 1000;
     opacity: 0;
     transition: all 0.5s ease;
-    @media (max-width: 768px) {
+    @media (max-width: 450px) {
       font-size: 6vw;
     }
   }
@@ -246,6 +252,11 @@ const MzDictionaryWrapper = styled.div`
     font-size: 1.5vw;
   }
   @media (max-width: 768px) {
+    padding: 0.5rem 0;
+    font-size: 1.7vw;
+  }
+
+  @media (max-width: 450px) {
     padding: 1vw 2vw;
     font-size: 4vw;
   }
@@ -265,6 +276,9 @@ const MzWordText = styled.div`
     font-size: 2.5vw;
   }
   @media (max-width: 768px) {
+    font-size: 3vw;
+  }
+  @media (max-width: 450px) {
     font-size: 6vw;
   }
 `;
@@ -285,7 +299,7 @@ const MzQuestionText = styled.div`
   @media (max-width: 1280px) {
     font-size: 2vw;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 450px) {
     font-size: 5vw;
   }
 `;
@@ -307,7 +321,7 @@ const PlaceContainerWrapper = styled.a`
     z-index: 1000;
     opacity: 0;
     transition: opacity 0.5s ease;
-    @media (max-width: 768px) {
+    @media (max-width: 450px) {
       font-size: 6vw;
     }
   }
@@ -354,7 +368,7 @@ const PlaceText = styled.div`
   white-space: nowrap;
   font-size: 1vw;
   color: var(--white);
-  @media (max-width: 768px) {
+  @media (max-width: 450px) {
     font-size: 4vw;
   }
 `;
@@ -370,6 +384,9 @@ const PlaceTextTitle = styled.div`
     font-size: 2.5vw;
   }
   @media (max-width: 768px) {
+    font-size: 2.7vw;
+  }
+  @media (max-width: 450px) {
     font-size: 7vw;
   }
 `;
@@ -397,7 +414,7 @@ const ArrowButton = styled.button`
     border: solid 0.15vw transparent;
     background: var(--transgradient);
   }
-  @media (max-width: 768px) {
+  @media (max-width: 450px) {
     scale: 3;
     margin: 4vw;
   }

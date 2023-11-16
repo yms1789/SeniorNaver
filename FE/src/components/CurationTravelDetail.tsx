@@ -59,6 +59,9 @@ const TravelGroupWrapper = styled.div`
     margin-bottom: 0.5vw;
   }
   @media (max-width: 768px) {
+    width: 60vw;
+  }
+  @media (max-width: 450px) {
     width: 90vw;
   }
 `;
@@ -69,6 +72,9 @@ const TravelSubAddressWrapper = styled.div`
     font-size: 2.5vw;
   }
   @media (max-width: 768px) {
+    font-size: 3vw;
+  }
+  @media (max-width: 450px) {
     font-size: 5vw;
   }
 `;
@@ -80,6 +86,9 @@ const TravelTitleWrapper = styled.div`
     font-size: 5vw;
   }
   @media (max-width: 768px) {
+    font-size: 6vw;
+  }
+  @media (max-width: 450px) {
     font-size: 8vw;
   }
 `;
@@ -96,6 +105,9 @@ const TravelAddressWrapper = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
+    font-size: 3vw;
+  }
+  @media (max-width: 450px) {
     font-size: 4vw;
   }
 `;
@@ -106,6 +118,9 @@ const TravelZipcodeWrapper = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
+    font-size: 3vw;
+  }
+  @media (max-width: 450px) {
     font-size: 4vw;
   }
 `;
@@ -117,7 +132,7 @@ const TravelOverviewWrapper = styled.div`
   overflow-y: scroll;
   color: var(--dark70);
   background-color: var(--white50);
-  @media (max-width: 768px) {
+  @media (max-width: 450px) {
     height: 50vw;
   }
 `;
@@ -133,7 +148,9 @@ const TravelOverviewTextWrapper = styled.div`
     font-size: 1.5vw;
   }
   @media (max-width: 768px) {
-    letter-space: 4vw;
+    font-size: 2.5vw;
+  }
+  @media (max-width: 450px) {
     font-size: 4.5vw;
   }
 `;
@@ -159,6 +176,9 @@ const TravelLinkWrapper = styled.div`
     font-size: 1.5vw;
   }
   @media (max-width: 768px) {
+    font-size: 3vw;
+  }
+  @media (max-width: 450px) {
     padding: 3vw;
     font-size: 4vw;
   }
@@ -170,6 +190,9 @@ const TravelTelWrapper = styled.div`
     font-size: 1.5vw;
   }
   @media (max-width: 768px) {
+    font-size: 3vw;
+  }
+  @media (max-width: 450px) {
     font-size: 4vw;
   }
 `;
@@ -215,7 +238,7 @@ const TravelImageMarkerWrapper = styled.div<{ $hovered: boolean }>`
   gap: 1vw;
   transition: all 0.3s ease-in-out;
   opacity: ${props => (props.$hovered ? 1 : 0)};
-  @media (max-width: 768px) {
+  @media (max-width: 450px) {
     opacity: 1;
   }
 `;
@@ -224,7 +247,7 @@ const TravelImageWrapper = styled.div`
   width: fit-content;
   overflow: hidden;
   border-radius: 2vw;
-  @media (max-width: 768px) {
+  @media (max-width: 450px) {
     height: 50vw;
   }
 `;

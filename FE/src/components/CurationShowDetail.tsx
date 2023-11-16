@@ -47,6 +47,9 @@ const ShowContextDetailWrapper = styled.div`
     gap: 3vw;
   }
   @media (max-width: 768px) {
+    font-size: 3vw;
+  }
+  @media (max-width: 450px) {
     font-size: 4.5vw;
     gap: 4vw;
   }
@@ -64,6 +67,9 @@ const ShowGenreWrapper = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
+    font-size: 3vw;
+  }
+  @media (max-width: 450px) {
     font-size: 4.5vw;
   }
 `;
@@ -75,6 +81,9 @@ const ShowTitleWrapper = styled.div`
     font-size: 3vw;
   }
   @media (max-width: 768px) {
+    font-size: 4vw;
+  }
+  @media (max-width: 450px) {
     font-size: 6vw;
   }
 `;
@@ -92,6 +101,10 @@ const ShowGroupTextWrapper = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
+    font-size: 3vw;
+    padding: 0.1vw 1vw;
+  }
+  @media (max-width: 450px) {
     font-size: 5vw;
     padding: 0.1vw 1vw;
   }
@@ -142,6 +155,9 @@ const ShowStateWrapper = styled.div<{ state: string }>`
     padding: 0.1vw 0.5vw;
   }
   @media (max-width: 768px) {
+    font-size: 2vw;
+  }
+  @media (max-width: 450px) {
     font-size: 3.5vw;
     padding: 0.1vw 1vw;
   }
@@ -170,6 +186,9 @@ const ShowMiddleTextWrapper = styled.div`
     font-size: 2.5vw;
   }
   @media (max-width: 768px) {
+    font-size: 3vw;
+  }
+  @media (max-width: 450px) {
     font-size: 5.5vw;
   }
 `;
@@ -186,7 +205,7 @@ const ShowDetailImage = styled.img`
   @media (max-width: 1280px) {
     padding: 0 10%;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 450px) {
     padding: 0;
   }
 `;
