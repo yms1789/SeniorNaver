@@ -30,7 +30,7 @@ const NewsGridWrapper = styled.div`
   grid-template-columns: repeat(2, 38vw);
   gap: 2vw;
   @media (max-width: 1280px) {
-    grid-template-columns: repeat(2, 46vw);
+    grid-template-columns: repeat(1, 95vw);
   }
 `;
 const DataNewsWrapper = styled.a`
@@ -62,8 +62,8 @@ const NewsTitleWrapper = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    height: 8vw;
-    font-size: 2.5vw;
+    height: 12vw;
+    font-size: 4vw;
   }
 `;
 const NewsImageWrapper = styled.div`

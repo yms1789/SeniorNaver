@@ -28,7 +28,7 @@ const TravelCategoryWrapper = styled.div`
     width: 60vw;
   }
   @media (max-width: 768px) {
-    width: 70vw;
+    width: 90vw;
   }
 `;
 const TravelGridWrapper = styled.div`
@@ -43,9 +43,9 @@ const TravelGridWrapper = styled.div`
   @media (max-width: 1280px) {
     grid-template-columns: repeat(2, 45vw);
   }
-  /* @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 45vw);
-  } */
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 90vw);
+  }
 `;
 const DataTravelsWrapper = styled.div`
   cursor: pointer;
@@ -77,7 +77,7 @@ const TravelSubAddressWrapper = styled.div`
     font-size: 1.5vw;
   }
   @media (max-width: 768px) {
-    font-size: 1.7vw;
+    font-size: 3vw;
   }
 `;
 const TravelTitleWrapper = styled.div`
@@ -86,7 +86,7 @@ const TravelTitleWrapper = styled.div`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    font-size: 2.5vw;
+    font-size: 4vw;
   }
 `;
 const TravelAddressWrapper = styled.div`
@@ -97,7 +97,7 @@ const TravelAddressWrapper = styled.div`
     font-size: 1.8vw;
   }
   @media (max-width: 768px) {
-    font-size: 2vw;
+    font-size: 3vw;
   }
 `;
 const TravelImageWrapper = styled.div<{ hovered: string }>`

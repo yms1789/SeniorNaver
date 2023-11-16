@@ -27,7 +27,7 @@ const ButtonWrapper = styled.div`
     height: 9.5vw;
   }
   @media (max-width: 768px) {
-    height: 12vw;
+    height: 18vw;
   }
 `;
 const Image = styled.img<{ size: number }>`
@@ -39,8 +39,8 @@ const Image = styled.img<{ size: number }>`
     width: ${props => props.size * 1.2}vw;
   }
   @media (max-width: 768px) {
-    height: ${props => props.size * 1.5}vw;
-    width: ${props => props.size * 1.5}vw;
+    height: ${props => props.size * 2}vw;
+    width: ${props => props.size * 2}vw;
   }
 `;
 const Text = styled.div<{ $active: boolean }>`
@@ -63,7 +63,7 @@ const Text = styled.div<{ $active: boolean }>`
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    font-size: 2.5vw;
+    font-size: 4vw;
   }
 `;
 
