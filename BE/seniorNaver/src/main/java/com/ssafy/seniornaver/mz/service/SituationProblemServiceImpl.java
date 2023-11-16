@@ -12,6 +12,7 @@ import com.ssafy.seniornaver.mz.dto.response.RandomProblemResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.TotalEvaluationResponseDto;
 import com.ssafy.seniornaver.mz.entity.*;
 import com.ssafy.seniornaver.mz.repository.*;
+import com.ssafy.seniornaver.s3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +43,8 @@ public class SituationProblemServiceImpl implements SituationProblemService{
     private final TagRepository tagRepository;
     private final TagService tagService;
 
+    private final S3Uploader s3Uploader;
+
     @Override
     public boolean wordCheck(String word, int year) {
         Dictionary dict = dictionaryRepository.findByWord(word).orElseThrow(() -> {
@@ -52,10 +57,13 @@ public class SituationProblemServiceImpl implements SituationProblemService{
     @Override
     @Transactional
     public SituationProblem createProblem(ProblemCreateRequestDto problemCreateRequestDto,
-                                          Member member) {
+                                          MultipartFile multipartFile,
+                                          Member member) throws IOException {
         if (situationRepository.existsByTitle(problemCreateRequestDto.getTitle())){
             throw new BadRequestException(ErrorCode.ALREADY_REGISTERED_PROBLEM);
         }
+
+        String url = s3Uploader.uploadFiles(multipartFile, "SituationProblem");
 
         SituationProblem situationProblem =  situationRepository.saveAndFlush(SituationProblem.builder()
                         .title(problemCreateRequestDto.getTitle())
@@ -63,7 +71,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
                         .problemExplanation(problemCreateRequestDto.getProblemExplanation())
                         .answer(problemCreateRequestDto.getAnswer())
                         .makeMember(member.getMemberId())
-                        .image(problemCreateRequestDto.getImage())
+                        .image(url)
                         .useYear(problemCreateRequestDto.getUseYear())
                 .build());
 

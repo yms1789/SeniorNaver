@@ -19,10 +19,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @Tag(name = "Problem", description = "문제 관련 서비스")
@@ -47,12 +50,13 @@ public class SituationProblemController {
     }
 
     @Operation(summary = "문제 등록", description = "문제를 등록합니다. 로그인이 된 상태여야 합니다.")
-    @PostMapping("register")
-    public ResponseEntity createProblem(@RequestBody ProblemCreateRequestDto problemCreateRequestDto,
-                                        HttpServletRequest httpServletRequest) {
+    @PostMapping(value = "register", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity createProblem(@RequestPart(name = "multipartFile") MultipartFile multipartFile,
+                                        @RequestPart(name = "requestDto") ProblemCreateRequestDto problemCreateRequestDto,
+                                        HttpServletRequest httpServletRequest) throws IOException {
 
         situationProblemService.relTagToProblem(
-                situationProblemService.createProblem(problemCreateRequestDto, getMember(httpServletRequest)), problemCreateRequestDto);
+                situationProblemService.createProblem(problemCreateRequestDto, multipartFile, getMember(httpServletRequest)), problemCreateRequestDto);
 
         return ResponseEntity.ok("등록 완료");
     }
