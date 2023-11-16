@@ -176,6 +176,8 @@ public class SituationProblemServiceImpl implements SituationProblemService{
             throw new BadRequestException(ErrorCode.NOT_EXIST_PROBLEM);
         });
 
+        List<Choice> choices = choiceRepository.findAllBySituationProblem(situationProblem);
+
         return ProblemDetailResponseDto.builder()
                 .problemId(situationProblem.getProblemId())
                 .title(situationProblem.getTitle())
@@ -185,7 +187,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
                 .image(situationProblem.getImage())
                 .review(situationProblem.getReview())
                 .answer(situationProblem.getAnswer())
-                .choices(situationProblem.getChoiceList())
+                .choices(choices)
                 .build();
     }
 
