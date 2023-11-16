@@ -1,9 +1,11 @@
+import axios from "axios";
+import { useCookies } from "react-cookie";
 import { useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { styled } from "styled-components";
 import Swal from "sweetalert2";
-import { isLoggedInState, useLogout, userState } from "../states/useUser";
+import { isLoggedInState, userState } from "../states/useUser";
 import snlogo from "./../assets/images/snlogo.png";
 
 const NavBarWrapper = styled.div<IbackgroundColor>`
@@ -187,28 +189,40 @@ interface IbackgroundColor {
 }
 
 function HeadBar() {
-  const [isLoggedIn] = useRecoilState(isLoggedInState);
-  const user = useRecoilState(userState);
-  const userLogoutData = {
-    accessToken: user[0].accessToken,
-    refreshToken: user[0].refreshToken,
-  };
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+  const [user, setUser] = useRecoilState(userState);
+  const [cookies] = useCookies(["tokens"]);
+  const [, , removeCookie] = useCookies(["tokens"]);
 
-  const logout = useLogout(userLogoutData);
-  const handleLogout = () => {
+  async function handleLogout() {
     try {
-      logout();
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "성공적으로 로그아웃 되었습니다.",
-        showConfirmButton: false,
-        timer: 1500,
-        background: "var(--white)",
-        color: "var(--dark01)",
-        width: "600px",
-        padding: "40px",
+      const response = await axios.post("api/auth/logout", null, {
+        headers: {
+          Authorization: `Bearer ${cookies.tokens!.refreshToken}`,
+        },
       });
+
+      if (response.status === 200) {
+        removeCookie("tokens");
+        setUser({
+          memberId: "",
+          nickname: "",
+          email: "",
+          mobile: "",
+        });
+        setIsLoggedIn(false);
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "성공적으로 로그아웃 되었습니다.",
+          showConfirmButton: false,
+          timer: 1500,
+          background: "var(--white)",
+          color: "var(--dark01)",
+          width: "600px",
+          padding: "40px",
+        });
+      }
     } catch (error) {
       Swal.fire({
         position: "center",
@@ -221,9 +235,11 @@ function HeadBar() {
         color: "var(--dark01)",
         width: "500px",
       });
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data);
+      }
     }
-  };
+  }
 
   const location = useLocation();
   let backgroundColor;
@@ -255,7 +271,7 @@ function HeadBar() {
             </NavButton>
             <NavLink to="/mypage">
               <NavButton>
-                <NavSigninButtonInnerText>{user[0].nickname}님</NavSigninButtonInnerText>
+                <NavSigninButtonInnerText>{user.nickname}님</NavSigninButtonInnerText>
               </NavButton>
             </NavLink>
           </NavBar>
