@@ -171,16 +171,13 @@ const TravelMapMarkerWrapper = styled.div`
   align-items: center;
   z-index: 6;
 `;
-const TravelMapAreaWrapper = styled.div`
+const TravelMapAreaWrapper = styled.div<{ $hovered: boolean }>`
   width: 20vw;
   height: 20vw;
   border-radius: 99vw;
-  z-index: -3;
   background-color: #ff000010;
   transition: all 0.5s ease-in-out;
-  &:hover {
-    scale: 1.1;
-  }
+  scale: ${props => (props.$hovered ? "0.5" : "1")};
 `;
 const TravelMapMarker = styled.img`
   position: absolute;
@@ -194,7 +191,7 @@ const TravelMapMarker = styled.img`
     }
   }
 `;
-const TravelImageMarkerWrapper = styled.div<{ hovered: boolean }>`
+const TravelImageMarkerWrapper = styled.div<{ $hovered: boolean }>`
   cursor: pointer;
   position: absolute;
   bottom: 3vh;
@@ -203,7 +200,7 @@ const TravelImageMarkerWrapper = styled.div<{ hovered: boolean }>`
   flex-direction: column;
   gap: 1vw;
   transition: all 0.3s ease-in-out;
-  opacity: ${props => (props.hovered ? 1 : 0)};
+  opacity: ${props => (props.$hovered ? 1 : 0)};
   @media (max-width: 768px) {
     opacity: 1;
   }
@@ -323,10 +320,10 @@ function CurationTravelDetail({ navermaps }: { navermaps: typeof naver.maps }) {
               onMouseLeave={() => setPinIsHovered(false)}
             >
               <TravelMapMarker src={locationpin} />
-              <TravelMapAreaWrapper />
+              <TravelMapAreaWrapper $hovered={isPinHovered} />
             </TravelMapMarkerWrapper>
 
-            <TravelImageMarkerWrapper hovered={isPinHovered}>
+            <TravelImageMarkerWrapper $hovered={isPinHovered}>
               <TravelImageWrapper>
                 <TravelImage
                   src={dataTravelDetail.firstimage}
