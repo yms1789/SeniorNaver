@@ -110,6 +110,13 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
+	public void deleteUser(String memberId) {
+		Member member = memberRepository.findByMemberId(memberId)
+				.orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID));
+		memberRepository.delete(member);
+	}
+
+	@Override
 	public String addDetails(DetailRequestDto DetailRequestDto, MultipartFile file) throws IOException {
 		// memberId로 Member 엔티티 조회
 		Member member = memberRepository.findByMemberId(DetailRequestDto.getMemberId())
