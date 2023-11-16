@@ -190,6 +190,13 @@ const ShowDetailImage = styled.img`
     padding: 0;
   }
 `;
+const LoadingWrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 function CurationShowDetail() {
   const { showId } = useParams();
@@ -197,8 +204,12 @@ function CurationShowDetail() {
   const { data: dataShowDetail, isLoading } = useQuery(
     ["showDetail", showId],
     async () => {
-      const response = await axios.get(`/api/curation/v1/performance/${showId}`);
-      return response.data;
+      try {
+        const response = await axios.get(`/api/curation/v1/performance/${showId}`);
+        return response.data;
+      } catch (error) {
+        throw new Error("Failed to fetch showdetail data");
+      }
     },
     {
       enabled: !!showId,
@@ -235,7 +246,11 @@ function CurationShowDetail() {
   };
 
   if (isLoading) {
-    return <LoadingForCuration />;
+    return (
+      <LoadingWrapper>
+        <LoadingForCuration />
+      </LoadingWrapper>
+    );
   }
 
   if (!dataShowDetail) {

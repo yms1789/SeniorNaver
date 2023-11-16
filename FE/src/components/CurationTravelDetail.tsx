@@ -160,6 +160,7 @@ const TravelTelWrapper = styled.div`
   font-size: 1.1vw;
 `;
 const TravelMapMarkerWrapper = styled.div`
+  cursor: pointer;
   position: absolute;
   bottom: 50%;
   right: 18.5vw;
@@ -176,6 +177,10 @@ const TravelMapAreaWrapper = styled.div`
   border-radius: 99vw;
   z-index: -3;
   background-color: #ff000010;
+  transition: all 0.5s ease-in-out;
+  &:hover {
+    scale: 1.1;
+  }
 `;
 const TravelMapMarker = styled.img`
   position: absolute;
@@ -250,8 +255,12 @@ function CurationTravelDetail({ navermaps }: { navermaps: typeof naver.maps }) {
     if (!travelId) {
       return;
     }
-    const response = await axios.get(`/api/curation/v1/tourdt/detail/${parseInt(travelId)}`);
-    return response.data;
+    try {
+      const response = await axios.get(`/api/curation/v1/tourdt/detail/${parseInt(travelId)}`);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch traveldetail data");
+    }
   });
 
   const [isPinHovered, setPinIsHovered] = useState(false);
