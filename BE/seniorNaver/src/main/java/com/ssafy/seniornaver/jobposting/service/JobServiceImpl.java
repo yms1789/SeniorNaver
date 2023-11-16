@@ -115,7 +115,6 @@ public class JobServiceImpl implements JobService {
                             .workPlace(job.getWorkPlace())
                             .endDate(job.getEndDate())
                             .jobId(job.getJobId())
-                            .thumbnail(job.getThumbnail())
                             .employShape(job.getEmployShape())
                             .deadline(job.getDeadline())
 
@@ -144,7 +143,6 @@ public class JobServiceImpl implements JobService {
                             .jobId(job.getJobId())
                             .employShape(job.getEmployShape())
                             .deadline(job.getDeadline())
-                            .thumbnail(job.getThumbnail())
                             .build())
                     .collect(Collectors.toList());
 
@@ -168,7 +166,6 @@ public class JobServiceImpl implements JobService {
                             .jobId(job.getJobId())
                             .employShape(job.getEmployShape())
                             .deadline(job.getDeadline())
-                            .thumbnail(job.getThumbnail())
                             .build())
                     .collect(Collectors.toList());
 
