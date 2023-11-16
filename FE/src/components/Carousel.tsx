@@ -28,7 +28,8 @@ const FrameContainerWrapper = styled.div`
     grid-template-rows: repeat(4, 8vw) repeat(2, 3vw);
   }
   @media (max-width: 768px) {
-    grid-template-rows: repeat(4, 8vw) repeat(2, 5vw);
+    grid-template-columns: repeat(3, 30vw);
+    grid-template-rows: repeat(1, 50vw) repeat(1, 10vw) repeat(2, 50vw) repeat(1, 10vw);
   }
 `;
 const FrameCurationContainerWrapper = styled.div`
@@ -42,6 +43,12 @@ const FrameCurationContainerWrapper = styled.div`
   flex: 1;
   flex-direction: column;
   overflow: hidden;
+  @media (max-width: 768px) {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
 `;
 const FrameCurationWrapper = styled.div`
   height: 100%;
@@ -60,12 +67,12 @@ const CurationImageContainerWrapper = styled.ul`
 const CurationImageWrapper = styled.a`
   height: 100%;
   width: 100%;
+  position: relative;
   display: flex;
   flex: none;
   overflow: hidden;
   justify-content: center;
   align-items: center;
-  background: var(--aqua01);
   &:hover {
     &::after {
       content: "뉴스 바로가기↗";
@@ -79,13 +86,26 @@ const CurationImageWrapper = styled.a`
       color: var(--dark01);
       background: var(--maingradient);
       z-index: 1000;
+      @media (max-width: 768px) {
+        font-size: 6vw;
+      }
     }
   }
 `;
 const CurationImage = styled.img`
-  width: auto; /* 이미지의 가로 크기를 부모 요소에 맞게 조절 */
-  height: 100%; /* 세로 크기를 가로 비율에 맞게 자동 조절 */
-  object-fit: contain; /* 이미지가 부모 요소에 맞게 늘어나면서 비율 유지 */
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+  z-index: 10;
+`;
+const CurationBlurImage = styled.img`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  scale: 1.05;
+  object-fit: cover;
+  opacity: 0.9;
+  filter: blur(10px);
 `;
 const FrameCurationText = styled.div`
   height: 100%;
@@ -97,6 +117,12 @@ const FrameCurationText = styled.div`
   display: flex;
   padding: 0;
   overflow: hidden;
+  @media (max-width: 768px) {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
 `;
 const CurationTextContainerWrapper = styled.ul`
   height: 100%;
@@ -115,12 +141,15 @@ const CurationText = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 1.8vw;
   @media (max-width: 1280px) {
     font-size: 2vw;
   }
   @media (max-width: 768px) {
-    font-size: 3vw;
+    font-size: 5vw;
   }
 `;
 const FrameOtherWrapper = styled.div`
@@ -134,6 +163,12 @@ const FrameOtherWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 2vw;
+  @media (max-width: 768px) {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 3;
+    grid-row-end: 5;
+  }
 `;
 const FrameOtherColWrapper = styled.div`
   display: flex;
@@ -162,9 +197,9 @@ const MzWrapper = styled.li`
   justify-content: center;
   gap: 2vw;
   padding: 2vh;
-  background: var(--maingradient);
+  background: var(--reversegradient);
   &:hover {
-    background: var(--reversegradient);
+    background: var(--maingradient);
     &::after {
       content: "설명 바로가기↗";
       position: absolute;
@@ -177,6 +212,9 @@ const MzWrapper = styled.li`
       color: var(--white);
       background: var(--dark02);
       z-index: 1000;
+      @media (max-width: 768px) {
+        font-size: 6vw;
+      }
     }
   }
 `;
@@ -196,8 +234,8 @@ const MzDictionaryWrapper = styled.div`
     font-size: 1.5vw;
   }
   @media (max-width: 768px) {
-    padding: 0.5rem 0;
-    font-size: 1.7vw;
+    padding: 1vw 2vw;
+    font-size: 4vw;
   }
 `;
 const MzDictionaryText = styled.div`
@@ -215,7 +253,7 @@ const MzWordText = styled.div`
     font-size: 2.5vw;
   }
   @media (max-width: 768px) {
-    font-size: 3vw;
+    font-size: 6vw;
   }
 `;
 const MzWordWrapper = styled.div`
@@ -235,6 +273,9 @@ const MzQuestionText = styled.div`
   @media (max-width: 1280px) {
     font-size: 2vw;
   }
+  @media (max-width: 768px) {
+    font-size: 5vw;
+  }
 `;
 const PlaceContainerWrapper = styled.a`
   width: 100%;
@@ -253,6 +294,9 @@ const PlaceContainerWrapper = styled.a`
       color: var(--dark01);
       background: var(--maingradient);
       z-index: 1000;
+      @media (max-width: 768px) {
+        font-size: 6vw;
+      }
     }
   }
 `;
@@ -295,6 +339,9 @@ const PlaceText = styled.div`
   white-space: nowrap;
   font-size: 1vw;
   color: var(--white);
+  @media (max-width: 768px) {
+    font-size: 4vw;
+  }
 `;
 const PlaceTextTitle = styled.div`
   display: flex;
@@ -308,7 +355,7 @@ const PlaceTextTitle = styled.div`
     font-size: 2.5vw;
   }
   @media (max-width: 768px) {
-    font-size: 2.7vw;
+    font-size: 7vw;
   }
 `;
 const CarouselControlWrapper = styled.div`
@@ -335,6 +382,10 @@ const ArrowButton = styled.button`
     border: solid 0.15vw transparent;
     background: var(--transgradient);
   }
+  @media (max-width: 768px) {
+    scale: 3;
+    margin: 4vw;
+  }
 `;
 const DotWrapper = styled.div`
   width: 100%;
@@ -353,6 +404,7 @@ const Dot = styled.div<{ $active: boolean }>`
   background: ${props => (props.$active ? "var(--transgradient)" : "var(--gray03)")};
   transition: all 0.7s ease-in-out;
 `;
+
 interface TResponseData {
   curations: { imageUrl: string; link: string; title: string }[];
   mzWords: { word: string; wordId: number }[];
@@ -525,6 +577,12 @@ function Carousel({ curations, mzWords, places }: TResponseData) {
                     rel="noopener noreferrer"
                   >
                     <CurationImage
+                      src={curation[0]}
+                      alt="CurationImage"
+                      onError={onErrorImg}
+                      referrerPolicy="no-referrer"
+                    />
+                    <CurationBlurImage
                       src={curation[0]}
                       alt="CurationImage"
                       onError={onErrorImg}

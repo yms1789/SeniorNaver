@@ -26,7 +26,7 @@ const HomeWrapper = styled.div`
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  padding: 11vh 2vh 0vw;
+  padding: 16vh 0vw 0vw;
   gap: 6vw;
   font-size: 1vw;
   font-family: "NanumSquare Neo ExtraBold";
@@ -69,6 +69,9 @@ const UpButton = styled.div`
   transition: all 0.3s ease-in-out;
   &:hover {
     margin: 25.5rem 0.4rem;
+  }
+  @media (max-width: 450px) {
+    margin: 11.5rem 1.3rem;
   }
 `;
 

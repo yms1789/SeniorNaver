@@ -22,7 +22,7 @@ const ButtonTextWrapper = styled.div<{ $isActive: boolean }>`
     font-size: 1.5vw;
   }
   @media (max-width: 768px) {
-    font-size: 2vw;
+    font-size: 3.1vw;
     padding: 0.3vw 1vw;
   }
 `;
