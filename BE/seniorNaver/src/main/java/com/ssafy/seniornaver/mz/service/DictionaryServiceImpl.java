@@ -56,7 +56,8 @@ public class DictionaryServiceImpl implements DictionaryService {
 
         // 키워드 + 년도 검색시
         if (requestDto.getKeyword() != null && requestDto.getYear() != 0) {
-            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findDistinctByTagTagLikeAndUseYearBetween                            ("%"+requestDto.getKeyword()+"%", requestDto.getYear(), pageable).stream()
+            List<DictionaryWordListResponseDto.Item> words = dictionaryRepository.findDistinctByTagTagLikeAndUseYearBetween
+                            (requestDto.getKeyword(), requestDto.getYear(), pageable).stream()
                     .map(word -> DictionaryWordListResponseDto.Item.builder()
                             .wordId(word.getWordId())
                             .word(word.getWord())
