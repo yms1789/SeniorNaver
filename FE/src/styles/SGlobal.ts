@@ -99,6 +99,9 @@ export const GlobalStyle = createGlobalStyle`
 --maingradient: linear-gradient(100deg, #3fd5de, #2deea8);
 --decogradient01: linear-gradient(152.33deg, #cc85f5 6.96%, #ff7171 88.63%);
 --decogradient02: linear-gradient(152.33deg, #d46fff 6.96%, #ecff21 88.63%);
+--redgradient: linear-gradient(90deg, rgba(255,37,37,1) 0%, rgba(255,97,45,1) 35%, rgba(250,0,60,1) 100%);
+
   }
+  
   
 `;
