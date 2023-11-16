@@ -11,7 +11,6 @@ export async function fetchJobs(pageNum: number, place: string, input: string) {
         keyword: input,
       },
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -25,8 +24,6 @@ export const useJobsQuery = (place: string, input?: string) => {
     queryKey: ["jobs", place],
     queryFn: ({ pageParam = 0 }) => fetchJobs(pageParam, place, input || ""),
     getNextPageParam: lastPage => {
-      // console.log("lastPage", lastPage);
-      // console.log("allPage", allPages);
       return lastPage?.page! < lastPage?.totalPage! ? lastPage?.page! + 1 : undefined;
     },
     suspense: true,
