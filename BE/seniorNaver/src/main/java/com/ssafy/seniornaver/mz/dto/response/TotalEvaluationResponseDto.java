@@ -15,6 +15,8 @@ public class TotalEvaluationResponseDto {
     @Builder
     public static class Problem {
         private Long id;
+        private String title;
+        private int choice;
         private boolean answer;
     }
 

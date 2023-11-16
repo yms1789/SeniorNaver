@@ -5,12 +5,10 @@ import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import com.ssafy.seniornaver.mz.dto.request.VocaListRequestDto;
+import com.ssafy.seniornaver.mz.dto.response.ProblemEvaluationListResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.VocaListResponseDto;
 import com.ssafy.seniornaver.mz.entity.VocabularyList;
-import com.ssafy.seniornaver.mz.repository.MakeProblemRepository;
-import com.ssafy.seniornaver.mz.repository.SaveProblemRepository;
-import com.ssafy.seniornaver.mz.repository.ScrapWordRepository;
-import com.ssafy.seniornaver.mz.repository.VocabularyListRepository;
+import com.ssafy.seniornaver.mz.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +31,7 @@ public class VocabularyListServiceImpl implements VocabularyListService{
     private final SaveProblemRepository saveProblemRepository;
     private final MakeProblemRepository makeProblemRepository;
     private final MemberRepository memberRepository;
+    private final EvaluationRepository evaluationRepository;
 
     @Override
     @Transactional
@@ -60,10 +59,11 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
         log.info("category Num : {}", vocaListRequestDto.getCategory());
 
-        Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 5, Sort.by("wordId.word").ascending());
+
 
         // 스크랩 단어 리스트
         if (vocaListRequestDto.getCategory() == 1) {
+            Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 5, Sort.by("wordId.word").ascending());
             List<VocaListResponseDto.Item> wordList = scrapWordRepository.findAllByVocaId(vocabularyList, pageable).stream()
                     .map(scrapWord -> VocaListResponseDto.Item.builder()
                             .id(scrapWord.getWordId().getWordId())
@@ -82,6 +82,7 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
         // 저장 문제 리스트
         if (vocaListRequestDto.getCategory() == 2) {
+            Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 5, Sort.by("problemId.title").ascending());
             List<VocaListResponseDto.Item> problemList = saveProblemRepository.findAllByVocaId(vocabularyList, pageable).stream()
                     .map(saveProblem -> VocaListResponseDto.Item.builder()
                             .id(saveProblem.getProblemId().getProblemId())
@@ -100,6 +101,7 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
         // 만든 문제 리스트
         if (vocaListRequestDto.getCategory() == 3) {
+            Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 5, Sort.by("problemId.title").ascending());
             List<VocaListResponseDto.Item> problemList = makeProblemRepository.findAllByVocaId(vocabularyList, pageable).stream()
                     .map(makeProblem -> VocaListResponseDto.Item.builder()
                             .id(makeProblem.getProblemId().getProblemId())
@@ -118,6 +120,34 @@ public class VocabularyListServiceImpl implements VocabularyListService{
 
         throw new BadRequestException(ErrorCode.NOT_MATCH_CATEGORY);
     }
+
+    @Override
+    public ProblemEvaluationListResponseDto getResultList(Member member, VocaListRequestDto vocaListRequestDto) {
+        VocabularyList vocabularyList = vocabularyListRepository.findByVocaId(member.getVocaId()).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
+        });
+
+        log.info("category Num : {}", vocaListRequestDto.getCategory());
+
+        Pageable pageable = PageRequest.of(vocaListRequestDto.getPage(), 5, Sort.by("creatAt").ascending());
+
+        // 푼 문제 리스트
+        List<ProblemEvaluationListResponseDto.Item> problemList = evaluationRepository.findAllByVocaId(vocabularyList).stream()
+                .map(problemResult -> ProblemEvaluationListResponseDto.Item.builder()
+                        .problemId(problemResult.getProblemId())
+                        .answer(problemResult.isAnswer())
+                        .choice(problemResult.getChoice())
+                        .title(problemResult.getTitle())
+                        .build())
+                .collect(Collectors.toList());
+
+        return ProblemEvaluationListResponseDto.builder()
+                .page(vocaListRequestDto.getPage() + 1)
+                .totalPage(getTotalPage(evaluationRepository.findAllByVocaId(vocabularyList).stream().count()))
+                .items(problemList)
+                .build();
+    }
+
 
     // 전체 페이지 수 구하기
     private int getTotalPage(long totalCount) {

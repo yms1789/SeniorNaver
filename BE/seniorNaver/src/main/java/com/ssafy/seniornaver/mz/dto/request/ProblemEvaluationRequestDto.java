@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProblemEvaluationRequestDto {
     private long problemId;
+    private String title;
     private int answer;
     private int choice;
 }

@@ -40,8 +40,12 @@ public class SituationProblemServiceImpl implements SituationProblemService{
     private final TagService tagService;
 
     @Override
-    public boolean wordCheck(String word) {
-        return dictionaryRepository.existsByWord(word);
+    public boolean wordCheck(String word, int year) {
+        Dictionary dict = dictionaryRepository.findByWord(word).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_WORD);
+        });
+
+        return dict.getUseYear() == year;
     }
 
     @Override
@@ -243,6 +247,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
         vocabularyList.getEvaluationResults().add(evaluationRepository.saveAndFlush(EvaluationResult.builder()
                         .problemId(problemEvaluationRequestDto.getProblemId())
                         .vocabularyList(vocabularyList)
+                        .title(problemEvaluationRequestDto.getTitle())
                         .choice(problemEvaluationRequestDto.getChoice())
                         .answer(problemEvaluationRequestDto.getAnswer() == problemEvaluationRequestDto.getChoice())
                 .build()));
@@ -258,6 +263,8 @@ public class SituationProblemServiceImpl implements SituationProblemService{
                 .problemList(evaluationRepository.findAllByVocaId(vocabularyList).stream()
                         .map(evaluationResult -> TotalEvaluationResponseDto.Problem.builder()
                                 .id(evaluationResult.getProblemId())
+                                .title(evaluationResult.getTitle())
+                                .choice(evaluationResult.getChoice())
                                 .answer(evaluationResult.isAnswer())
                                 .build()).collect(Collectors.toList()))
                 .build();

@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,10 +37,10 @@ public class SituationProblemController {
     private final SituationProblemService situationProblemService;
 
     @Operation(summary = "단어 확인", description = "문제 생성이 가능한 단어인지 확인합니다.")
-    @PostMapping("valid/{word}")
-    public ResponseEntity wordCheck(@PathVariable("word") String word) {
-        if (!situationProblemService.wordCheck(word)) {
-            throw new BadRequestException(ErrorCode.NOT_EXIST_WORD);
+    @PostMapping("valid/{word}/{year}")
+    public ResponseEntity wordCheck(@PathVariable("word") String word, @PathVariable("year") int year) {
+        if (!situationProblemService.wordCheck(word, year)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("연도가 일치하지 않습니다.");
         }
 
         return ResponseEntity.ok("작성 가능한 단어입니다.");

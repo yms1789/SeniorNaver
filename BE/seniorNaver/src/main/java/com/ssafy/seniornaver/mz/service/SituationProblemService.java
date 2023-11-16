@@ -13,7 +13,7 @@ import com.ssafy.seniornaver.mz.entity.SituationProblem;
 import java.util.List;
 
 public interface SituationProblemService {
-    boolean wordCheck(String word);
+    boolean wordCheck(String word, int year);
     SituationProblem createProblem(ProblemCreateRequestDto problemCreateRequestDto, Member member);
     void relTagToProblem(SituationProblem situationProblem, ProblemCreateRequestDto problemCreateRequestDto);
     List<ProblemListResponseDto> getMemberProblemList(ProblemListRequestDto problemListRequestDto, Member member);

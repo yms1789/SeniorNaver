@@ -23,6 +23,9 @@ public class EvaluationResult {
     private Long problemId;
 
     @Column
+    private String title;
+
+    @Column
     private LocalDate createAt;
 
     @Column
@@ -37,9 +40,10 @@ public class EvaluationResult {
     }
 
     @Builder
-    public EvaluationResult(VocabularyList vocabularyList, Long problemId, int choice, boolean answer) {
+    public EvaluationResult(VocabularyList vocabularyList, Long problemId, String title, int choice, boolean answer) {
         this.vocaId = vocabularyList;
         this.problemId = problemId;
+        this.title = title;
         this.choice = choice;
         this.answer = answer;
     }

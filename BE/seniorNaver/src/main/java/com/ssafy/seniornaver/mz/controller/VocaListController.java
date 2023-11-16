@@ -6,6 +6,7 @@ import com.ssafy.seniornaver.auth.repository.MemberRepository;
 import com.ssafy.seniornaver.error.code.ErrorCode;
 import com.ssafy.seniornaver.error.exception.BadRequestException;
 import com.ssafy.seniornaver.mz.dto.request.VocaListRequestDto;
+import com.ssafy.seniornaver.mz.dto.response.ProblemEvaluationListResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.VocaListResponseDto;
 import com.ssafy.seniornaver.mz.service.VocabularyListService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,12 +41,20 @@ public class VocaListController {
     @Operation(summary = "단어장 목록 불러오기", description = "category | 1 = 스크랩 단어,  2 = 저장 문제 , 3 = 만든 문제 " +
             " | 페이지는 0부터 시작")
     @PostMapping("/list")
-    public ResponseEntity<VocaListResponseDto> getScrapWordList(@RequestBody VocaListRequestDto vocaListRequestDto,
+    public ResponseEntity<VocaListResponseDto> getVocaList(@RequestBody VocaListRequestDto vocaListRequestDto,
                                                                 HttpServletRequest httpServletRequest) {
 
-        VocaListResponseDto scrapWordResponseDto = vocabularyListService.getVocaList(getMember(httpServletRequest), vocaListRequestDto);
+        return ResponseEntity.ok(vocabularyListService.getVocaList(getMember(httpServletRequest), vocaListRequestDto));
+    }
 
-        return ResponseEntity.ok(scrapWordResponseDto);
+    @Operation(summary = "풀었던 문제 리스트 목록", description = "category 4, 기존과 반환 내용이 다르기 때문에 api 다르게 사용합니다.")
+    @PostMapping("/list/result")
+    public ResponseEntity<ProblemEvaluationListResponseDto> getScrapWordList(@RequestBody VocaListRequestDto vocaListRequestDto,
+                                                                             HttpServletRequest httpServletRequest) {
+
+        if (vocaListRequestDto.getCategory() != 4) { ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 api 요청 입니다."); }
+
+        return ResponseEntity.ok(vocabularyListService.getResultList(getMember(httpServletRequest), vocaListRequestDto));
     }
 
     private Member getMember(HttpServletRequest httpServletRequest) {
