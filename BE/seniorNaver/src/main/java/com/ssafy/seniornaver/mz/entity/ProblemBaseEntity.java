@@ -19,9 +19,6 @@ public class ProblemBaseEntity {
     @Column(nullable = false)
     private LocalDateTime createAt;
 
-    @Column
-    private LocalDateTime updateAt;
-
     @PrePersist
     public void prePersist() {
         this.createAt = LocalDateTime.now().withNano(0);

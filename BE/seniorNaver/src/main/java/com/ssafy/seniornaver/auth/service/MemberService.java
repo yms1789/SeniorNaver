@@ -21,4 +21,6 @@ public interface MemberService {
     String addDetails(DetailRequestDto DetailRequestDto, MultipartFile file) throws IOException;
 
     void logOut(String token);
+
+    void deleteUser(String memberId);
 }

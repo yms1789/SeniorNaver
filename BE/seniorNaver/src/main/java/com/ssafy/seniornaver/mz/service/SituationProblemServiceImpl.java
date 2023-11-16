@@ -12,6 +12,7 @@ import com.ssafy.seniornaver.mz.dto.response.RandomProblemResponseDto;
 import com.ssafy.seniornaver.mz.dto.response.TotalEvaluationResponseDto;
 import com.ssafy.seniornaver.mz.entity.*;
 import com.ssafy.seniornaver.mz.repository.*;
+import com.ssafy.seniornaver.s3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,22 +39,32 @@ public class SituationProblemServiceImpl implements SituationProblemService{
     private final SaveProblemRepository saveProblemRepository;
     private final ChoiceRepository choiceRepository;
     private final EvaluationRepository evaluationRepository;
+    private final MakeProblemRepository makeProblemRepository;
 
     private final TagRepository tagRepository;
     private final TagService tagService;
 
+    private final S3Uploader s3Uploader;
+
     @Override
-    public boolean wordCheck(String word) {
-        return dictionaryRepository.existsByWord(word);
+    public boolean wordCheck(String word, int year) {
+        Dictionary dict = dictionaryRepository.findByWord(word).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_WORD);
+        });
+
+        return dict.getUseYear() >= year && dict.getUseYear() < year + 10;
     }
 
     @Override
     @Transactional
     public SituationProblem createProblem(ProblemCreateRequestDto problemCreateRequestDto,
-                                          Member member) {
+                                          MultipartFile multipartFile,
+                                          Member member) throws IOException {
         if (situationRepository.existsByTitle(problemCreateRequestDto.getTitle())){
             throw new BadRequestException(ErrorCode.ALREADY_REGISTERED_PROBLEM);
         }
+
+        String url = s3Uploader.uploadFiles(multipartFile, "SituationProblem");
 
         SituationProblem situationProblem =  situationRepository.saveAndFlush(SituationProblem.builder()
                         .title(problemCreateRequestDto.getTitle())
@@ -58,7 +72,7 @@ public class SituationProblemServiceImpl implements SituationProblemService{
                         .problemExplanation(problemCreateRequestDto.getProblemExplanation())
                         .answer(problemCreateRequestDto.getAnswer())
                         .makeMember(member.getMemberId())
-                        .image(problemCreateRequestDto.getImage())
+                        .image(url)
                         .useYear(problemCreateRequestDto.getUseYear())
                 .build());
 
@@ -72,6 +86,15 @@ public class SituationProblemServiceImpl implements SituationProblemService{
             choiceRepository.saveAndFlush(choice);
             situationProblem.getChoiceList().add(choice);
         }
+
+        VocabularyList vocabularyList = vocabularyListRepository.findByVocaId(member.getVocaId()).orElseThrow(() -> {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_WORD);
+        });
+
+        vocabularyList.getMakeProblems().add(makeProblemRepository.save(MakeProblem.builder()
+                        .problemId(situationProblem)
+                        .vocaId(vocabularyList)
+                .build()));
 
         return situationProblem;
     }
@@ -171,6 +194,8 @@ public class SituationProblemServiceImpl implements SituationProblemService{
             throw new BadRequestException(ErrorCode.NOT_EXIST_PROBLEM);
         });
 
+        List<Choice> choices = choiceRepository.findAllBySituationProblem(situationProblem);
+
         return ProblemDetailResponseDto.builder()
                 .problemId(situationProblem.getProblemId())
                 .title(situationProblem.getTitle())
@@ -180,14 +205,14 @@ public class SituationProblemServiceImpl implements SituationProblemService{
                 .image(situationProblem.getImage())
                 .review(situationProblem.getReview())
                 .answer(situationProblem.getAnswer())
-                .choices(situationProblem.getChoiceList())
+                .choices(choices)
                 .build();
     }
 
     @Override
-    public RandomProblemResponseDto getRandomProblem() {
+    public RandomProblemResponseDto getRandomProblem(int year) {
         return RandomProblemResponseDto.builder()
-                .problemList(situationRepository.findAll().stream()
+                .problemList(situationRepository.findCustom(year).stream()
                         .map(problem -> problem.getProblemId())
                         .collect(Collectors.toList()))
                 .build();
@@ -240,9 +265,28 @@ public class SituationProblemServiceImpl implements SituationProblemService{
            throw new BadRequestException(ErrorCode.NOT_EXIST_VOCA_LIST);
         });
 
+        SituationProblem situationProblem = situationRepository.findByProblemIdAndTitle(problemEvaluationRequestDto.getProblemId(),
+                problemEvaluationRequestDto.getTitle()).orElseThrow(() -> {
+                    throw new BadRequestException(ErrorCode.NOT_EXIST_PROBLEM);
+        });
+
+        if (problemEvaluationRequestDto.getChoice() == 0 || problemEvaluationRequestDto.getAnswer() == 0) {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_ANSWER);
+        }
+
+        if (problemEvaluationRequestDto.getAnswer() == problemEvaluationRequestDto.getChoice()) {
+            CompleteProblem completeProblem = completeProblemRepository.save(CompleteProblem.builder()
+                    .problemId(situationProblem)
+                    .vocaId(vocabularyList)
+                    .build());
+            vocabularyList.getCompleteProblems().add(completeProblem);
+            situationProblem.getCompleteVocaList().add(completeProblem);
+        }
+
         vocabularyList.getEvaluationResults().add(evaluationRepository.saveAndFlush(EvaluationResult.builder()
                         .problemId(problemEvaluationRequestDto.getProblemId())
                         .vocabularyList(vocabularyList)
+                        .title(problemEvaluationRequestDto.getTitle())
                         .choice(problemEvaluationRequestDto.getChoice())
                         .answer(problemEvaluationRequestDto.getAnswer() == problemEvaluationRequestDto.getChoice())
                 .build()));
@@ -256,8 +300,12 @@ public class SituationProblemServiceImpl implements SituationProblemService{
 
         return TotalEvaluationResponseDto.builder()
                 .problemList(evaluationRepository.findAllByVocaId(vocabularyList).stream()
+                        .sorted(Comparator.comparing(EvaluationResult::getResultId).reversed())
+                        .limit(5)
                         .map(evaluationResult -> TotalEvaluationResponseDto.Problem.builder()
                                 .id(evaluationResult.getProblemId())
+                                .title(evaluationResult.getTitle())
+                                .choice(evaluationResult.getChoice())
                                 .answer(evaluationResult.isAnswer())
                                 .build()).collect(Collectors.toList()))
                 .build();

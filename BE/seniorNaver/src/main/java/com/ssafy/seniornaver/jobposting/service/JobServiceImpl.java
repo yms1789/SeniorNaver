@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.ssafy.seniornaver.jobposting.dto.request.JobListRequestDto;
 import com.ssafy.seniornaver.jobposting.dto.request.JobListSearchRequestDto;
 import com.ssafy.seniornaver.jobposting.dto.response.JobDetailResponseDto;
-import com.ssafy.seniornaver.jobposting.dto.request.JobListRequestDto;
 import com.ssafy.seniornaver.jobposting.dto.response.JobListResponeDto;
 import com.ssafy.seniornaver.jobposting.entity.Employment;
 import com.ssafy.seniornaver.jobposting.repository.EmployRepository;
@@ -115,7 +115,6 @@ public class JobServiceImpl implements JobService {
                             .workPlace(job.getWorkPlace())
                             .endDate(job.getEndDate())
                             .jobId(job.getJobId())
-                            .thumbnail(job.getThumbnail())
                             .employShape(job.getEmployShape())
                             .deadline(job.getDeadline())
 
@@ -144,7 +143,6 @@ public class JobServiceImpl implements JobService {
                             .jobId(job.getJobId())
                             .employShape(job.getEmployShape())
                             .deadline(job.getDeadline())
-                            .thumbnail(job.getThumbnail())
                             .build())
                     .collect(Collectors.toList());
 
@@ -168,7 +166,6 @@ public class JobServiceImpl implements JobService {
                             .jobId(job.getJobId())
                             .employShape(job.getEmployShape())
                             .deadline(job.getDeadline())
-                            .thumbnail(job.getThumbnail())
                             .build())
                     .collect(Collectors.toList());
 

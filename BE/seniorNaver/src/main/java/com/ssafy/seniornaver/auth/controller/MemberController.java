@@ -82,6 +82,14 @@ public class MemberController {
         memberService.logOut(member.getMemberId());
         return "success logout";
     }
+
+    @DeleteMapping("/deleteUser")
+    @Operation(summary = "회원탈퇴", security = @SecurityRequirement(name = "Bearer"))
+    public String deleteUser(HttpServletRequest request) {
+        Member member = getMember(request);
+        memberService.deleteUser(member.getMemberId());
+        return "success delete";
+    }
     // 유저 아이디 중복체크
     @PostMapping("/valid/memberId")
     @Operation(summary = "아이디 중복체크")

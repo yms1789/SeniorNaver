@@ -18,10 +18,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @Tag(name = "Problem", description = "문제 관련 서비스")
@@ -36,22 +40,23 @@ public class SituationProblemController {
     private final SituationProblemService situationProblemService;
 
     @Operation(summary = "단어 확인", description = "문제 생성이 가능한 단어인지 확인합니다.")
-    @PostMapping("valid/{word}")
-    public ResponseEntity wordCheck(@PathVariable("word") String word) {
-        if (!situationProblemService.wordCheck(word)) {
-            throw new BadRequestException(ErrorCode.NOT_EXIST_WORD);
+    @PostMapping("valid/{word}/{year}")
+    public ResponseEntity wordCheck(@PathVariable("word") String word, @PathVariable("year") int year) {
+        if (!situationProblemService.wordCheck(word, year)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("연도가 일치하지 않습니다.");
         }
 
         return ResponseEntity.ok("작성 가능한 단어입니다.");
     }
 
     @Operation(summary = "문제 등록", description = "문제를 등록합니다. 로그인이 된 상태여야 합니다.")
-    @PostMapping("register")
-    public ResponseEntity createProblem(@RequestBody ProblemCreateRequestDto problemCreateRequestDto,
-                                        HttpServletRequest httpServletRequest) {
+    @PostMapping(value = "register", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity createProblem(@RequestPart(name = "multipartFile") MultipartFile multipartFile,
+                                        @RequestPart(name = "requestDto") ProblemCreateRequestDto problemCreateRequestDto,
+                                        HttpServletRequest httpServletRequest) throws IOException {
 
         situationProblemService.relTagToProblem(
-                situationProblemService.createProblem(problemCreateRequestDto, getMember(httpServletRequest)), problemCreateRequestDto);
+                situationProblemService.createProblem(problemCreateRequestDto, multipartFile, getMember(httpServletRequest)), problemCreateRequestDto);
 
         return ResponseEntity.ok("등록 완료");
     }
@@ -78,9 +83,9 @@ public class SituationProblemController {
     }
     
     @Operation(summary = "랜덤 문제 번호", description = "랜덤으로 ProblemId 값을 5개 반환합니다.")
-    @GetMapping("v1/random")
-    public ResponseEntity<RandomProblemResponseDto> getMemberProblemList() {
-        return ResponseEntity.ok(situationProblemService.getRandomProblem());
+    @GetMapping("v1/random/{year}")
+    public ResponseEntity<RandomProblemResponseDto> getMemberProblemList(@PathVariable("year") int year) {
+        return ResponseEntity.ok(situationProblemService.getRandomProblem(year));
     }
 
     @Operation(summary = "문제 저장", description = "랜덤 문제 간 추후에 풀어보고 싶은 문제를 개별로 저장합니다.")

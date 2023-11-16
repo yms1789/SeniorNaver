@@ -3,7 +3,6 @@ package com.ssafy.seniornaver.jobposting.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -43,11 +42,9 @@ public class Employment {
     @Column
     private LocalDate endDate;
 
-    @Column String thumbnail;
-
     @Builder
     public Employment(String acceptMethod, String deadline, String employShape, String jobId, String jobClass,
-                      String title, String workPlace, LocalDate startDate, LocalDate endDate, String thumbnail) {
+                      String title, String workPlace, LocalDate startDate, LocalDate endDate) {
 
         this.acceptMethod = acceptMethod;
         this.deadline = deadline;
@@ -58,6 +55,5 @@ public class Employment {
         this.workPlace = workPlace;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.thumbnail = thumbnail;
     }
 }

@@ -21,10 +21,10 @@ public class Choice {
     @JoinColumn(referencedColumnName = "problemId")
     private SituationProblem situationProblem;
 
-    @Column
+    @Column(nullable = false)
     private int choiceNum;
 
-    @Column
+    @Column(nullable = false)
     private String content;
 
     @Builder

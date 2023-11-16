@@ -16,19 +16,22 @@ public class EvaluationResult {
     private Long resultId;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private VocabularyList vocaId;
 
-    @Column
+    @Column(nullable = false)
     private Long problemId;
 
-    @Column
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
     private LocalDate createAt;
 
-    @Column
+    @Column(nullable = false)
     private int choice;
 
-    @Column
+    @Column(nullable = false)
     private boolean answer;
 
     @PrePersist
@@ -37,9 +40,10 @@ public class EvaluationResult {
     }
 
     @Builder
-    public EvaluationResult(VocabularyList vocabularyList, Long problemId, int choice, boolean answer) {
+    public EvaluationResult(VocabularyList vocabularyList, Long problemId, String title, int choice, boolean answer) {
         this.vocaId = vocabularyList;
         this.problemId = problemId;
+        this.title = title;
         this.choice = choice;
         this.answer = answer;
     }

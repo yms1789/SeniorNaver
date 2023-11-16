@@ -105,15 +105,22 @@ public class MemberServiceImpl implements MemberService{
 	@Transactional
 	public void logOut(String memberId) {
 		Member member = memberRepository.findByMemberId(memberId)
-				.orElseThrow(() -> new BadRequestException(ErrorCode.NOT_FOUND_REFRESH_TOKEN));
+				.orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID));
 		member.expireRefreshToken(new Date());
+	}
+
+	@Override
+	public void deleteUser(String memberId) {
+		Member member = memberRepository.findByMemberId(memberId)
+				.orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID));
+		memberRepository.delete(member);
 	}
 
 	@Override
 	public String addDetails(DetailRequestDto DetailRequestDto, MultipartFile file) throws IOException {
 		// memberId로 Member 엔티티 조회
 		Member member = memberRepository.findByMemberId(DetailRequestDto.getMemberId())
-				.orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
+				.orElseThrow(() -> new BadRequestException(ErrorCode.NOT_EXISTS_USER_ID));
 
 		// Member 엔티티의 region과 nickname 업데이트
 		member.updateRegionAndNickname(DetailRequestDto.getRegion(), DetailRequestDto.getNickname());

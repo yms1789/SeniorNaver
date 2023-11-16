@@ -10,7 +10,6 @@ public enum ErrorCode {
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "A-001", "토큰이 만료되었습니다."),
     NOT_VALID_TOKEN(HttpStatus.UNAUTHORIZED, "A-002", "해당 토큰은 유효한 토큰이 아닙니다."),
     REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "A-003", "해당 refresh token은 만료됐습니다."),
-    NOT_FOUND_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "A-004", "refresh token을 찾지 못했습니다."),
 
     // 유저
     NOT_EXISTS_USER_ID(HttpStatus.BAD_REQUEST, "U-001", "존재하지 않는 유저 아이디입니다."),
@@ -28,6 +27,7 @@ public enum ErrorCode {
     ALREADY_REGISTERED_PROBLEM(HttpStatus.BAD_REQUEST, "SP-001", "이미 등록된 문제 제목입니다."),
     NOT_EXIST_PROBLEM(HttpStatus.BAD_REQUEST,"SP-002", "문제가 존재하지 않습니다. 문제 ID를 확인해주세요"),
     NOT_EXIST_PROBLEM_IN_VOCA_LIST(HttpStatus.BAD_REQUEST, "SP-003", "단어장에 문제가 존재하지 않습니다."),
+    NOT_EXIST_ANSWER(HttpStatus.BAD_REQUEST, "SP-004", "정답 혹은 답변을 선택하지 않으셨습니다."),
 
     NOT_MATCH_CATEGORY(HttpStatus.BAD_REQUEST, "V-001", "요청 목록과 메서드가 상이합니다."),
 
