@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { styled } from "styled-components";
 import { useRecoilState } from "recoil";
 import { travelCategoryState } from "../states/curationCategory";
+import { upButtonState } from "../states/upButton";
 import { useCurationTravelsQuery } from "../hooks/useCurationQuery";
 import { handleSelect, initSelectedCategory, onErrorImg, travelLocation } from "../utils/utils";
 import { TSelectedTravelCategory, TTravelData } from "../utils/types";
@@ -23,6 +24,9 @@ const TravelCategoryWrapper = styled.div`
   align-items: center;
   flex-wrap: wrap;
   gap: 1vw;
+  @media (max-width: 1280px) {
+    width: 60vw;
+  }
   @media (max-width: 768px) {
     width: 70vw;
   }
@@ -36,14 +40,12 @@ const TravelGridWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 23.5vw);
   gap: 4vw;
-
   @media (max-width: 1280px) {
-    grid-template-columns: repeat(2, 40vw);
-  }
-
-  @media (max-width: 768px) {
     grid-template-columns: repeat(2, 45vw);
   }
+  /* @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 45vw);
+  } */
 `;
 const DataTravelsWrapper = styled.div`
   width: 100%;
@@ -124,6 +126,7 @@ function CurationTravels() {
   );
   const [selectedCategory, setSelectedCategory] =
     useRecoilState<TSelectedTravelCategory>(travelCategoryState);
+  const [_, setUpButton] = useRecoilState(upButtonState);
 
   const [dataTravels, setDataTravels] = useState<TTravelData[]>([]);
   const [visibleData, setVisibleData] = useState<TTravelData[]>([]);
@@ -147,10 +150,15 @@ function CurationTravels() {
   };
 
   useEffect(() => {
+    if (page > 1) {
+      setUpButton(true);
+    }
+  }, [page]);
+
+  useEffect(() => {
     if (travelsData) {
       setDataTravels(travelsData);
     }
-    console.log(travelsData, selectedCategory);
   }, [travelsData]);
 
   useEffect(() => {
@@ -189,6 +197,15 @@ function CurationTravels() {
     }
   };
 
+  useEffect(() => {
+    // Scroll back to the stored position when coming back from the detail page
+    const storedScrollPosition = sessionStorage.getItem("storedScrollPosition");
+    if (storedScrollPosition) {
+      window.scrollTo(0, parseInt(storedScrollPosition));
+      sessionStorage.removeItem("storedScrollPosition"); // Clear the stored position
+    }
+  }, [visibleData]);
+
   return (
     <CurationTravelWrapper>
       <TravelCategoryWrapper>
@@ -213,33 +230,38 @@ function CurationTravels() {
           );
         })}
       </TravelCategoryWrapper>
-      <TravelGridWrapper>
-        {visibleData.map(travel => {
-          return (
-            <DataTravelsWrapper
-              key={travel.contentid}
-              onClick={() => navigate(`/travel/${parseInt(travel.contentid)}`)}
-              onMouseEnter={() => handleHover(travel.contentid, true)}
-              onMouseLeave={() => handleHover(travel.contentid, false)}
-            >
-              <TravelGroupWrapper>
-                <TravelSubAddressWrapper>{travel.addr2.slice(1, -1)}</TravelSubAddressWrapper>
-                <TravelTitleWrapper>{travel.title}</TravelTitleWrapper>
-              </TravelGroupWrapper>
-              <TravelAddressWrapper>{travel.addr1}</TravelAddressWrapper>
-              <TravelImageWrapper hovered={travel.hovered ? "true" : "false"}>
-                <TravelImage
-                  src={travel.firstimage}
-                  alt="TravelImage"
-                  onError={onErrorImg}
-                  referrerPolicy="no-referrer"
-                />
-              </TravelImageWrapper>
-            </DataTravelsWrapper>
-          );
-        })}
-      </TravelGridWrapper>
-      {(!visibleData.length || isLoading) && <LoadingForCuration />}
+      {!isLoading ? (
+        <TravelGridWrapper>
+          {visibleData.map(travel => {
+            return (
+              <DataTravelsWrapper
+                key={travel.contentid}
+                onClick={() => {
+                  navigate(`/travel/${parseInt(travel.contentid)}`);
+                }}
+                onMouseEnter={() => handleHover(travel.contentid, true)}
+                onMouseLeave={() => handleHover(travel.contentid, false)}
+              >
+                <TravelGroupWrapper>
+                  <TravelSubAddressWrapper>{travel.addr2.slice(1, -1)}</TravelSubAddressWrapper>
+                  <TravelTitleWrapper>{travel.title}</TravelTitleWrapper>
+                </TravelGroupWrapper>
+                <TravelAddressWrapper>{travel.addr1}</TravelAddressWrapper>
+                <TravelImageWrapper hovered={travel.hovered ? "true" : "false"}>
+                  <TravelImage
+                    src={travel.firstimage}
+                    alt="TravelImage"
+                    onError={onErrorImg}
+                    referrerPolicy="no-referrer"
+                  />
+                </TravelImageWrapper>
+              </DataTravelsWrapper>
+            );
+          })}
+        </TravelGridWrapper>
+      ) : (
+        <LoadingForCuration />
+      )}
       <BottomBoundaryRef ref={bottomBoundaryRef} />
     </CurationTravelWrapper>
   );

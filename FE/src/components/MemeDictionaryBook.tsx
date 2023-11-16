@@ -2,7 +2,8 @@ import MemeDictionaryBookList from "./MemeDictionaryBookList";
 import searchicon from "./../assets/images/searchicon.png"
 import styled from "styled-components";
 import Pagination  from "./Pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchWords } from "../hooks/useMemeQuery";
 const MemeDictionaryBookWraaper = styled.div`
   width: 930px;
   margin-top: 100px;
@@ -79,66 +80,45 @@ const PaginationWrapper = styled.div`
   align-items: center;
 `;
 
-const data = [{
-  no : "당모치",
-  page : 0,
-  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
-},
-{
-  no : "갑분싸",
-  page : 0,
-  content : "'갑자기 분위기 싸해진다.'의 준말. 특정 상황에서 갑자기 분위기가 싸늘해지는 상황을 표현하는 신조어.",
-},
-{
-  no : "당모치",
-  page : 0,
-  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
-},
-{
-  no : "당모치",
-  page : 0,
-  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
-},
-{
-  no : "당모치",
-  page : 0,
-  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
-},
-{
-  no : "당모치",
-  page : 0,
-  content : "'치킨의 위상을 높게 표현한 신조어. '당연히 모든 치킨은 옳다'의 준말이다. '치느님'과 유사한 표현이다.",
-},
-]
-
 function MemeDictionaryBook() {
-  const [posts, setPosts] = useState(data);
-  const [currentPage, setCurrentPage] = useState(data[0].page+1);
-  const [postsPerPage, setPostsPerPage] = useState(5);
-  const firstPostIndex = (currentPage - 1) * postsPerPage;
-  const lastPostIndex = firstPostIndex + postsPerPage;
-  const currentPosts = posts.slice(firstPostIndex, lastPostIndex);
-  // console.log(firstPostIndex)
-  // console.log(lastPostIndex)
-  // console.log(currentPosts)
+  const [posts, setPosts] = useState([]);
+  const [year, setYear] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages,setTotalPages] = useState(0);
+  const [searchvalue,setSearchvalue] = useState("")
+
+  const fetchData = async () => {
+    const data = await fetchWords(currentPage-1, searchvalue, year);
+    setPosts(data.items);
+    setTotalPages(data.totalPage)
+  };
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, searchvalue, year]);
+  
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setSearchvalue(value);
+  }
+
 
   return (
     <MemeDictionaryBookWraaper>
       <MemeDictionaryBookHeadText>MZ 용어사전</MemeDictionaryBookHeadText>
       <MemeDictionaryBookSearchBarWrapper>
-      <MemeDictionaryBookSearchBar placeholder="검색어를 입력하세요"/>
+      <MemeDictionaryBookSearchBar placeholder="검색어를 입력하세요" onChange={handleChange} name="searchvalue" value={searchvalue}/>
       <MemeDictionaryBookSearchIcon src={searchicon}/>
       </MemeDictionaryBookSearchBarWrapper>
       <MemeDictionaryBookFilterWrapper>
-      <MemeDictionaryBookFilter>2000</MemeDictionaryBookFilter>
-      <MemeDictionaryBookFilter>2010</MemeDictionaryBookFilter>
-      <MemeDictionaryBookFilter>2020</MemeDictionaryBookFilter>
+      <MemeDictionaryBookFilter onClick={()=>setYear(2000)}>2000</MemeDictionaryBookFilter>
+      <MemeDictionaryBookFilter onClick={()=>setYear(2010)}>2010</MemeDictionaryBookFilter>
+      <MemeDictionaryBookFilter onClick={()=>setYear(2020)}>2020</MemeDictionaryBookFilter>
       </MemeDictionaryBookFilterWrapper>
-      <MemeDictionaryBookList currentPosts={currentPosts}/>
+      {posts && <MemeDictionaryBookList currentPosts={posts}/>}
       <PaginationWrapper>
       <Pagination
-          postsNum={posts.length}
-          postsPerPage={postsPerPage}
+          totalPages={totalPages}
           setCurrentPage={setCurrentPage}
           currentPage={currentPage}
         />

@@ -4,8 +4,6 @@ import profileeditor from "./../assets/images/profileeditor.png";
 import mainscreenpingpingeee from "./../assets/images/mainscreenpingpingeee.png"
 import { useRecoilValue } from "recoil";
 import { userState } from "../states/useUser";
-import { useSetRecoilState } from "recoil";
-import { myPageCategoryState } from "../states/useMyPage";
 
 const MyPageProfileWrapper = styled.div`
   margin: auto;
@@ -17,20 +15,6 @@ const MyPageProfileWrapper = styled.div`
 `
 
 const MyPageProfileBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 26vw;
-  height: 15vh;
-  background: var(--white);
-  border: 1px solid #000000;
-  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.25);
-  border-radius: 30px;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 5vh;
-  
-`
-const MyPageProfileBox2 = styled.div`
   display: flex;
   flex-direction: column;
   width: 26vw;
@@ -142,9 +126,8 @@ const ProfileEditor = styled.img`
   cursor: pointer;
 `;
 
-function MyPageProfile() {
+function MyPageBirthChange() {
   const userInfo = useRecoilValue(userState);  
-  const setcurrentCategory = useSetRecoilState(myPageCategoryState)
   const [profile, setProfile] = useState<{ url: string; file: File; } | null>(null);
 
   const handleChangeProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -162,31 +145,8 @@ function MyPageProfile() {
 
   return (
     <MyPageProfileWrapper>
-      <ProfileWrapper>
-        <ProfileEditorInput id="fileinput" type="file" accept="image/*" onChange={handleChangeProfile}/>
-        <ProfileEditorLabel htmlFor="fileinput">
-        <ProfileEditor src={profileeditor}/>
-        </ProfileEditorLabel>
-        <ProfileImgae src={profile ? profile.url : mainscreenpingpingeee}/>
-      </ProfileWrapper>
-      <MyPageNicknameHeader>{userInfo.nickname}</MyPageNicknameHeader>
-      <MyPageNicknameText>{userInfo.email}</MyPageNicknameText>
-      <MyPageProfileBox>
-      <MyPageHeader>개인정보 재설정</MyPageHeader>
-      <MyPageLine/>  
-      <MyPageText onClick={()=> setcurrentCategory({ currentCategory: 4 })}>닉네임 재설정</MyPageText>
-      {/* <MyPageLine/> */}
-      {/* <MyPageText onClick={()=> setcurrentCategory({ currentCategory: 5 })}>생년월일 재설정</MyPageText> */}
-      </MyPageProfileBox>
-
-      <MyPageProfileBox2>
-      <MyPageHeader>맞춤정보 설정</MyPageHeader>
-      <MyPageLine/>  
-      <MyPageText onClick={()=> setcurrentCategory({ currentCategory: 6 })}>선호 키워드 재설정</MyPageText>
-      <MyPageLine/>
-      <MyPageText onClick={()=> setcurrentCategory({ currentCategory: 7 })}>지역 재설정</MyPageText>
-      </MyPageProfileBox2>
+      <MyPageNicknameHeader>생년월일 재설정</MyPageNicknameHeader>
     </MyPageProfileWrapper>
   )
 }
-export default MyPageProfile;
+export default MyPageBirthChange;

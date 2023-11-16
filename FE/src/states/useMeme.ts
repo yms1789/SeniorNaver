@@ -14,9 +14,9 @@ interface IMemeMineCurrentCategory {
   currentCategory: number;
 }
 
-interface ImemeMineCurrentWordDetail {
-  currentWord: number;
-}
+// interface ImemeMineCurrentWordDetail {
+//   currentWord: number;
+// }
 
 export const memeCurrentTapState = atom<IMemeCurrentTap>({
   key: "memeCurrentTap",
@@ -43,7 +43,7 @@ export const memeMineCurrentPracticeState = atom<IMemeMineCurrentPracticePage>({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const memeMineCurrentWordDetailState = atom<ImemeMineCurrentWordDetail>({
+export const memeMineCurrentWordDetailState = atom({
   key: "memeMineCurrentWordDetail",
   default: {
     currentWord: 0,

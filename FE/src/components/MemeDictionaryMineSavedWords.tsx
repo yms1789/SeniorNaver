@@ -3,6 +3,9 @@ import { useRecoilState,useSetRecoilState } from "recoil";
 import MemeDictionaryMineSavedWordsList from "./MemeDictionaryMineSavedWordsList";
 import { memeMineCurrentCategoryState } from "../states/useMeme";
 import minebackground from "./../assets/images/minebackground.png"
+import { useState, useEffect } from "react";
+import { fetchMyWords } from "../hooks/useMemeQuery";
+import Pagination from "./Pagination";
 
 const MemeDictionaryMineWraaper = styled.div`
   margin-top: 50px;
@@ -13,7 +16,6 @@ const MemeDictionaryMineWraaper = styled.div`
   flex-direction: column;
   justify-content: center;
   margin-bottom: 300px;
-
 `
 
 const SavedWordsHeader = styled.div`
@@ -37,23 +39,54 @@ const SavedWordsListArea = styled.div`
   justify-content: center;
   align-items: center;
 `
-
-const MineBackground = styled.div`
-  background-image: url(${minebackground}); 
-  background-size: cover;
-  width: 1103px;
-  height: 905px;
+const MemeDictionaryMineRowWraaper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+const PaginationWrapper = styled.div`
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 function MemeDictionaryMineSavedWords() {
+  const [posts, setPosts] = useState([]);
+  const [year, setYear] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages,setTotalPages] = useState(0);
+  const [searchvalue,setSearchvalue] = useState("")
+
+  const fetchData = async () => {
+    const data = await fetchMyWords(currentPage-1, 1);
+    console.log("오오노놔",data)
+    setPosts(data.items);
+    setTotalPages(data.totalPage)
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, searchvalue, year]);
+  
   const currentCategory = useRecoilState(memeMineCurrentCategoryState);
   return (
     <MemeDictionaryMineWraaper>
       <SavedWordsHeader>저장한 단어</SavedWordsHeader>
       <SavedWordsHeadline/>
+      <MemeDictionaryMineRowWraaper>
       <SavedWordsListArea>
-      <MemeDictionaryMineSavedWordsList/>
+      {posts && <MemeDictionaryMineSavedWordsList currentPosts={posts}/>}
       </SavedWordsListArea>
+      <PaginationWrapper>
+      <Pagination
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
+      </PaginationWrapper>
+      </MemeDictionaryMineRowWraaper>
     </MemeDictionaryMineWraaper>
   )      
 }

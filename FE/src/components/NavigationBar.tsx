@@ -89,7 +89,7 @@ function NavigationBar() {
         navigate("/jobs");
         break;
       case "MZ사전":
-        navigate("/Meme");
+        navigate("/meme");
         break;
       default:
         break;

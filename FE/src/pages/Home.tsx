@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { curationCategoryState } from "../states/curationCategory";
+import { upButtonState } from "../states/upButton";
 import { useCurationCarouselQuery } from "../hooks/useCurationQuery";
 import CurationCategoryButton from "../components/CurationCategoryButton";
 import LoadingForCuration from "../components/LoadingForCuration";
@@ -11,23 +13,32 @@ import CurationNews from "../components/CurationNews";
 import Carousel from "../components/Carousel";
 import HeadBar from "../components/HeadBar";
 import NavigationBar from "../components/NavigationBar";
+import Footer from "../components/Footer";
+import { IoIosArrowUp } from "react-icons/io";
 
+const TotalWrapper = styled.div`
+  overflow-x: hidden;
+`;
 const HomeWrapper = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  padding: 11vh 2vh 4vw;
+  padding: 11vh 2vh 0vw;
   gap: 6vw;
-  font-size: var(--font-size-base);
+  font-size: 1vw;
   font-family: "NanumSquare Neo ExtraBold";
   overflow-x: hidden;
   color: var(--dark02);
-  /* @media (max-width: 1280px) {
-    padding: 11vh 4vw;
-  } */
+`;
+const LoadingWrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const Divider = styled.div`
   width: inherit;
@@ -39,23 +50,72 @@ const CurationWrapper = styled.div`
   flex-direction: column;
   gap: 3vw;
 `;
+const UpButton = styled.div<{ $isHovered: boolean }>`
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  height: 3.5rem;
+  width: 3.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: ${props => (props.$isHovered ? "20.5rem" : "20rem")} 3rem;
+  z-index: 100;
+  font-size: 2.5rem;
+  border: 3px solid var(--gray04);
+  border-radius: 0.7vw;
+  background-color: var(--white90);
+  transition: all 0.3s ease-in-out;
+`;
 
 function Home() {
   const activeCategory = useRecoilValue(curationCategoryState);
+  const [upButton, setUpButton] = useRecoilState(upButtonState);
+  const [upIsHovered, setUpIsHovered] = useState(false);
+  const [isTop, setIsTop] = useState(true);
 
   const { data: dataCarousel, isLoading } = useCurationCarouselQuery();
 
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    setIsTop(scrollTop === 0);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => {
+      setUpButton(false);
+    }, 300);
+  };
+
   if (isLoading) {
     return (
-      <HomeWrapper>
+      <LoadingWrapper>
         <LoadingForCuration />
-      </HomeWrapper>
+      </LoadingWrapper>
     );
   }
 
   return (
-    <>
+    <TotalWrapper>
       <HeadBar />
+      {!isTop && upButton && (
+        <UpButton
+          onMouseEnter={() => setUpIsHovered(true)}
+          onMouseLeave={() => setUpIsHovered(false)}
+          $isHovered={upIsHovered}
+          onClick={scrollToTop}
+        >
+          <IoIosArrowUp />
+        </UpButton>
+      )}
       <HomeWrapper>
         <NavigationBar />
         {dataCarousel && (
@@ -73,8 +133,9 @@ function Home() {
           {activeCategory === "맛집" && <CurationTastes />}
           {activeCategory === "뉴스" && <CurationNews />}
         </CurationWrapper>
+        <Footer />
       </HomeWrapper>
-    </>
+    </TotalWrapper>
   );
 }
 

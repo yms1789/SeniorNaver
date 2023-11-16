@@ -1,5 +1,15 @@
 import styled from "styled-components";
 import {BsFillBookmarksFill} from "react-icons/bs"
+import { fetchTodayWord, fetchDetail, scrapWord, deleteScrapWord } from "../hooks/useMemeQuery";
+
+import { useState } from "react";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { isLoggedInState } from "../states/useUser";
+
+interface IconProps {
+  isScrapped: boolean | undefined; 
+}
 
 const MemeDictionaryTodayMemeWraaper = styled.div`
   margin-top: 100px;
@@ -27,23 +37,24 @@ const MemeDictionaryTodayMemeInfoBox = styled.div`
   align-items: center;
   margin-bottom: 50px;
 `
-const MemeDictionaryDetailInfoIcon = styled.div`
+const MemeDictionaryDetailInfoIcon = styled.div<IconProps>`
   display: flex;
   position: relative;
-  top: 30px;
+  top: 60px;
   left: 330px;
+  color: ${props => props.isScrapped ? 'var(--white)' : 'var(--dark10)'}; 
   cursor: pointer;
   transition: all 0.15s ease;
   &:hover {
-    top: 36px;
+    top: 50px;
   }
   &:active {
-    top: 30px;
+    top: 60px;
   }
 `
-
 const MemeDictionaryTodayMemeInfoBoxHeader = styled.div`
-  margin-top: 30px;
+  position: relative;
+  top: 50px;
   align-items: center;
   justify-content: center;
   display: flex;
@@ -53,13 +64,17 @@ const MemeDictionaryTodayMemeInfoBoxHeader = styled.div`
   -webkit-text-stroke: 2px var(--dark01);
 `
 const MemeDictionaryTodayMemeDefinitionHeader = styled.div`
+  user-select: none;
   display: flex;
   font-family: "NanumSquareNeoExtraBold";
   text-align: left;
   font-size: 46px;
+  height: auto;
 `
 const MemeDictionaryTodayMemeDefinitionContent = styled.div`
   display: flex;
+  margin-top: 40px;
+  height: 100%;
   font-family: "NanumSquareNeoBold";
   text-align: left;
   font-size: 32px;
@@ -70,19 +85,84 @@ const MemeDictionaryHeadline = styled.div`
   border: 1px solid var(--dark30);
   margin-bottom: 150px;
 ` 
+
+const YearBox = styled.div<IconProps>`
+  position: relative;
+  user-select: none;
+  top: ${props => props.isScrapped ? '-50%' : '-40%'}; 
+  right: ${props => props.isScrapped ? '-35%' : '-35%'}; 
+  display: flex;
+  font-family: "NanumSquareNeoExtraBold";
+  font-size: 26px;
+  letter-spacing: -0.05em;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 50px;
+  color: var(--white);
+  background: var(--dark01);
+  border-radius: 30px;
+`
+
 function MemeDictionaryTodayMeme() {
+  const [wordData, setWordData] = useState<{word: string, mean: string, scrap: boolean, useYear: string, example: string} | null>(null);
+  const [wordId, setWordId] = useState<number | undefined>();
+  const [isLoggedIn] = useRecoilState(isLoggedInState);  
+
+  const fetchToday = async () => {
+    const data = await fetchTodayWord();
+    const wordId = Number(Object.values(data)[0]);     
+    console.log(wordId) 
+    setWordId(wordId);
+  };
+
+  const handleScrap = async () => {
+    if (wordId === undefined) return;
+    if (wordData?.scrap) {
+      await deleteScrapWord(wordId);
+      fetchToday();
+
+    } else {
+      await scrapWord(wordId);
+      fetchToday();
+
+    }
+  }
+
+  useEffect(() => {
+    fetchToday();
+  }, []);
+  
+  useEffect(() => {
+    if (wordId) {
+      console.log(typeof(wordId))
+      const fetchDetailWord = async () => {
+        const data = await fetchDetail(wordId);
+        setWordData(data);
+      };
+      fetchDetailWord();
+    }
+  }, [wordId]); 
+  
+
   return (
     <MemeDictionaryTodayMemeWraaper>
       <MemeDictionaryTodayMemeHeadText>오늘의 용어</MemeDictionaryTodayMemeHeadText>
       <MemeDictionaryHeadline/>
       <MemeDictionaryTodayMemeInfoBox>
-      <MemeDictionaryTodayMemeInfoBoxHeader>"쫌쫌따리"</MemeDictionaryTodayMemeInfoBoxHeader>
-      <MemeDictionaryDetailInfoIcon><BsFillBookmarksFill size="50" color="var(--white)"/></MemeDictionaryDetailInfoIcon>
+      <MemeDictionaryTodayMemeInfoBoxHeader>"{wordData?.word}"</MemeDictionaryTodayMemeInfoBoxHeader>
+        {isLoggedIn && 
+          <MemeDictionaryDetailInfoIcon isScrapped={wordData?.scrap} onClick={handleScrap}>
+            <BsFillBookmarksFill size="50" />
+          </MemeDictionaryDetailInfoIcon>
+        }
+        <YearBox isScrapped={isLoggedIn}>{wordData?.useYear}</YearBox>
       </MemeDictionaryTodayMemeInfoBox>
       <MemeDictionaryTodayMemeDefinitionHeader>뜻풀이</MemeDictionaryTodayMemeDefinitionHeader>
-      <MemeDictionaryTodayMemeDefinitionContent>조금씩 매우 적고 하찮은 양을 모으는 모습을 나타내는 신조어. 닭발의 뼈에 붙어있던 아주 적은 양의 살에서 유래하였다</MemeDictionaryTodayMemeDefinitionContent>
+      <MemeDictionaryTodayMemeDefinitionContent>{wordData?.mean}</MemeDictionaryTodayMemeDefinitionContent>
       <MemeDictionaryTodayMemeDefinitionHeader>예문</MemeDictionaryTodayMemeDefinitionHeader>
-      <MemeDictionaryTodayMemeDefinitionContent>“쫌쫌따리 모으다보면 나도 언젠간..”</MemeDictionaryTodayMemeDefinitionContent>
+      <MemeDictionaryTodayMemeDefinitionContent>{wordData?.example}</MemeDictionaryTodayMemeDefinitionContent>
       </MemeDictionaryTodayMemeWraaper>
   )
 }

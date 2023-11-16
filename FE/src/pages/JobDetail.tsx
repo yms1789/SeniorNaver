@@ -5,10 +5,11 @@ import { AiOutlinePhone } from "react-icons/ai";
 import { Container as MapDiv, Marker, NaverMap } from "react-naver-maps";
 import { useLocation } from "react-router";
 import styled from "styled-components";
+import defaultImage from "../assets/images/defaultimage.png";
 import HeadBar from "../components/HeadBar";
 import NavigationBar from "../components/NavigationBar";
-import Loading from "./Loading";
 import { getDateDiff } from "../utils/utils";
+import Loading from "./Loading";
 
 interface IJobDetail {
   wantedTitle: string;
@@ -121,6 +122,7 @@ const DetailImage = styled.img`
   }
   width: 300px;
   height: 150px;
+  background-size: contain;
   float: left;
   border-radius: 10px;
   margin-left: 20px;
@@ -251,6 +253,10 @@ const MapWrapper = styled.div`
   margin: 0 auto;
 `;
 
+const Box = styled.div`
+  height: 50px;
+`;
+
 function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
   const { state } = useLocation();
   const [isLoading, setIsLoading] = useState(false);
@@ -298,10 +304,7 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
               <DetailTitle>{data.wantedTitle}</DetailTitle>
               <DetailContentWrapper>
                 <DetailContentTopWrapper>
-                  <DetailImage
-                    src="https://image.alba.kr/job/photo_no.png
-"
-                  />
+                  <DetailImage src={defaultImage} />
                   <DetailTextWrapper>
                     <DetailText>
                       <DetailDate>{getDateDiff(data.toAcptDd)}</DetailDate>
@@ -392,6 +395,7 @@ function JobDetail({ navermaps }: { navermaps: typeof naver.maps }) {
                 </MapDiv>
               </MapWrapper>
             )}
+            <Box />
           </JobDetailWrapper>
         )}
       </Suspense>

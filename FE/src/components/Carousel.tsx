@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { IoIosArrowBack, IoIosArrowForward, IoIosPause, IoIosPlay } from "react-icons/io";
 import { onErrorImg } from "../utils/utils";
+import { IoIosArrowBack, IoIosArrowForward, IoIosPause, IoIosPlay } from "react-icons/io";
 
 const CarouselWrapper = styled.div`
   display: flex;
@@ -484,7 +484,7 @@ function Carousel({ curations, mzWords, places }: TResponseData) {
             {currentCuration?.map(curation => {
               return (
                 <CurationTextWrapper key={self.crypto.randomUUID()}>
-                  <CurationText>{curation[1]}</CurationText>
+                  <CurationText>{curation[1].replace(/<\/?b>|<br\s*\/?>/gi, "")}</CurationText>
                 </CurationTextWrapper>
               );
             })}
@@ -500,7 +500,7 @@ function Carousel({ curations, mzWords, places }: TResponseData) {
                       <MzDictionaryText>MZ 사전</MzDictionaryText>
                     </MzDictionaryWrapper>
                     <MzWordWrapper>
-                      <MzWordText>“ {word[0]} ”</MzWordText>
+                      <MzWordText>“ {word[0].slice(0, 12)} ”</MzWordText>
                     </MzWordWrapper>
                     <MzQuestionText>이 말의 뜻은?</MzQuestionText>
                   </MzWrapper>

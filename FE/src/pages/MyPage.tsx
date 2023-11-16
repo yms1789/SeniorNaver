@@ -7,6 +7,10 @@ import MyPageProfile from "../components/MyPageProfile";
 import MyPageScrap from "../components/MyPageScrap";
 import MyPageQuestionAndAnswer from "../components/MyPageQuestionAndAnswer";
 import MyPageWithdrawal from "../components/MyPageWithdrawal";
+import MyPageNicknameChange from "../components/MyPageNicknameChange";
+import MyPageBirthChange from "../components/MyPageBirthChange";
+import MyPageKeywordsChange from "../components/MyPageKeywordsChange";
+import MyPageRegionChange from "../components/MyPageRegionChange";
 const MyPageWrapper = styled.div`
   width: 100vw;
   height: 100vh;
@@ -49,8 +53,9 @@ const MyPageHeadBarLine= styled.div`
   const activeCategory = useRecoilValue(myPageCategoryState);
 
   return (
+    <>
+    <HeadBar/>
     <MyPageWrapper>
-      <HeadBar/>
       <MyPageHeadBarWrapper>
         <MyPageHeadBarText>내 정보 관리</MyPageHeadBarText>
         <MyPageHeadBarLine/>
@@ -61,8 +66,13 @@ const MyPageHeadBarLine= styled.div`
         {activeCategory.currentCategory === 1 && <MyPageScrap />}
         {activeCategory.currentCategory === 2 && <MyPageQuestionAndAnswer />}
         {activeCategory.currentCategory === 3 && <MyPageWithdrawal />}
+        {activeCategory.currentCategory === 4 && <MyPageNicknameChange />}
+        {activeCategory.currentCategory === 5 && <MyPageBirthChange />}
+        {activeCategory.currentCategory === 6 && <MyPageKeywordsChange />}
+        {activeCategory.currentCategory === 7 && <MyPageRegionChange />}
       </MyPageRowWrapper>
     </MyPageWrapper>
+    </>
   )
 }
 export default MyPage;

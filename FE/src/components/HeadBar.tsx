@@ -236,7 +236,7 @@ function HeadBar() {
   } else if (location.pathname === "/") {
     backgroundColor = "var(--white);";
   } else if (location.pathname === "/meme") {
-    backgroundColor = "var(--gray04);";
+    backgroundColor = "var(--white);";
   } else if (location.pathname === "/mypage") {
     backgroundColor = "var(--white);";
   }

@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import { useSetRecoilState } from "recoil";
-import MemeDictionaryMineSelector from "./MemeDictionaryMineSelector";
 import { memeMineCurrentWordDetailState, memeCurrentTapState } from "../states/useMeme";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-
+import { AiOutlineHeart } from "react-icons/ai";
 
 const MemeDictionaryMineWraaper = styled.div`
   width: 930px;
@@ -102,7 +100,7 @@ const data = [{
 ]
 
 
-function MemeDictionaryMineSavedWordsList() {
+function MemeDictionaryMineSavedWordsList({currentPosts}:{currentPosts:any;}) {
   const setCurrentTab = useSetRecoilState(memeCurrentTapState);
   const setcurrentWord = useSetRecoilState(memeMineCurrentWordDetailState);
 
@@ -111,13 +109,14 @@ function MemeDictionaryMineSavedWordsList() {
     setcurrentWord({currentWord : index});
   }
   
+
   return (
     <MemeDictionaryMineWraaper>
-              {data.map((e, index) => (
+              {currentPosts.map((e:any, index:number) => (
               <SavedWordsListWrapper key={index}> 
               <SavedWordsListInnerWrapper>
-                <SavedWordsListBox onClick={()=>handleSetState(index)}>
-                <SavedWordsListBoxWordName>{e.content}</SavedWordsListBoxWordName>
+                <SavedWordsListBox onClick={()=>handleSetState(e.id)}>
+                <SavedWordsListBoxWordName>{e.title}</SavedWordsListBoxWordName>
                 <SavedWordsListBoxYear>{e.year}</SavedWordsListBoxYear>
                 <SavedWordsListBoxHeart>                
                   <AiOutlineHeart size="50" color="var(--red)"/>
