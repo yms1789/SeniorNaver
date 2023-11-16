@@ -14,18 +14,20 @@ import {
   TTravelData,
 } from "../utils/types";
 import { cityCodes, fetchUserDatas } from "../utils/utils";
-import fetchApi from "../states/fetchApi";
+import { fetchApi } from "../states/useAxiosInterceptor";
 
 export const useCurationCarouselQuery = () => {
   const fetchData = async () => {
     try {
-      const response = await fetchApi.get<TCarouselData>("/api/curation/v1/carousel");
+      const response = await fetchApi.get<TCarouselData>("api/curation/v1/carousel");
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch carousel data");
     }
   };
-  const curationCarouselQuery = useQuery(["carousel"], fetchData);
+  const curationCarouselQuery = useQuery(["carousel"], fetchData, {
+    refetchOnWindowFocus: false,
+  });
   return curationCarouselQuery;
 };
 
