@@ -48,6 +48,7 @@ const TravelGridWrapper = styled.div`
   } */
 `;
 const DataTravelsWrapper = styled.div`
+  cursor: pointer;
   width: 100%;
   height: 100%;
   display: flex;

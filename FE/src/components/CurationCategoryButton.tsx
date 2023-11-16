@@ -11,6 +11,7 @@ const CurationCategoryButtonWrapper = styled.div`
   gap: 3.5vw;
 `;
 const ButtonWrapper = styled.div`
+  cursor: pointer;
   height: 8vw;
   display: flex;
   flex-direction: column;

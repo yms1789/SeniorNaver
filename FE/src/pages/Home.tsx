@@ -51,6 +51,7 @@ const CurationWrapper = styled.div`
   gap: 3vw;
 `;
 const UpButton = styled.div`
+  cursor: pointer;
   position: fixed;
   right: 0;
   bottom: 0;

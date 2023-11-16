@@ -62,11 +62,10 @@ const CurationImageWrapper = styled.a`
   width: 100%;
   display: flex;
   flex: none;
-  align-self: stretch;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
-  object-fit: contain;
+  justify-content: center;
+  align-items: center;
+  background: var(--aqua01);
   &:hover {
     &::after {
       content: "뉴스 바로가기↗";
@@ -84,10 +83,9 @@ const CurationImageWrapper = styled.a`
   }
 `;
 const CurationImage = styled.img`
-  flex-shrink: 0;
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
+  width: auto; /* 이미지의 가로 크기를 부모 요소에 맞게 조절 */
+  height: 100%; /* 세로 크기를 가로 비율에 맞게 자동 조절 */
+  object-fit: contain; /* 이미지가 부모 요소에 맞게 늘어나면서 비율 유지 */
 `;
 const FrameCurationText = styled.div`
   height: 100%;
@@ -155,6 +153,7 @@ const OtherContainerWrapper = styled.ul`
   padding: 0;
 `;
 const MzWrapper = styled.li`
+  cursor: pointer;
   width: 100%;
   display: flex;
   flex: none;
@@ -347,6 +346,7 @@ const DotWrapper = styled.div`
   justify-content: flex-start;
 `;
 const Dot = styled.div<{ $active: boolean }>`
+  cursor: pointer;
   height: 0.5vw;
   width: 3vw;
   margin: 0.5vw;
@@ -391,6 +391,7 @@ function Carousel({ curations, mzWords, places }: TResponseData) {
   const refs = [curationImagesRef, curationTextsRef, mzRef, placeRef];
 
   const handleSetState = (index: number) => {
+    console.log(index);
     setCurrentTab({ currentPage: 4 });
     setcurrentWord({ currentWord: index });
     window.open("/meme", "_blank");

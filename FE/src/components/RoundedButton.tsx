@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const RoundedButtonWrapper = styled.div`
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;

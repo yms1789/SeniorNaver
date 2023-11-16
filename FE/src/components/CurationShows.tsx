@@ -40,6 +40,7 @@ const ShowGridWrapper = styled.div`
   }
 `;
 const DataShowsWrapper = styled.div`
+  cursor: pointer;
   position: relative;
   width: 100%;
   height: 100%;
