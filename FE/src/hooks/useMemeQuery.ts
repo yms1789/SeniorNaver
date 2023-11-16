@@ -10,7 +10,7 @@ export interface IWords {
 // 오늘의 단어 조회
 export async function fetchTodayWord() {
   try {
-    const response = await fetchApi.get("/api/dictionary/v1/today/word");
+    const response = await axios.get("/api/dictionary/v1/today/word");
     console.log("오늘의 단어", response.data);
     return response.data;
   } catch (error) {

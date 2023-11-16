@@ -112,7 +112,7 @@ function MemeDictionaryMineSelector() {
       </MemeDictionaryMineSelectBoxWrapperRight>
 
       <MemeDictionaryMineSelectBoxWrapper>
-      <MemeDictionaryMineSelectBox onClick={()=> setcurrentCategory({currentCategory : 3})}>단어 성적표</MemeDictionaryMineSelectBox>
+      <MemeDictionaryMineSelectBox onClick={()=> setcurrentCategory({currentCategory : 3})}>풀이 결과</MemeDictionaryMineSelectBox>
       <MemeDictionaryMineSelectBoxImage src={mineicon}/>
       <GradiEffect/>
       </MemeDictionaryMineSelectBoxWrapper>    
