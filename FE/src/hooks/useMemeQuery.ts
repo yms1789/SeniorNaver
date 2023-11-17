@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { fetchApi } from "../states/useAxiosInterceptor";
+import Swal from "sweetalert2";
 export interface IWords {
   page: number;
   keyword: string;
@@ -10,7 +11,7 @@ export interface IWords {
 // 오늘의 단어 조회
 export async function fetchTodayWord() {
   try {
-    const response = await axios.get("/api/dictionary/v1/today/word");
+    const response = await fetchApi.get("/api/dictionary/v1/today/word");
     console.log("오늘의 단어", response.data);
     return response.data;
   } catch (error) {
@@ -96,6 +97,17 @@ export async function validWord(word: string, year: number) {
     return true;
   } catch (error) {
     console.log("단어 검사 실패");
+    Swal.fire({
+      position: "center",
+      icon: "error",
+      title: "해당 연도에 없는 단어 입니다.",
+
+      showConfirmButton: false,
+      timer: 1500,
+      background: "var(--white)",
+      color: "var(--dark01)",
+      width: "500px",
+    });
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data);
     }

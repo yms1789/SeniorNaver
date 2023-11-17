@@ -78,7 +78,7 @@ const SelectBoxContentWrapper = styled.div`
 const SelectBoxContent = styled.div`
   width: 800px;
   font-family: "NanumSquareNeoRegular";
-  font-size: 40px;
+  font-size: 30px;
   text-align: center;
   justify-content: center;
   align-items: center;
@@ -156,10 +156,11 @@ const MemeDictionaryHeadline = styled.div`
 ` 
 
 const yearData = [
-  {year: 2000, content:`인터넷의 발전으로 유행어가 쏟아져 내렸던 시기로,"뷁","즐","ㅇ" 등의 유행어가 있었다. `},
-  {year: 2010, content:"연도별2 용어 특징을 정리한 글을 이 곳에 작성하여 표시함 연도별 용어 특징을 정리한 글을 이 곳에 작성하여 표시함"},
-  {year: 2020, content:"안녕"}
+  {year: 2000, content:`인터넷의 발전으로 유행어가 쏟아져 내렸던 시기로,"뷁","즐","ㅇ" 등의 유행어가 있었습니다. `},
+  {year: 2010, content:"2010년대는 SNS와 인터넷 방송이 활성화되면서, 유행어가 빠르게 퍼져나갔습니다. 띵작, 꿀잼, 불-편 등의 유행어가 대표적입니다."},
+  {year: 2020, content:`2020년대는 코로나19로 인해 비대면 활동이 확대되면서 온라인 커뮤니티에서 탄생한 유행어가 많았습니다. "그거 아니에요? 반말하는 사이 아니에요?", "실화냐", "매콤달콤" 등이 대표적입니다.`}
 ]
+
 
 interface IbackgroundColor{
   clicked?: boolean;

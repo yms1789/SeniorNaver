@@ -36,11 +36,10 @@ const CompletedSignUpLogo = styled.img`
 function CompletedSignUp() {
   return (
     <CompletedSignUpWrapper>
-      <HeadBar/>
       <CompletedSignUpLogo src={roundlogo}  />
       <CompletedSignUpHeader>회원가입을 축하합니다!</CompletedSignUpHeader>
-      <NavLink to="/">
-      <CompletedSignUpText>메인으로 가기</CompletedSignUpText>
+      <NavLink to="/home">
+      <CompletedSignUpText>홈으로 가기</CompletedSignUpText>
       </NavLink>
       </CompletedSignUpWrapper>
   )
