@@ -132,6 +132,7 @@ const TravelOverviewWrapper = styled.div`
   overflow-y: scroll;
   color: var(--dark70);
   background-color: var(--white50);
+  z-index: 10;
   @media (max-width: 450px) {
     height: 50vw;
   }
@@ -248,7 +249,7 @@ const TravelImageWrapper = styled.div`
   overflow: hidden;
   border-radius: 2vw;
   @media (max-width: 450px) {
-    height: 50vw;
+    height: 40vw;
   }
 `;
 const TravelImage = styled.img`
