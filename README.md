@@ -66,7 +66,7 @@
 
 <br />
 <div align="center">
-<table style="border: none">
+<table>
   <tbody>
   <tr>
     <td>
@@ -353,3 +353,9 @@
 
 시니어 네이버의 **탄생**과 **발전**을 볼 수 있어요.  
 사용성을 높이기 위한 **리팩토링**과 어려움을 겪었던 **트러블 슈팅** 과정을 생생하게 담았습니다.
+
+<style>
+  table{
+    border: none;
+  }
+</style>
