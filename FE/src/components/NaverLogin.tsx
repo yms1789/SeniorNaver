@@ -1,7 +1,7 @@
-import React from "react";
 import styled from "styled-components";
 import naverlogo from "./../assets/images/naversmalllogo.png";
-export const NaverLoginWrapper = styled.div`
+
+const NaverLoginWrapper = styled.div`
   display: flex;
   margin-top: 40px;
   justify-content: center;
@@ -11,21 +11,36 @@ export const NaverLoginWrapper = styled.div`
   background: #03c75a;
   border-radius: 30px;
   font-size: 24px;
-  color: white;
+  color: var(--white);
+  cursor: pointer;
 `;
 
-export const NaverLogo = styled.img`
+const NaverLogo = styled.img`
   width: 27px;
-  margin-right: 10px;
+  margin-right: 15px;
   height: 25px;
 `;
-function NaverLogin() {
-  return (
-    <NaverLoginWrapper>
-      <NaverLogo src={naverlogo} />
-      네이버 로그인
-    </NaverLoginWrapper>
-  );
+
+declare global {
+  interface IWindow {
+    naver: any;
+  }
 }
 
+function NaverLogin() {
+  const postNaverLogin = () =>{   
+    const url = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dZcpr9yM6QZMkL3oTzAh&redirect_uri=https://ggok2.duckdns.org/api/oauth/login/oauth2/code/naver&state=1234"
+    window.location.replace(url);
+  }
+                                                                                                
+
+  return (
+        <NaverLoginWrapper onClick={postNaverLogin}>
+          <NaverLogo src={naverlogo} id='naverIdLogin' />
+          네이버 로그인
+        </NaverLoginWrapper>
+        
+  )};
+
 export default NaverLogin;
+

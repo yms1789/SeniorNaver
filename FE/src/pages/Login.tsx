@@ -1,6 +1,11 @@
 import styled from "styled-components";
 import LocalLogin from "../components/LocalLogin";
-export const LoginWrapper = styled.div`
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
+import { useRecoilValue } from "recoil";
+import { isLoggedInState } from "../states/useUser";
+
+const LoginWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -9,19 +14,26 @@ export const LoginWrapper = styled.div`
   background: linear-gradient(180deg, #46d780 0%, #5cbad8 100%);
 `;
 
-export const Logo = styled.div`
-  font-family: "NanumSquare Neo Heavy";
+const Logo = styled.div`
+  font-family: "NanumSquareNeoHeavy";
   font-style: normal;
   font-size: 90px;
   font-weight: 1000;
+  text-shadow:
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    1px 1px 0 black;
   line-height: 99px;
   letter-spacing: 0.05em;
   color: #000000;
-  margin-top: 200px;
+  margin-top: 150px;
   margin-bottom: 50px;
+  cursor: pointer;
+  user-select: none;
 `;
 
-export const LoginCopylight = styled.div`
+const LoginCopylight = styled.div`
   display: flex;
   margin-top: 30px;
   flex-direction: column;
@@ -31,7 +43,15 @@ export const LoginCopylight = styled.div`
   font-weight: bolder;
   font-size: 12px;
 `;
+
 function Login() {
+  const navigate = useNavigate();
+  const isLoggedIn = useRecoilValue(isLoggedInState);
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/home");
+    }
+  }, []);
   return (
     <LoginWrapper>
       <Logo>SENIOR NAVER</Logo>

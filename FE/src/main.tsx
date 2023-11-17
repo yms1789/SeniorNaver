@@ -5,14 +5,10 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./queryClient";
 import App from "./App";
 import "./index.css";
-import initMockAPI from "./mocks/index";
+import "./assets/fonts/Font.css";
 import { BrowserRouter } from "react-router-dom";
 import { GlobalStyle } from "./styles/SGlobal";
 import { NavermapsProvider } from "react-naver-maps";
-
-if (process.env.NODE_ENV === "development") {
-  initMockAPI();
-}
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -20,7 +16,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
         <BrowserRouter>
-          <NavermapsProvider ncpClientId={import.meta.env.VITE_NAVERMAP_CLIENT_ID}>
+          <NavermapsProvider ncpClientId={process.env.VITE_NAVERMAP_CLIENT_ID!}>
             <App />
           </NavermapsProvider>
         </BrowserRouter>
