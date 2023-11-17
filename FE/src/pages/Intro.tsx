@@ -125,21 +125,21 @@ function Intro() {
         style={{ transform: `translateX(${position / -8}px)`, opacity: position / 1500 }}
       />
       <IntroEmpty />
-      <IntroAdvertisement2/>
+      <IntroAdvertisement2 />
       <StyledImage
         src={item3}
         alt=""
         style={{ transform: `translateX(${position / 12}px)`, opacity: position / 3000 }}
       />
       <IntroEmpty />
-      <IntroAdvertisement/>
+      <IntroAdvertisement />
       <StyledImage
         src={item4}
         alt=""
         style={{ transform: `translateX(${position / -16}px)`, opacity: position / 3500 }}
       />
       <IntroEmpty />
-      <IntroAdvertisement2/>
+      <IntroAdvertisement2 />
       <StyledImage
         src={item5}
         alt=""

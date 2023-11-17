@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    tools {
+        gradle 'gredle'
+    }
+    stages {
+        stage('Git Clone') {
+            steps {
+                git branch : 'master', url: 'https://lab.ssafy.com/s09-final/S09P31D105.git', credentialsId: 'jenkins'
+            }
+        }
+        stage('BE-Build') {
+            steps {
+                dir("./BE/seniorNaver") {
+                    sh "chmod +x ./gradlew"
+                    sh "./gradlew clean build"
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                dir("./BE/seniorNaver") {
+                    sh "docker-compose up -d --build"
+                }
+            }
+        }
+        stage('Clean Up') {
+            steps {
+                sh "docker image prune -f"
+            }
+        }
+    }
+}

@@ -55,15 +55,13 @@ export const GlobalStyle = createGlobalStyle`
         src: local('NanumSquareNeoBold'), local('NanumSquareNeoBold');
         font-style: normal;
         src: url(${NanumSquareNeoBold}) format('truetype');
-  }  
-  
+  }
   @font-face {
         font-family: 'NanumSquareNeoExtraBold';
         src: local('NanumSquareNeoExtraBold'), local('NanumSquareNeoExtraBold');
         font-style: normal;
         src: url(${NanumSquareNeoExtraBold}) format('truetype');
   }
-
   @font-face {
         font-family: 'NanumSquareNeoHeavy';
         src: local('NanumSquareNeoHeavy'), local('NanumSquareNeoHeavy');

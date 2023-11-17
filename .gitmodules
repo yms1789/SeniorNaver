@@ -1,0 +1,3 @@
+[submodule "BE/seniorNaver/yml"]
+	path = BE/seniorNaver/yml
+	url = https://lab.ssafy.com/kwmw0427/yml.git
