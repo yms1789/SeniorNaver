@@ -66,7 +66,7 @@
 
 <br />
 <div align="center">
-<table>
+<table border="0">
   <tbody>
   <tr>
     <td>
@@ -78,10 +78,9 @@
     <td>
     <img src="https://github.com/kanghaeven/Frontend_practice/assets/122589773/72089ab4-f6e9-4355-a34d-3bb67bbaae6f" width="100%">
     </td>
-</table>
-  </div>
   </tbody>
 </table>
+</div>
 
 <br /><br />
 
@@ -353,9 +352,3 @@
 
 시니어 네이버의 **탄생**과 **발전**을 볼 수 있어요.  
 사용성을 높이기 위한 **리팩토링**과 어려움을 겪었던 **트러블 슈팅** 과정을 생생하게 담았습니다.
-
-<style>
-  table{
-    border: none;
-  }
-</style>
