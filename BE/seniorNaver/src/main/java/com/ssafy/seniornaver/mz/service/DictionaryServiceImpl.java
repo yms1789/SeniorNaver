@@ -236,7 +236,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
         long total = scrapWordRepository.findAllByWordId(word).stream().count();
 
-        if (vocaId == 0L) {
+        if (vocaId == null) {
             return WordDetailResponseDto.builder()
                     .word(word.getWord())
                     .mean(word.getMean())

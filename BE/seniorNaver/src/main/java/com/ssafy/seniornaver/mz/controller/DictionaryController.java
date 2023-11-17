@@ -63,8 +63,9 @@ public class DictionaryController {
                                     HttpServletRequest httpServletRequest) {
 
         WordDetailResponseDto wordDetailResponseDto;
-        if (httpServletRequest.getHeader("Authorization") == null) {
-            wordDetailResponseDto = dictionaryService.getWordDetail(id, 0L);
+        String header = httpServletRequest.getHeader("Authorization");
+        if (header == null || getMember(httpServletRequest).getVocaId() == null) {
+            wordDetailResponseDto = dictionaryService.getWordDetail(id, null);
         } else {
             wordDetailResponseDto = dictionaryService.getWordDetail(id, getMember(httpServletRequest).getVocaId());
         }
