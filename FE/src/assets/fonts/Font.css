@@ -1,40 +1,33 @@
+
 @font-face {
-  font-family: "NanumSquareNeo";
+  font-family: 'NanumSquareNeoLight';
+  src: local('NanumSquareNeoLight'), local('NanumSquareNeoLight');
   font-style: normal;
-  font-weight: 100;
-  font-display: fallback;
-  src: url("./NanumSquareNeo-aLt") format("ttf");
+  src: url(NanumSquareNeo-aLt.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'NanumSquareNeoRegular';
+  src: local('NanumSquareNeoRegular'), local('NanumSquareNeoRegular');
+  font-style: normal;
+  src: url(NanumSquareNeo-bRg.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'NanumSquareNeoBold';
+  src: local('NanumSquareNeoBold'), local('NanumSquareNeoBold');
+  font-style: normal;
+  src: url(NanumSquareNeo-cBd.ttf) format('truetype');
+}  
+
+@font-face {
+  font-family: 'NanumSquareNeoExtraBold';
+  src: local('NanumSquareNeoExtraBold'), local('NanumSquareNeoExtraBold');
+  font-style: normal;
+  src: url(NanumSquareNeo-dEb.ttf) format('truetype');
 }
 
 @font-face {
-  font-family: "NanumSquareNeo";
+  font-family: 'NanumSquareNeoHeavy';
+  src: local('NanumSquareNeoHeavy'), local('NanumSquareNeoHeavy');
   font-style: normal;
-  font-weight: normal;
-  font-display: fallback;
-  src: url("./NanumSquareNeo-bRg") format("ttf");
+  src: url(NanumSquareNeo-eHv.ttf) format('truetype');
 }
-
-@font-face {
-  font-family: "NanumSquareNeo";
-  font-style: normal;
-  font-weight: 500;
-  font-display: fallback;
-  src: url("./NanumSquareNeo-cBd") format("ttf");
-}
-
-@font-face {
-  font-family: "NanumSquareNeo";
-  font-style: normal;
-  font-weight: bold;
-  font-display: fallback;
-  src: url("./NanumSquareNeo-dEb") format("ttf");
-}
-
-@font-face {
-  font-family: "NanumSquareNeo Heavy";
-  font-style: normal;
-  font-weight: 1000;
-  font-display: fallback;
-  src: url("./NanumSquareNeo-eHv") format("ttf");
-}
-
