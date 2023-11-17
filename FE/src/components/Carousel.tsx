@@ -29,7 +29,7 @@ const FrameContainerWrapper = styled.div`
   }
   @media (max-width: 768px) {
     grid-template-rows: repeat(4, 8vw) repeat(2, 5vw);
-
+  }
   @media (max-width: 450px) {
     grid-template-columns: repeat(3, 30vw);
     grid-template-rows: repeat(1, 50vw) repeat(1, 16vw) repeat(2, 50vw) repeat(1, 10vw);
