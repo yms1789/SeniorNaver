@@ -66,7 +66,7 @@
 
 <br />
 <div align="center">
-<table>
+<table style="border: none">
   <tbody>
   <tr>
     <td>
