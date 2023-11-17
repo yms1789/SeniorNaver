@@ -91,6 +91,9 @@ function NavigationBar() {
       case "MZ사전":
         navigate("/meme");
         break;
+      case "내 정보":
+        navigate("/mypage");
+        break;
       default:
         break;
     }

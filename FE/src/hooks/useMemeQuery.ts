@@ -12,7 +12,6 @@ export interface IWords {
 export async function fetchTodayWord() {
   try {
     const response = await fetchApi.get("/api/dictionary/v1/today/word");
-    console.log("오늘의 단어", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -25,7 +24,6 @@ export async function fetchTodayWord() {
 export async function fetchDetail(wordId: number) {
   try {
     const response = await fetchApi.get(`/api/dictionary/v1/word/${wordId}`);
-    console.log("단어 디테일", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -37,7 +35,6 @@ export async function fetchDetail(wordId: number) {
 export async function scrapWord(wordId: number) {
   try {
     const response = await fetchApi.post(`/api/dictionary/word/scrap/${wordId}`);
-    console.log("단어 스크랩 성공", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -49,7 +46,6 @@ export async function scrapWord(wordId: number) {
 export async function deleteScrapWord(wordId: number) {
   try {
     const response = await fetchApi.delete(`/api/dictionary/word/cancel/${wordId}`);
-    console.log("단어 스크랩 취소", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -65,7 +61,6 @@ export async function fetchWords(pageNum: number, input: string, yearinput: numb
       keyword: input,
       year: yearinput,
     });
-    console.log("전체 단어", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -81,7 +76,6 @@ export async function fetchMyWords(pageNum: number, category: number) {
       page: pageNum,
       category: category,
     });
-    console.log("스크랩한 단어", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -93,10 +87,8 @@ export async function fetchMyWords(pageNum: number, category: number) {
 export async function validWord(word: string, year: number) {
   try {
     const response = await fetchApi.post(`/api/problem/valid/${word}/${year}`);
-    console.log("단어 사용 가능!", response.data);
     return true;
   } catch (error) {
-    console.log("단어 검사 실패");
     Swal.fire({
       position: "center",
       icon: "error",
@@ -119,10 +111,8 @@ export async function validWord(word: string, year: number) {
 export async function postProblem(newProblem: object) {
   try {
     const response = await fetchApi.post("/api/problem/register", newProblem);
-    console.log("문제등록 성공", response.data);
     return response.data;
   } catch (error) {
-    console.log("문제등록 실패");
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data);
     }
@@ -133,7 +123,6 @@ export async function postProblem(newProblem: object) {
 export async function fetchRandomProblem(year: number) {
   try {
     const response = await fetchApi.get(`/api/problem/v1/random/${year}`);
-    console.log("랜덤문제 받아오기", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -146,7 +135,6 @@ export async function fetchRandomProblem(year: number) {
 export async function fetchProblemDetail(problemId: number) {
   try {
     const response = await fetchApi.get(`/api/problem/v1/detail/${problemId}`);
-    console.log("개별 문제 디테일", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -164,10 +152,8 @@ export async function postResult(problemId: string, title: string, answer: numbe
       answer: answer,
       choice: choice,
     });
-    console.log("개별 문제 풀이 저장", response.data);
     return true;
   } catch (error) {
-    console.log("개별 문제 풀이 저장 실패");
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data);
     }
@@ -179,10 +165,8 @@ export async function postResult(problemId: string, title: string, answer: numbe
 export async function postTotalResult() {
   try {
     const response = await fetchApi.post(`/api/problem/total/result`);
-    console.log("최종 문제 풀이 저장", response.data);
     return response.data;
   } catch (error) {
-    console.log("최종 문제 풀이 저장 실패");
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data);
     }

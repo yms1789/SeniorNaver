@@ -475,7 +475,6 @@ function Carousel({ curations, mzWords, places }: TResponseData) {
   const refs = [curationImagesRef, curationTextsRef, mzRef, placeRef];
 
   const handleSetState = (index: number) => {
-    console.log(index);
     setCurrentTab({ currentPage: 4 });
     setcurrentWord({ currentWord: index });
     window.open("/meme", "_blank");
@@ -571,7 +570,6 @@ function Carousel({ curations, mzWords, places }: TResponseData) {
     refs.forEach(eleRef => setTransition(eleRef, "all 0.7s ease-in-out"));
 
     setCurrentIndex(prev => prev + direction);
-    // console.log(currentIndex);
   };
 
   const handleHover = (key: string, value: boolean) => {

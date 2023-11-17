@@ -2,7 +2,6 @@ import { rest } from "msw";
 
 export const handlers = [
   rest.get("/test/places", (req, res, ctx) => {
-    console.log("req", req);
     return res(
       ctx.json([
         {
@@ -23,7 +22,6 @@ export const handlers = [
   }),
   rest.post("/test/chats", (req, res, ctx) => {
     const audio = req.body;
-    console.log(audio);
     return res(ctx.status(201), ctx.json(audio));
   }),
   rest.get("/test/jobs", (req, res, ctx) => {
@@ -234,8 +232,6 @@ export const handlers = [
         ],
       },
     };
-
-    // console.log(req.url.searchParams.get("workplace"), req.url.searchParams.get("keyword"));
 
     if (req.url.searchParams.get("keyword") === "미화원")
       return res(ctx.delay(1000), ctx.json(response3), ctx.status(200));

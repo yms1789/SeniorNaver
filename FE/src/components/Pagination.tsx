@@ -1,14 +1,12 @@
-
 import styled from "styled-components";
 
 const PaginationBox = styled.div`
-    display: flex;
-
-`
+  display: flex;
+`;
 const PaginationButton = styled.button`
   font-family: "NanumSquareNeoRegular";
   font-size: 18px;
-  color : var(--gray02);
+  color: var(--gray02);
   background: var(--white);
   border: 1px solid var(--gray02);
   border-radius: 10px;
@@ -27,22 +25,17 @@ const PaginationButton = styled.button`
   &:active {
     border: 3px solid rgba(0, 0, 0, 0.3);
   }
-`
+`;
 function Pagination({
   totalPages,
   setCurrentPage,
   currentPage,
-}:{
-  totalPages:number,
-  setCurrentPage:(page: number) => void,
-  currentPage:number,
-  }) {
-
-  const pageList:number[] = [];
-  console.log("페이지네이션")
-  console.log(currentPage);
-  console.log(totalPages);
-  console.log("페이지리스트", pageList);
+}: {
+  totalPages: number;
+  setCurrentPage: (page: number) => void;
+  currentPage: number;
+}) {
+  const pageList: number[] = [];
 
   for (let i = 1; i <= totalPages; i++) {
     pageList.push(i);
@@ -59,14 +52,13 @@ function Pagination({
     window.scrollTo(0, 0);
   };
 
-
   return (
     <PaginationBox>
       <PaginationButton onClick={goToPrevPage} disabled={currentPage === 1}>
         prev
       </PaginationButton>
 
-      {pageList.map((page:any) => (
+      {pageList.map((page: any) => (
         <PaginationButton
           key={page}
           onClick={() => setCurrentPage(page)}

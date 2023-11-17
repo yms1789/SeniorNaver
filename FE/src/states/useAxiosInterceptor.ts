@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosRequestHeaders } from "axios";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
-import { fetchToken } from "./useUser";
+import { fetchToken, isLoggedInState } from "./useUser";
+import { useRecoilValue } from "recoil";
 
 interface AdaptAxiosRequestConfig extends AxiosRequestConfig {
   headers: AxiosRequestHeaders;
@@ -17,13 +18,18 @@ const fetchApi: AxiosInstance = axios.create();
 
 function useAxiosInterceptor() {
   const [cookies, setCookies] = useCookies(["tokens"]);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
   const requestHandler = (config: any) => {
     config.headers = config.headers || {};
-    config.headers.Authorization = config.headers.Authorization
-      ? config.headers.Authorization
-      : cookies.tokens
-      ? `Bearer ${cookies.tokens.accessToken}`
-      : "";
+    if (isLoggedIn)
+      config.headers.Authorization = config.headers.Authorization
+        ? config.headers.Authorization
+        : cookies.tokens
+        ? `Bearer ${cookies.tokens.accessToken}`
+        : null;
+    // if (!isLoggedIn) {
+    //   config.headers.Authorization = null;
+    // }
     return config;
   };
 

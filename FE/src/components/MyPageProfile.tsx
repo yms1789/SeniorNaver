@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import profileeditor from "./../assets/images/profileeditor.png";
-import mainscreenpingpingeee from "./../assets/images/mainscreenpingpingeee.png"
+import mainscreenpingpingeee from "./../assets/images/mainscreenpingpingeee.png";
 import { useRecoilValue } from "recoil";
 import { userState } from "../states/useUser";
 import { useSetRecoilState } from "recoil";
@@ -14,7 +14,7 @@ const MyPageProfileWrapper = styled.div`
   flex-direction: column;
   justify-content: start;
   align-items: center;
-`
+`;
 
 const MyPageProfileBox = styled.div`
   display: flex;
@@ -28,8 +28,7 @@ const MyPageProfileBox = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 5vh;
-  
-`
+`;
 const MyPageProfileBox2 = styled.div`
   display: flex;
   flex-direction: column;
@@ -42,8 +41,7 @@ const MyPageProfileBox2 = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 5vh;
-  
-`
+`;
 const MyPageNicknameHeader = styled.div`
   display: flex;
   justify-content: center;
@@ -51,7 +49,7 @@ const MyPageNicknameHeader = styled.div`
   text-align: center;
   font-family: "NanumSquareNeoHeavy";
   font-size: 1.8vw;
-`
+`;
 
 const MyPageNicknameText = styled.div`
   display: flex;
@@ -62,7 +60,7 @@ const MyPageNicknameText = styled.div`
   font-size: 1.5vw;
   color: var(--gray02);
   margin-bottom: 10vh;
-`
+`;
 const MyPageHeader = styled.div`
   display: flex;
   justify-content: center;
@@ -70,7 +68,7 @@ const MyPageHeader = styled.div`
   text-align: center;
   font-family: "NanumSquareNeoExtraBold";
   font-size: 1.8vw;
-`
+`;
 const MyPageText = styled.div`
   display: flex;
   justify-content: center;
@@ -88,28 +86,26 @@ const MyPageText = styled.div`
     font-family: "NanumSquareNeoBold";
   }
   &:active {
-
   }
-`
+`;
 const MyPageLine = styled.div`
   display: flex;
   margin-top: 0.2vh;
   border: 0.1vw solid var(--dark30);
   width: 24vw;
   height: 0.01vh;
-`
+`;
 const ProfileWrapper = styled.div`
   position: relative;
-  display: flex; 
+  display: flex;
   background: var(--white);
   width: 12.5vw;
   height: 25vh;
   border-radius: 100%;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
-  z-index: 10;  
+  z-index: 10;
   margin-bottom: 5vh;
-
-`
+`;
 const ProfileImgae = styled.img`
   z-index: 11;
   object-fit: cover;
@@ -129,13 +125,12 @@ const ProfileImgae = styled.img`
 
 const ProfileEditorInput = styled.input`
   display: none;
-`
-const ProfileEditorLabel = styled.label`
-`
+`;
+const ProfileEditorLabel = styled.label``;
 const ProfileEditor = styled.img`
   position: absolute;
-  bottom: 0; 
-  right: 0; 
+  bottom: 0;
+  right: 0;
   width: 3vw;
   height: 6vh;
   z-index: 12;
@@ -143,50 +138,59 @@ const ProfileEditor = styled.img`
 `;
 
 function MyPageProfile() {
-  const userInfo = useRecoilValue(userState);  
-  const setcurrentCategory = useSetRecoilState(myPageCategoryState)
-  const [profile, setProfile] = useState<{ url: string; file: File; } | null>(null);
+  const userInfo = useRecoilValue(userState);
+  const setcurrentCategory = useSetRecoilState(myPageCategoryState);
+  const [profile, setProfile] = useState<{ url: string; file: File } | null>(null);
 
   const handleChangeProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imageList = e.target.files;
-    console.log(userInfo)
     if (imageList && imageList.length > 0) {
-        const imageObj = {
-            url: URL.createObjectURL(imageList[0]),
-            file: imageList[0],
-        };
-        setProfile(imageObj);
-        }
+      const imageObj = {
+        url: URL.createObjectURL(imageList[0]),
+        file: imageList[0],
+      };
+      setProfile(imageObj);
+    }
   };
-
 
   return (
     <MyPageProfileWrapper>
       <ProfileWrapper>
-        <ProfileEditorInput id="fileinput" type="file" accept="image/*" onChange={handleChangeProfile}/>
+        <ProfileEditorInput
+          id="fileinput"
+          type="file"
+          accept="image/*"
+          onChange={handleChangeProfile}
+        />
         <ProfileEditorLabel htmlFor="fileinput">
-        <ProfileEditor src={profileeditor}/>
+          <ProfileEditor src={profileeditor} />
         </ProfileEditorLabel>
-        <ProfileImgae src={profile ? profile.url : mainscreenpingpingeee}/>
+        <ProfileImgae src={profile ? profile.url : mainscreenpingpingeee} />
       </ProfileWrapper>
       <MyPageNicknameHeader>{userInfo.nickname}</MyPageNicknameHeader>
       <MyPageNicknameText>{userInfo.email}</MyPageNicknameText>
       <MyPageProfileBox>
-      <MyPageHeader>개인정보 재설정</MyPageHeader>
-      <MyPageLine/>  
-      <MyPageText onClick={()=> setcurrentCategory({ currentCategory: 4 })}>닉네임 재설정</MyPageText>
-      {/* <MyPageLine/> */}
-      {/* <MyPageText onClick={()=> setcurrentCategory({ currentCategory: 5 })}>생년월일 재설정</MyPageText> */}
+        <MyPageHeader>개인정보 재설정</MyPageHeader>
+        <MyPageLine />
+        <MyPageText onClick={() => setcurrentCategory({ currentCategory: 4 })}>
+          닉네임 재설정
+        </MyPageText>
+        {/* <MyPageLine/> */}
+        {/* <MyPageText onClick={()=> setcurrentCategory({ currentCategory: 5 })}>생년월일 재설정</MyPageText> */}
       </MyPageProfileBox>
 
       <MyPageProfileBox2>
-      <MyPageHeader>맞춤정보 설정</MyPageHeader>
-      <MyPageLine/>  
-      <MyPageText onClick={()=> setcurrentCategory({ currentCategory: 6 })}>선호 키워드 재설정</MyPageText>
-      <MyPageLine/>
-      <MyPageText onClick={()=> setcurrentCategory({ currentCategory: 7 })}>지역 재설정</MyPageText>
+        <MyPageHeader>맞춤정보 설정</MyPageHeader>
+        <MyPageLine />
+        <MyPageText onClick={() => setcurrentCategory({ currentCategory: 6 })}>
+          선호 키워드 재설정
+        </MyPageText>
+        <MyPageLine />
+        <MyPageText onClick={() => setcurrentCategory({ currentCategory: 7 })}>
+          지역 재설정
+        </MyPageText>
       </MyPageProfileBox2>
     </MyPageProfileWrapper>
-  )
+  );
 }
 export default MyPageProfile;

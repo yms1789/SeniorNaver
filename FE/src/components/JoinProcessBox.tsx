@@ -1,8 +1,7 @@
-
 import { useState } from "react";
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import Swal from 'sweetalert2'
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import Swal from "sweetalert2";
 import SetInfoBox from "./SetInfoBox";
 import styled from "styled-components";
 const JoinBoxWrapper = styled.div`
@@ -42,7 +41,6 @@ const JoinInnerInputWrapper = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
-  
 `;
 const JoinInputSecondBoxWrapper = styled.div`
   width: 557px;
@@ -87,9 +85,9 @@ const JoinGenderBox = styled.div<{ active: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-   // 'active' prop에 따라 배경색과 글자색 변경
-   background-color:${props => props.active ? "#2e2e2e" : "transparent"};
-   color:${props => props.active ? "#ffffff" : "black"};
+  // 'active' prop에 따라 배경색과 글자색 변경
+  background-color: ${props => (props.active ? "#2e2e2e" : "transparent")};
+  color: ${props => (props.active ? "#ffffff" : "black")};
 `;
 
 const NextButton = styled.input`
@@ -120,9 +118,9 @@ const NextButton = styled.input`
   }
 `;
 const ValidCheckButton = styled.div`
-  position: absolute; 
-  right: 10px; 
-  bottom: 35%; 
+  position: absolute;
+  right: 10px;
+  bottom: 35%;
   border: 1px solid var(--dark30);
   border-radius: 10px;
   background: var(--maingradient);
@@ -132,7 +130,7 @@ const ValidCheckButton = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  color : var(--dark);
+  color: var(--dark);
   font-family: "NanumSquareNeoBold";
   font-size: 16px;
   user-select: none;
@@ -141,43 +139,43 @@ const ValidCheckButton = styled.div`
   &:hover {
     user-select: none;
     padding: 5px;
-    background: var(--aqua)
+    background: var(--aqua);
   }
   &:active {
     user-select: none;
     border: 3px solid rgba(255, 255, 255, 0.3);
   }
-`
+`;
 
 function JoinProcessBox() {
   interface INewUserType {
-    memberId : string;
-    password :string;
-    passwordConfirm :string;
-    email : string;
-    name : string;
-    birth : string;
-    gender : string;
+    memberId: string;
+    password: string;
+    passwordConfirm: string;
+    email: string;
+    name: string;
+    birth: string;
+    gender: string;
     error?: { code: number; message: string };
   }
-  const BaseURL = "/api"
+  const BaseURL = "/api";
   const signupMutation = useMutation((newUser: INewUserType) =>
-    axios.post(`${BaseURL}/auth/signup`, newUser)
+    axios.post(`${BaseURL}/auth/signup`, newUser),
   );
-  
+
   const [newUser, setNewUser] = useState<INewUserType>({
-    memberId : "",
-    password :"",
-    passwordConfirm :"",
-    email : "",
-    name : "",
-    gender : "",
-    birth : "",
+    memberId: "",
+    password: "",
+    passwordConfirm: "",
+    email: "",
+    name: "",
+    gender: "",
+    birth: "",
   });
 
-  const [isStep,SetStep] = useState(0);
-  const [isIdPassed,SetIdPassed] = useState(false);
-  const [isEmailPassed,SetEmailPassed] = useState(false);
+  const [isStep, SetStep] = useState(0);
+  const [isIdPassed, SetIdPassed] = useState(false);
+  const [isEmailPassed, SetEmailPassed] = useState(false);
 
   const handleManButtonClick = () => {
     setNewUser(prevState => ({ ...prevState, gender: "man" }));
@@ -187,41 +185,38 @@ function JoinProcessBox() {
     setNewUser(prevState => ({ ...prevState, gender: "woman" }));
   };
 
-  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewUser({
-        ...newUser,
-        [e.target.name]: e.target.value
+      ...newUser,
+      [e.target.name]: e.target.value,
     });
-    if(e.target.name === "memberId"){
+    if (e.target.name === "memberId") {
       SetIdPassed(false);
     }
   };
 
-  
-  const handleValidCheckId= ()=>{
+  const handleValidCheckId = () => {
     if (!newUser.memberId) {
       Swal.fire({
-          position: "center",
-          icon: "error",
-          title: "아이디를 입력하세요.",
-          showConfirmButton: false,
-          timer: 1500,
-          background: "var(--white)",
-          color: "var(--dark01)",
-          width: "500px",
-          padding: "30px"
-        });
+        position: "center",
+        icon: "error",
+        title: "아이디를 입력하세요.",
+        showConfirmButton: false,
+        timer: 1500,
+        background: "var(--white)",
+        color: "var(--dark01)",
+        width: "500px",
+        padding: "30px",
+      });
       return;
     }
-    axios.post(`${BaseURL}/auth/valid/memberId?memberId=${newUser.memberId}`).then((res)=>{
-      console.log(newUser.memberId);
-      if(res.data){
+    axios.post(`${BaseURL}/auth/valid/memberId?memberId=${newUser.memberId}`).then(res => {
+      if (res.data) {
         Swal.fire({
           position: "center",
           icon: "success",
           title: "사용 가능한 아이디 입니다.",
-          
+
           showConfirmButton: false,
           timer: 1500,
           background: "var(--white)",
@@ -229,8 +224,7 @@ function JoinProcessBox() {
           width: "500px",
         });
         SetIdPassed(true);
-      }
-      else{
+      } else {
         Swal.fire({
           position: "center",
           icon: "error",
@@ -240,16 +234,23 @@ function JoinProcessBox() {
           background: "var(--white)",
           color: "var(--dark01)",
           width: "500px",
-          padding: "30px"
+          padding: "30px",
         });
         SetIdPassed(false);
       }
-    })
-  }
+    });
+  };
 
-  const handleSubmit= (e:any)=>{
+  const handleSubmit = (e: any) => {
     e.preventDefault();
-    if (!newUser.memberId || !newUser.password || !newUser.email || !newUser.name || !newUser.birth || !newUser.gender) {
+    if (
+      !newUser.memberId ||
+      !newUser.password ||
+      !newUser.email ||
+      !newUser.name ||
+      !newUser.birth ||
+      !newUser.gender
+    ) {
       Swal.fire({
         position: "center",
         icon: "error",
@@ -259,11 +260,11 @@ function JoinProcessBox() {
         background: "var(--white)",
         color: "var(--dark01)",
         width: "500px",
-        padding: "30px"
+        padding: "30px",
       });
       return;
     }
-    if (!newUser.email.includes("@")){
+    if (!newUser.email.includes("@")) {
       Swal.fire({
         position: "center",
         icon: "error",
@@ -273,7 +274,7 @@ function JoinProcessBox() {
         background: "var(--white)",
         color: "var(--dark01)",
         width: "600px",
-        padding: "30px"
+        padding: "30px",
       });
       return;
     }
@@ -287,7 +288,7 @@ function JoinProcessBox() {
         background: "var(--white)",
         color: "var(--dark01)",
         width: "500px",
-        padding: "30px"
+        padding: "30px",
       });
       return;
     }
@@ -301,69 +302,108 @@ function JoinProcessBox() {
         background: "var(--white)",
         color: "var(--dark01)",
         width: "500px",
-        padding: "30px"
+        padding: "30px",
       });
       return;
     }
-      signupMutation.mutate(newUser, {
-        onSuccess: () => {
-          SetStep(1);
-        },
-        onError: (error: any) => {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "회원가입에 실패했습니다.",
-            showConfirmButton: false,
-            timer: 1500,
-            background: "var(--white)",
-            color: "var(--dark01)",
-            width: "500px",
-            padding: "30px"
-          });
-        }
-      });
-  }
-
+    signupMutation.mutate(newUser, {
+      onSuccess: () => {
+        SetStep(1);
+      },
+      onError: (error: any) => {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "회원가입에 실패했습니다.",
+          showConfirmButton: false,
+          timer: 1500,
+          background: "var(--white)",
+          color: "var(--dark01)",
+          width: "500px",
+          padding: "30px",
+        });
+      },
+    });
+  };
 
   switch (isStep) {
     case 0:
-        return (
-    <JoinBoxWrapper>
-      <JoinForm onSubmit={handleSubmit}>
-        <JoinInputBoxWrapper>
-        <JoinInnerInputWrapper>
-        <JoinInputBox placeholder="아이디" type="id" name="memberId" value={newUser.memberId} onChange={handleChange}  />
-        <ValidCheckButton onClick={handleValidCheckId}>중복확인</ValidCheckButton>
-        </JoinInnerInputWrapper>
-        <JoinInputBox placeholder="비밀번호" type="password" name="password" value={newUser.password} onChange={handleChange} />
-        <JoinInputBox placeholder="비밀번호 확인" type="password" name="passwordConfirm" value={newUser.passwordConfirm} onChange={handleChange} />
-        <JoinInputBox placeholder="이메일" type="email" name="email" value={newUser.email} onChange={handleChange} />
-        </JoinInputBoxWrapper>
-        <JoinEmpty />
-        <JoinInputSecondBoxWrapper>
-        <JoinInputBox placeholder="이름" type="text" name="name" value={newUser.name} onChange={handleChange} />
-        <JoinInputBox placeholder="생년월일(예:19900101)" name="birth" type="date"  value={newUser.birth} onChange={handleChange} />
-        </JoinInputSecondBoxWrapper>
-        <JoinGenderBoxWrapper>
-        <JoinGenderBox active={newUser.gender === "man"}  onClick={handleManButtonClick}>남성
-          </JoinGenderBox>
-          <JoinGenderBox active={newUser.gender === "woman"} onClick={handleWomanButtonClick}>
-            여성
-          </JoinGenderBox>
-        </JoinGenderBoxWrapper>
-        <NextButton onClick={handleSubmit} data-testid= "dkdk" value={"다음"} type="submit">
-        </NextButton>
-      </JoinForm>
-      <JoinEmpty />
-    </JoinBoxWrapper>
-  )
-  case 1:
-    return (
-      <SetInfoBox meberId={newUser.memberId}/>
-    )
+      return (
+        <JoinBoxWrapper>
+          <JoinForm onSubmit={handleSubmit}>
+            <JoinInputBoxWrapper>
+              <JoinInnerInputWrapper>
+                <JoinInputBox
+                  placeholder="아이디"
+                  type="id"
+                  name="memberId"
+                  value={newUser.memberId}
+                  onChange={handleChange}
+                />
+                <ValidCheckButton onClick={handleValidCheckId}>중복확인</ValidCheckButton>
+              </JoinInnerInputWrapper>
+              <JoinInputBox
+                placeholder="비밀번호"
+                type="password"
+                name="password"
+                value={newUser.password}
+                onChange={handleChange}
+              />
+              <JoinInputBox
+                placeholder="비밀번호 확인"
+                type="password"
+                name="passwordConfirm"
+                value={newUser.passwordConfirm}
+                onChange={handleChange}
+              />
+              <JoinInputBox
+                placeholder="이메일"
+                type="email"
+                name="email"
+                value={newUser.email}
+                onChange={handleChange}
+              />
+            </JoinInputBoxWrapper>
+            <JoinEmpty />
+            <JoinInputSecondBoxWrapper>
+              <JoinInputBox
+                placeholder="이름"
+                type="text"
+                name="name"
+                value={newUser.name}
+                onChange={handleChange}
+              />
+              <JoinInputBox
+                placeholder="생년월일(예:19900101)"
+                name="birth"
+                type="date"
+                value={newUser.birth}
+                onChange={handleChange}
+              />
+            </JoinInputSecondBoxWrapper>
+            <JoinGenderBoxWrapper>
+              <JoinGenderBox active={newUser.gender === "man"} onClick={handleManButtonClick}>
+                남성
+              </JoinGenderBox>
+              <JoinGenderBox active={newUser.gender === "woman"} onClick={handleWomanButtonClick}>
+                여성
+              </JoinGenderBox>
+            </JoinGenderBoxWrapper>
+            <NextButton
+              onClick={handleSubmit}
+              data-testid="dkdk"
+              value={"다음"}
+              type="submit"
+            ></NextButton>
+          </JoinForm>
+          <JoinEmpty />
+        </JoinBoxWrapper>
+      );
+    case 1:
+      return <SetInfoBox meberId={newUser.memberId} />;
     default:
       break;
-  }}
-  
+  }
+}
+
 export default JoinProcessBox;

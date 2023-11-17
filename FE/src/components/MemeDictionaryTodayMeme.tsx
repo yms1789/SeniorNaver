@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {BsFillBookmarksFill} from "react-icons/bs"
+import { BsFillBookmarksFill } from "react-icons/bs";
 import { fetchTodayWord, fetchDetail, scrapWord, deleteScrapWord } from "../hooks/useMemeQuery";
 
 import { useState } from "react";
@@ -8,7 +8,7 @@ import { useRecoilState } from "recoil";
 import { isLoggedInState } from "../states/useUser";
 
 interface IconProps {
-  isScrapped: boolean | undefined; 
+  isScrapped: boolean | undefined;
 }
 
 const MemeDictionaryTodayMemeWraaper = styled.div`
@@ -19,30 +19,30 @@ const MemeDictionaryTodayMemeWraaper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`
+`;
 const MemeDictionaryTodayMemeHeadText = styled.div`
   margin-right: 600px;
   font-family: "NanumSquareNeoHeavy";
   font-size: 50px;
   margin-bottom: 20px;
-`
+`;
 const MemeDictionaryTodayMemeInfoBox = styled.div`
   width: 850px;
   height: 350px;
-  background: #33E47A;
+  background: #33e47a;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-bottom: 50px;
-`
+`;
 const MemeDictionaryDetailInfoIcon = styled.div<IconProps>`
   display: flex;
   position: relative;
   top: 60px;
   left: 330px;
-  color: ${props => props.isScrapped ? 'var(--white)' : 'var(--dark10)'}; 
+  color: ${props => (props.isScrapped ? "var(--white)" : "var(--dark10)")};
   cursor: pointer;
   transition: all 0.15s ease;
   &:hover {
@@ -51,7 +51,7 @@ const MemeDictionaryDetailInfoIcon = styled.div<IconProps>`
   &:active {
     top: 60px;
   }
-`
+`;
 const MemeDictionaryTodayMemeInfoBoxHeader = styled.div`
   position: relative;
   top: 50px;
@@ -62,7 +62,7 @@ const MemeDictionaryTodayMemeInfoBoxHeader = styled.div`
   font-size: 64px;
   color: var(--white);
   -webkit-text-stroke: 2px var(--dark01);
-`
+`;
 const MemeDictionaryTodayMemeDefinitionHeader = styled.div`
   user-select: none;
   display: flex;
@@ -70,7 +70,7 @@ const MemeDictionaryTodayMemeDefinitionHeader = styled.div`
   text-align: left;
   font-size: 46px;
   height: auto;
-`
+`;
 const MemeDictionaryTodayMemeDefinitionContent = styled.div`
   display: flex;
   margin-top: 40px;
@@ -79,18 +79,18 @@ const MemeDictionaryTodayMemeDefinitionContent = styled.div`
   text-align: left;
   font-size: 32px;
   margin-bottom: 50px;
-`
+`;
 const MemeDictionaryHeadline = styled.div`
   width: 900px;
   border: 1px solid var(--dark30);
   margin-bottom: 150px;
-` 
+`;
 
 const YearBox = styled.div<IconProps>`
   position: relative;
   user-select: none;
-  top: ${props => props.isScrapped ? '-50%' : '-40%'}; 
-  right: ${props => props.isScrapped ? '-35%' : '-35%'}; 
+  top: ${props => (props.isScrapped ? "-50%" : "-40%")};
+  right: ${props => (props.isScrapped ? "-35%" : "-35%")};
   display: flex;
   font-family: "NanumSquareNeoExtraBold";
   font-size: 26px;
@@ -103,66 +103,74 @@ const YearBox = styled.div<IconProps>`
   color: var(--white);
   background: var(--dark01);
   border-radius: 30px;
-`
+`;
 
 function MemeDictionaryTodayMeme() {
-  const [wordData, setWordData] = useState<{word: string, mean: string, scrap: boolean, useYear: string, example: string} | null>(null);
+  const [wordData, setWordData] = useState<{
+    word: string;
+    mean: string;
+    scrap: boolean;
+    useYear: string;
+    example: string;
+  } | null>(null);
   const [wordId, setWordId] = useState<number | undefined>();
-  const [isLoggedIn] = useRecoilState(isLoggedInState);  
+  const [isLoggedIn] = useRecoilState(isLoggedInState);
 
   const fetchToday = async () => {
     const data = await fetchTodayWord();
-    const wordId = Number(Object.values(data)[0]);     
+    const wordId = Number(Object.values(data)[0]);
     setWordId(wordId);
   };
 
   const fetchDetailWord = async () => {
-    if(wordId){
+    if (wordId) {
       const data = await fetchDetail(wordId);
       setWordData(data);
     }
-  }
+  };
 
   const handleScrap = async () => {
     if (wordId === undefined) return;
     if (wordData?.scrap) {
       await deleteScrapWord(wordId);
       fetchToday();
-
     } else {
       await scrapWord(wordId);
       fetchToday();
-
     }
-  }
+  };
   useEffect(() => {
     fetchToday();
   }, []);
 
   useEffect(() => {
-      fetchDetailWord();
-    }
-    ,[wordId]); 
-      
+    fetchDetailWord();
+  }, [wordId]);
 
   return (
     <MemeDictionaryTodayMemeWraaper>
       <MemeDictionaryTodayMemeHeadText>오늘의 용어</MemeDictionaryTodayMemeHeadText>
-      <MemeDictionaryHeadline/>
+      <MemeDictionaryHeadline />
       <MemeDictionaryTodayMemeInfoBox>
-      <MemeDictionaryTodayMemeInfoBoxHeader>"{wordData?.word}"</MemeDictionaryTodayMemeInfoBoxHeader>
-        {isLoggedIn && 
+        <MemeDictionaryTodayMemeInfoBoxHeader>
+          "{wordData?.word}"
+        </MemeDictionaryTodayMemeInfoBoxHeader>
+        {isLoggedIn && (
           <MemeDictionaryDetailInfoIcon isScrapped={wordData?.scrap} onClick={handleScrap}>
             <BsFillBookmarksFill size="50" />
           </MemeDictionaryDetailInfoIcon>
-        }
+        )}
         <YearBox isScrapped={isLoggedIn}>{wordData?.useYear}</YearBox>
       </MemeDictionaryTodayMemeInfoBox>
       <MemeDictionaryTodayMemeDefinitionHeader>뜻풀이</MemeDictionaryTodayMemeDefinitionHeader>
-      <MemeDictionaryTodayMemeDefinitionContent>{wordData?.mean}</MemeDictionaryTodayMemeDefinitionContent>
+      <MemeDictionaryTodayMemeDefinitionContent>
+        {wordData?.mean}
+      </MemeDictionaryTodayMemeDefinitionContent>
       <MemeDictionaryTodayMemeDefinitionHeader>예문</MemeDictionaryTodayMemeDefinitionHeader>
-      <MemeDictionaryTodayMemeDefinitionContent>{wordData?.example}</MemeDictionaryTodayMemeDefinitionContent>
-      </MemeDictionaryTodayMemeWraaper>
-  )
+      <MemeDictionaryTodayMemeDefinitionContent>
+        {wordData?.example}
+      </MemeDictionaryTodayMemeDefinitionContent>
+    </MemeDictionaryTodayMemeWraaper>
+  );
 }
 export default MemeDictionaryTodayMeme;
