@@ -322,7 +322,7 @@
 ### [🔎 프로젝트 개발 과정 바로가기](https://haegu.notion.site/f1ab62bafbcf49ac98a3c92cc7e67511?pvs=4)
 
 <br />
-<img src="https://github.com/yms1789/Algorithm/assets/71623879/f36450c5-483d-44ce-9068-21d9791e8b52" width="1500"/>
+<img src="https://github.com/yms1789/Algorithm/assets/71623879/f36450c5-483d-44ce-9068-21d9791e8b52" width="100%"/>
 
 각각의 기능 별 **이슈**를 생성하고, 해당 이슈로 **브랜치**를 생성해 작업을 수행했습니다.
 어떤 내용이 변경되었는지 명확하게 전달하기 위해 각 **커밋**에는 **상세한 메시지**를 추가하였습니다.
