@@ -66,7 +66,7 @@
 
 <br />
 <div align="center">
-  <img src="https://github.com/yms1789/Algorithm/assets/71623879/3a6272e5-b5a7-402b-ad6f-8338dbd0af4e" width="80%" />
+  <img src="https://github.com/kanghaeven/Frontend_practice/assets/122589773/2268d4ac-cec5-4eb1-b581-58e6ebbf43df" width="80%" />
   <img src="https://github.com/yms1789/Algorithm/assets/71623879/8ba3c447-333a-47c8-97e8-b2b20cd7cce2" width="80%">
 </div>
 
