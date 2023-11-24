@@ -22,7 +22,7 @@
 
 ## 배포 링크
 
-### [https://ggok2.duckdns.org](http://haru-hannyan.com)
+### [시니어네이버](https://ggok2.duckdns.org)
 
 <br /><br />
 
