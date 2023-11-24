@@ -436,3 +436,55 @@ mattermost 7.8.6 <br>
 <img src="https://gudgement.s3.ap-northeast-2.amazonaws.com/readme/erd.jpg" width="1500"/>
 
 <br>
+
+## 시니어 네이버, 어떻게 만들었나요?
+
+### 1️⃣ 피그마를 사용하여 기획 및 디자인 하였습니다.
+
+[//]: # '<img width="25" src="https://cdn.builder.io/api/v1/image/assets%2FYJIGb4i01jvw0SRdL5Bt%2Ffb77e93c28e044178e4694cc939bf4cf" />  '
+
+### [🎨 Figma 바로가기](https://www.figma.com/file/DdKDbgZnsNI4cKQ13Nos13/%EA%BC%AD%EA%BC%AD-%EC%94%B9%EC%96%B4%EB%A8%B9%EC%96%B4%EC%9A%94?type=design&node-id=1633-557&mode=design&t=evyZDVyMl80PGeNG-0)
+
+시니어네이버의 **디자인 시안**과 **디자인 가이드**를 확인할 수 있습니다.
+피그마에 아이디어를 시각적으로 표현하고, 일관된 디자인 가이드를 적용하였습니다.
+사용자에게 직관적인 인터페이스를 제공하며, 사용자의 연령대에 맞는 UI/UX를 구현하려고 노력하였습니다.
+
+<br />
+
+### 2️⃣ 체계적인 개발 프로세스를 거쳤어요.
+
+### [🔎 프로젝트 개발 과정 바로가기](https://haegu.notion.site/f1ab62bafbcf49ac98a3c92cc7e67511?pvs=4)
+
+<br />
+<div align="center">
+  <img src="https://github.com/yms1789/Algorithm/assets/71623879/f36450c5-483d-44ce-9068-21d9791e8b52" width="50%"/>
+</div>
+
+각각의 기능 별 **이슈**를 생성하고, 해당 이슈로 **브랜치**를 생성해 작업을 수행했습니다.
+어떤 내용이 변경되었는지 명확하게 전달하기 위해 각 **커밋**에는 **상세한 메시지**를 추가하였습니다.
+
+코드의 일관성과 품질을 보장하기 위해, **Eslint**와 **Prettier**를 적용했습니다.
+
+**Jenkins**로 지속적인 통합 및 개발(CI / CD)을 구현해 프로젝트의 안정성을 높였습니다.
+
+각 기능 구현을 마치면 **Gerrit**을 통해 팀원들과 함께 코드의 품질을 개선하고 다양한 관점을 얻을 수 있도록 **코드 리뷰**를 진행했습니다.
+
+<br />
+
+### 3️⃣ 프로젝트 컨벤션을 정해서 진행했어요.
+
+### [📃 프로젝트 컨벤션 바로가기](https://haegu.notion.site/879ba3c1e08e4c46a15d45763a2990f0?pvs=4)
+
+일관된 **개발 컨벤션**을 적용해, 프로젝트의 통일성을 높였습니다.
+브랜치 이름과 커밋 메시지에 동일한 규칙을 적용해서 어떤 작업이 진행되었는지 **추적**하기 편하고 **이해**하기 쉽도록 하였습니다.
+코드의 역할에 따라 **디렉토리**를 분리하였습니다.
+재사용 가능한 **공통 컴포넌트**를 분리해 효율성을 높였습니다.
+
+<br/>
+
+### 4️⃣ 개발 과정을 담았습니다.
+
+### [✍️ 개발 과정 확인하기](https://haegu.notion.site/Trouble-Shooting-f4a980e34c014378a43d799db4c40bbb?pvs=4)
+
+시니어 네이버의 **탄생**과 **발전**을 볼 수 있어요.  
+사용성을 높이기 위한 **리팩토링**과 어려움을 겪었던 **트러블 슈팅** 과정을 생생하게 담았습니다.
