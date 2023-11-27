@@ -93,15 +93,6 @@
 
 <br /><br />
 
-### 6. MZ 사전
-
-<br />
-<div align="center">
-  <img src="https://github.com/yms1789/Algorithm/assets/71623879/c4e667ca-0ce2-4cb9-bcf1-80163ff06964" width="80%" />
-</div>
-
-<br /><br />
-
 ## 사용한 기술
 
 ### 프론트엔드
