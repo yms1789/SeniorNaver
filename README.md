@@ -88,7 +88,7 @@
 
 <br />
 <div align="center">
-  <img src="https://github.com/yms1789/Algorithm/assets/71623879/2b9ff3d8-29bb-4e44-8ded-de42f37ab0a5" width="80%" />
+  <img src="https://github.com/yms1789/Algorithm/assets/71623879/c4e667ca-0ce2-4cb9-bcf1-80163ff06964" width="80%" />
 </div>
 
 <br /><br />
